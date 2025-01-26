@@ -1,0 +1,17 @@
+{"properties": [
+  {
+    "name": "javafxenabled",
+    "type": "java.lang.String",
+    "description": "Enable/Disable of GUI launch =false-->do not launch the UI =true-->launch the UI '"
+  },
+  {
+    "name": "version",
+    "type": "java.lang.String",
+    "description": "version of application"
+  },
+  {
+    "name": "main_ui_title",
+    "type": "java.lang.String",
+    "description": "assigns the string given here to UI title"
+  }
+]}
