@@ -56,6 +56,7 @@ public class StageReadyEventListener implements ApplicationListener<StageReadyEv
 		Stage stage = event.getStage();
 		FxWeaver fxWeaver = applicationContext.getBean(FxWeaver.class);
 		Parent root = fxWeaver.loadView(MainSceneController.class);
+		MainSceneController.setStage(stage);
 		Scene scene = new Scene(root);
 		scene.getStylesheets().add(getClass().getResource("../view/mainscene.css").toExternalForm());
 		stage.setScene(scene);

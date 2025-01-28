@@ -38,7 +38,7 @@
    <bottom>
       <HBox prefHeight="262.0" prefWidth="900.0" BorderPane.alignment="CENTER">
          <children>
-            <TextArea prefHeight="226.0" prefWidth="879.0" HBox.hgrow="ALWAYS">
+            <TextArea fx:id="texAreaLogOutput" prefHeight="226.0" prefWidth="879.0" HBox.hgrow="ALWAYS">
                <HBox.margin>
                   <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                </HBox.margin>
@@ -53,19 +53,27 @@
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="309.0" prefWidth="900.0">
                      <children>
-                        <ComboBox fx:id="ComboKeyGenAlgSelect1" layoutX="203.0" layoutY="183.0" prefWidth="150.0" />
-                        <Label fx:id="LabelKeyGenAlgSelect1" layoutX="15.0" layoutY="187.0" text="Select RSA Key Length:" />
-                        <ComboBox fx:id="ComboKeyGenAlgSelect11" layoutX="564.0" layoutY="183.0" prefWidth="150.0" />
-                        <Label fx:id="LabelKeyGenAlgSelect11" layoutX="376.0" layoutY="187.0" text="Select Eliptic Curve Name:" />
-                        <CheckBox layoutX="-14.0" layoutY="243.0" mnemonicParsing="false" prefHeight="18.0" prefWidth="116.0" text="Encrypt Key File" textAlignment="JUSTIFY" />
-                        <ComboBox fx:id="ComboKeyGenAlgSelect12" layoutX="252.0" layoutY="240.0" prefWidth="150.0" />
-                        <Label fx:id="LabelKeyGenAlgSelect12" layoutX="110.0" layoutY="243.0" text="File Encryption Cipher:" />
-                        <ComboBox fx:id="ComboKeyGenAlgSelect121" layoutX="501.0" layoutY="236.0" prefWidth="150.0" />
-                        <Label fx:id="LabelKeyGenAlgSelect121" layoutX="409.0" layoutY="240.0" text="Enter Password:" />
-                        <ComboBox fx:id="ComboKeyGenAlgSelect" layoutX="201.0" layoutY="113.0" prefHeight="26.0" prefWidth="154.0" promptText="Select Algorithm" />
-                        <Label fx:id="LabelKeyGenAlgSelect" layoutX="15.0" layoutY="118.0" text="Select Key Generation Algorithm:" />
-                        <ComboBox fx:id="ComboKeyGenAlgSelect2" layoutX="546.0" layoutY="114.0" prefWidth="150.0" />
-                        <Label fx:id="LabelKeyGenAlgSelect2" layoutX="390.0" layoutY="118.0" text="Select Key File Format: " />
+                        <ComboBox fx:id="comboRSAKeyLength" layoutX="200.0" layoutY="97.0" prefHeight="26.0" prefWidth="154.0" />
+                        <Label fx:id="LabelRSAKeyLength" layoutX="14.0" layoutY="102.0" text="Select RSA Key Length:" />
+                        <ComboBox fx:id="comboElipticCurveName" layoutX="558.0" layoutY="98.0" prefWidth="150.0" />
+                        <Label fx:id="LabelElipticCurveName" layoutX="402.0" layoutY="102.0" text="Select Eliptic Curve Name:" />
+                        <ComboBox fx:id="comboKeyGenAlgSelect" layoutX="200.0" layoutY="60.0" prefHeight="26.0" prefWidth="154.0" promptText="Select Algorithm" />
+                        <Label fx:id="LabelKeyGenAlgSelect" layoutX="14.0" layoutY="65.0" text="Select Key Generation Algorithm:" />
+                        <ComboBox fx:id="comboKeyFileFormat" layoutX="558.0" layoutY="60.0" prefWidth="150.0" promptText="Select File Format" />
+                        <Label fx:id="LabelKeyFileFormat" layoutX="402.0" layoutY="64.0" text="Select Key File Format: " />
+                        <HBox alignment="CENTER" layoutX="8.0" layoutY="14.0" prefHeight="38.0" prefWidth="714.0" spacing="10.0">
+                           <children>
+                              <CheckBox fx:id="checkBoxEncryptKeyFile" mnemonicParsing="false" prefHeight="18.0" prefWidth="116.0" text="Encrypt Key File" textAlignment="JUSTIFY" />
+                              <Label fx:id="LabelFileEncyptCipher" text="File Encryption Cipher:" />
+                              <ComboBox fx:id="comboFileEncyptCipher" prefWidth="150.0">
+                                 <HBox.margin>
+                                    <Insets />
+                                 </HBox.margin>
+                              </ComboBox>
+                              <Label fx:id="LabelKeyGenPassword" text="Enter Password:" />
+                              <ComboBox fx:id="comboKeyGenPassword" prefWidth="150.0" />
+                           </children>
+                        </HBox>
                      </children></AnchorPane>
             </content>
           </Tab>
