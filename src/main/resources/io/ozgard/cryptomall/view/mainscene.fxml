@@ -5,10 +5,12 @@
 <?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.TitledPane?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
@@ -53,27 +55,28 @@
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="309.0" prefWidth="900.0">
                      <children>
-                        <ComboBox fx:id="comboRSAKeyLength" layoutX="200.0" layoutY="97.0" prefHeight="26.0" prefWidth="154.0" />
-                        <Label fx:id="LabelRSAKeyLength" layoutX="14.0" layoutY="102.0" text="Select RSA Key Length:" />
-                        <ComboBox fx:id="comboElipticCurveName" layoutX="558.0" layoutY="98.0" prefWidth="150.0" />
-                        <Label fx:id="LabelElipticCurveName" layoutX="402.0" layoutY="102.0" text="Select Eliptic Curve Name:" />
-                        <ComboBox fx:id="comboKeyGenAlgSelect" layoutX="200.0" layoutY="60.0" prefHeight="26.0" prefWidth="154.0" promptText="Select Algorithm" />
-                        <Label fx:id="LabelKeyGenAlgSelect" layoutX="14.0" layoutY="65.0" text="Select Key Generation Algorithm:" />
-                        <ComboBox fx:id="comboKeyFileFormat" layoutX="558.0" layoutY="60.0" prefWidth="150.0" promptText="Select File Format" />
-                        <Label fx:id="LabelKeyFileFormat" layoutX="402.0" layoutY="64.0" text="Select Key File Format: " />
-                        <HBox alignment="CENTER" layoutX="8.0" layoutY="14.0" prefHeight="38.0" prefWidth="714.0" spacing="10.0">
-                           <children>
-                              <CheckBox fx:id="checkBoxEncryptKeyFile" mnemonicParsing="false" prefHeight="18.0" prefWidth="116.0" text="Encrypt Key File" textAlignment="JUSTIFY" />
-                              <Label fx:id="LabelFileEncyptCipher" text="File Encryption Cipher:" />
-                              <ComboBox fx:id="comboFileEncyptCipher" prefWidth="150.0">
-                                 <HBox.margin>
-                                    <Insets />
-                                 </HBox.margin>
-                              </ComboBox>
-                              <Label fx:id="LabelKeyGenPassword" text="Enter Password:" />
-                              <ComboBox fx:id="comboKeyGenPassword" prefWidth="150.0" />
-                           </children>
-                        </HBox>
+                        <ComboBox fx:id="comboKeyGenRSAKeyLength" layoutX="202.0" layoutY="51.0" prefHeight="26.0" prefWidth="154.0" />
+                        <Label fx:id="LabelRSAKeyLength" layoutX="16.0" layoutY="56.0" text="Select RSA Key Length:" />
+                        <ComboBox fx:id="comboKeygenElipticCurveName" layoutX="560.0" layoutY="52.0" prefWidth="150.0" />
+                        <Label fx:id="LabelElipticCurveName" layoutX="404.0" layoutY="56.0" text="Select Eliptic Curve Name:" />
+                        <ComboBox fx:id="comboKeyGenAlgSelect" layoutX="202.0" layoutY="14.0" onAction="#keyGenAlgoChanged" prefHeight="26.0" prefWidth="154.0" promptText="Select Algorithm" />
+                        <Label fx:id="LabelKeyGenAlgSelect" layoutX="16.0" layoutY="19.0" text="Select Key Generation Algorithm:" />
+                        <ComboBox fx:id="comboKeyGenKeyFileFormat" layoutX="560.0" layoutY="14.0" prefWidth="150.0" promptText="Select File Format" />
+                        <Label fx:id="LabelKeyFileFormat" layoutX="404.0" layoutY="18.0" text="Select Key File Format: " />
+                        <TitledPane fx:id="titledPaneKeygenRSAParams" animated="false" layoutX="16.0" layoutY="87.0" prefHeight="82.0" prefWidth="698.0" text="Key File Encrypt Parameters" AnchorPane.bottomAnchor="143.20000000000002" AnchorPane.leftAnchor="16.0" AnchorPane.rightAnchor="16.0" AnchorPane.topAnchor="87.0">
+                          <content>
+                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="39.0" prefWidth="709.0">
+                                 <children>
+                                    <CheckBox fx:id="checkBoxKeyGenEncryptKeyFile" layoutX="23.0" layoutY="19.0" mnemonicParsing="false" onMouseClicked="#keyGenEncryptKeyFileCheckBox" prefHeight="18.0" prefWidth="116.0" text="Encrypt Key File" textAlignment="JUSTIFY" />
+                                    <Label fx:id="LabelFileEncyptCipher" layoutX="149.0" layoutY="19.0" text="File Encryption Cipher:" />
+                                    <ComboBox fx:id="comboKeyGenFileEncyptCipher" layoutX="279.0" layoutY="15.0" prefWidth="150.0" />
+                                    <Label fx:id="LabelKeyGenPassword" layoutX="440.0" layoutY="19.0" text="Enter Password:" />
+                                    <PasswordField fx:id="passFieldKeyGenFilePasswd" layoutX="534.0" layoutY="15.0" />
+                                 </children>
+                              </AnchorPane>
+                          </content>
+                        </TitledPane>
+                        <Button fx:id="buttonKeyGenGenerate" layoutX="202.0" layoutY="187.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="326.0" text="Generate Key File" />
                      </children></AnchorPane>
             </content>
           </Tab>

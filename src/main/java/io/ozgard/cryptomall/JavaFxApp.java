@@ -10,8 +10,12 @@ import org.springframework.context.support.GenericApplicationContext;
 import javafx.application.Application;
 import javafx.application.HostServices;
 import javafx.application.Platform;
+import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TitledPane;
 import javafx.stage.Stage;
 
 public class JavaFxApp extends Application
@@ -29,6 +33,9 @@ public class JavaFxApp extends Application
                     context.registerBean(HostServices.class, this::getHostServices);
                     context.registerBean(TextField.class);
                     context.registerBean(ComboBox.class);
+                    context.registerBean(Button.class);
+                    context.registerBean(TitledPane.class);
+                    context.registerBean(CheckBox.class);
                 };
                 
         this.context = new SpringApplicationBuilder()
