@@ -6,6 +6,9 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class CommandLineProcess 
 {
 	private ArrayList<String> 	commandLineStr = new ArrayList<String>();

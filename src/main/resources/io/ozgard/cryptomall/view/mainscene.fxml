@@ -76,7 +76,7 @@
                               </AnchorPane>
                           </content>
                         </TitledPane>
-                        <Button fx:id="buttonKeyGenGenerate" layoutX="202.0" layoutY="187.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="326.0" text="Generate Key File" />
+                        <Button fx:id="buttonKeyGenGenerate" layoutX="202.0" layoutY="187.0" mnemonicParsing="false" onMouseClicked="#keyGenerateKeyFile" prefHeight="26.0" prefWidth="326.0" text="Generate Key File" />
                      </children></AnchorPane>
             </content>
           </Tab>
