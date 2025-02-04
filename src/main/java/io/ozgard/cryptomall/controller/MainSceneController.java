@@ -16,6 +16,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
 import javafx.stage.DirectoryChooser;
@@ -32,7 +33,6 @@ public class MainSceneController implements Initializable
 	private CalculatorService calculatorService;
 	@Autowired
 	KeyGenerateParams keygenParams;
-	
 	@FXML
 	@Autowired
 	TextField textFieldWorkingDirectory;
@@ -62,6 +62,9 @@ public class MainSceneController implements Initializable
 	@FXML
 	@Autowired
 	Button buttonKeyGenGenerate;
+	@FXML
+	@Autowired
+	TextArea texAreaLogOutput;
 	
 	static public void setStage(Stage stageT)
 	{
@@ -86,6 +89,10 @@ public class MainSceneController implements Initializable
 		String [] ecList = calculatorService.getListElipticCurveName();
 		comboKeygenElipticCurveName.setItems(FXCollections.observableArrayList(ecList));
 		comboKeygenElipticCurveName.setValue(ecList[0]);
+		
+		String [] cipherList = calculatorService.getListCiphers();
+		comboKeyGenFileEncyptCipher.setItems(FXCollections.observableArrayList(cipherList));
+		comboKeyGenFileEncyptCipher.setValue(cipherList[0]);
 	}
 	
 	@FXML
@@ -147,6 +154,6 @@ public class MainSceneController implements Initializable
 		keygenParams.setKeyGenAlgo(comboKeyGenAlgSelect.getValue());
 		keygenParams.setRsaKeyLength(comboKeyGenRSAKeyLength.getValue());
 		
-		calculatorService.keyGenerate(keygenParams);
+		texAreaLogOutput.setText(calculatorService.keyGenerate(keygenParams));
 	}
 }

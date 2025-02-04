@@ -13,6 +13,7 @@ import javafx.application.Platform;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
 import javafx.stage.Stage;
@@ -31,6 +32,7 @@ public class JavaFxApp extends Application
                     context.registerBean(Parameters.class, this::getParameters);
                     context.registerBean(HostServices.class, this::getHostServices);
                     context.registerBean(TextField.class);
+                    context.registerBean(TextArea.class);
                     context.registerBean(ComboBox.class);
                     context.registerBean(Button.class);
                     context.registerBean(TitledPane.class);
