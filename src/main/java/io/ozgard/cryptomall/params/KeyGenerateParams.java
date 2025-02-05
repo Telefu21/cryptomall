@@ -9,9 +9,9 @@ public class KeyGenerateParams
 	public static final String KEYGEN_ALGO_SELECT_ECC = "ECC";
 	public static final String KEYGEN_FILE_FORMAT_SELECT_PEM = "PEM";
 	public static final String KEYGEN_FILE_FORMAT_SELECT_DER = "DER";
-	public static final String KEYGEN_RSA_KEY_LENGHT_1024 = "1024-bit";
-	public static final String KEYGEN_RSA_KEY_LENGHT_2048 = "2048-bit";
-	public static final String KEYGEN_RSA_KEY_LENGHT_4096 = "4096-bit";
+	public static final String KEYGEN_RSA_KEY_LENGHT_1024 = "1024";
+	public static final String KEYGEN_RSA_KEY_LENGHT_2048 = "2048";
+	public static final String KEYGEN_RSA_KEY_LENGHT_4096 = "4096";
 	
 	String	workingDirectory;
 	String	keyGenAlgo;

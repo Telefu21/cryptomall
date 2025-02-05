@@ -116,7 +116,11 @@ public class MainSceneController implements Initializable
 		 if (checkBoxKeyGenEncryptKeyFile.isSelected())
 		 {
 			 passFieldKeyGenFilePasswd.setDisable(false);
-			 comboKeyGenFileEncyptCipher.setDisable(false);
+			 
+			 if(comboKeyGenAlgSelect.getValue().compareTo(KeyGenerateParams.KEYGEN_ALGO_SELECT_ECC) != 0)
+			 {
+				 comboKeyGenFileEncyptCipher.setDisable(false);
+			 }
 		 }
 		 
 		 if (!checkBoxKeyGenEncryptKeyFile.isSelected())
