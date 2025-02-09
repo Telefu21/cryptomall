@@ -47,7 +47,7 @@ public class MainSceneController implements Initializable
 	ComboBox<String> comboKeyGenFileEncyptCipher;
 	@FXML
 	@Autowired
-	ComboBox<String> comboKeyGenRSAKeyLength;
+	ComboBox<String> comboKeyGenKeyLength;
 	@FXML
 	@Autowired
 	ComboBox<String> comboKeygenElipticCurveName;
@@ -76,10 +76,12 @@ public class MainSceneController implements Initializable
 	{			
 		comboKeyGenKeyFileFormat.setItems(FXCollections.observableArrayList(KeyGenerateParams.KEYGEN_FILE_FORMAT_SELECT_PEM, KeyGenerateParams.KEYGEN_FILE_FORMAT_SELECT_DER));
 		comboKeyGenKeyFileFormat.setValue(KeyGenerateParams.KEYGEN_FILE_FORMAT_SELECT_PEM);
-		comboKeyGenAlgSelect.setItems(FXCollections.observableArrayList(KeyGenerateParams.KEYGEN_ALGO_SELECT_RSA, KeyGenerateParams.KEYGEN_ALGO_SELECT_ECC));
+		comboKeyGenAlgSelect.setItems(FXCollections.observableArrayList(KeyGenerateParams.KEYGEN_ALGO_SELECT_RSA, KeyGenerateParams.KEYGEN_ALGO_SELECT_ECC, 
+				KeyGenerateParams.KEYGEN_ALGO_SELECT_DSA, KeyGenerateParams.KEYGEN_ALGO_SELECT_DH, KeyGenerateParams.KEYGEN_ALGO_SELECT_ED25519, 
+				KeyGenerateParams.KEYGEN_ALGO_SELECT_X448, KeyGenerateParams.KEYGEN_ALGO_SELECT_ED448, KeyGenerateParams.KEYGEN_ALGO_SELECT_X25519));
 		comboKeyGenAlgSelect.setValue(KeyGenerateParams.KEYGEN_ALGO_SELECT_RSA);
-		comboKeyGenRSAKeyLength.setItems(FXCollections.observableArrayList(KeyGenerateParams.KEYGEN_RSA_KEY_LENGHT_1024, KeyGenerateParams.KEYGEN_RSA_KEY_LENGHT_2048, KeyGenerateParams.KEYGEN_RSA_KEY_LENGHT_4096));
-		comboKeyGenRSAKeyLength.setValue(KeyGenerateParams.KEYGEN_RSA_KEY_LENGHT_1024);
+		comboKeyGenKeyLength.setItems(FXCollections.observableArrayList(KeyGenerateParams.KEYGEN_KEY_LENGHT_512,KeyGenerateParams.KEYGEN_KEY_LENGHT_1024, KeyGenerateParams.KEYGEN_KEY_LENGHT_2048, KeyGenerateParams.KEYGEN_KEY_LENGHT_4096));
+		comboKeyGenKeyLength.setValue(KeyGenerateParams.KEYGEN_KEY_LENGHT_1024);
 		titledPaneKeygenRSAParams.setCollapsible(false);
 		passFieldKeyGenFilePasswd.setDisable(true);
 		comboKeyGenFileEncyptCipher.setDisable(true);
@@ -133,16 +135,24 @@ public class MainSceneController implements Initializable
 	@FXML
 	void keyGenAlgoChanged()
 	{
-		if ((String)comboKeyGenAlgSelect.getValue() == KeyGenerateParams.KEYGEN_ALGO_SELECT_RSA)
+		if (comboKeyGenAlgSelect.getValue() == KeyGenerateParams.KEYGEN_ALGO_SELECT_RSA
+		 || comboKeyGenAlgSelect.getValue() == KeyGenerateParams.KEYGEN_ALGO_SELECT_DSA)
 		{
-			comboKeyGenRSAKeyLength.setDisable(false);
+			comboKeyGenKeyLength.setDisable(false);
 			comboKeygenElipticCurveName.setDisable(true);
+			
+			if (checkBoxKeyGenEncryptKeyFile.isSelected())
+			{
+				passFieldKeyGenFilePasswd.setDisable(false);
+				comboKeyGenFileEncyptCipher.setDisable(false);
+			}
 		}
 		 
-		 if ((String)comboKeyGenAlgSelect.getValue() == KeyGenerateParams.KEYGEN_ALGO_SELECT_ECC)
+		 if (comboKeyGenAlgSelect.getValue() == KeyGenerateParams.KEYGEN_ALGO_SELECT_ECC)
 		 {
-			 comboKeyGenRSAKeyLength.setDisable(true);
+			 comboKeyGenKeyLength.setDisable(true);
 			 comboKeygenElipticCurveName.setDisable(false);
+			 comboKeyGenFileEncyptCipher.setDisable(true);
 		 }
 	}
 	
@@ -156,7 +166,7 @@ public class MainSceneController implements Initializable
 		keygenParams.setFileEncryptionPassword(passFieldKeyGenFilePasswd.getText());
 		keygenParams.setKeyFileFormat(comboKeyGenKeyFileFormat.getValue());
 		keygenParams.setKeyGenAlgo(comboKeyGenAlgSelect.getValue());
-		keygenParams.setRsaKeyLength(comboKeyGenRSAKeyLength.getValue());
+		keygenParams.setRsaKeyLength(comboKeyGenKeyLength.getValue());
 		
 		texAreaLogOutput.setText(calculatorService.keyGenerate(keygenParams));
 	}

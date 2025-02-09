@@ -55,8 +55,8 @@
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="309.0" prefWidth="900.0">
                      <children>
-                        <ComboBox fx:id="comboKeyGenRSAKeyLength" layoutX="202.0" layoutY="51.0" prefHeight="26.0" prefWidth="154.0" />
-                        <Label fx:id="LabelRSAKeyLength" layoutX="16.0" layoutY="56.0" text="Select RSA Key Length:" />
+                        <ComboBox fx:id="comboKeyGenKeyLength" layoutX="202.0" layoutY="51.0" prefHeight="26.0" prefWidth="154.0" />
+                        <Label fx:id="LabelKeyLength" layoutX="16.0" layoutY="56.0" text="Select Key Length:" />
                         <ComboBox fx:id="comboKeygenElipticCurveName" layoutX="560.0" layoutY="52.0" prefWidth="150.0" />
                         <Label fx:id="LabelElipticCurveName" layoutX="404.0" layoutY="56.0" text="Select Eliptic Curve Name:" />
                         <ComboBox fx:id="comboKeyGenAlgSelect" layoutX="202.0" layoutY="14.0" onAction="#keyGenAlgoChanged" prefHeight="26.0" prefWidth="154.0" promptText="Select Algorithm" />

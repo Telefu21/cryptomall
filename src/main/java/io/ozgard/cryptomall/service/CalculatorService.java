@@ -138,176 +138,180 @@ public class CalculatorService
 	
 	public String keyGenerate(KeyGenerateParams keygenParams) 
 	{
+		String privateKeyFileName = "\"" + keygenParams.getWorkingDirectory() + "\\" + keygenParams.getKeyGenAlgo().toLowerCase() + "_privkey" + "." + keygenParams.getKeyFileFormat().toLowerCase() + "\"";
+		String paramFileName = "\"" + keygenParams.getWorkingDirectory() + "\\" + keygenParams.getKeyGenAlgo().toLowerCase() + "_param" + "." + keygenParams.getKeyFileFormat().toLowerCase() + "\"";
+		String cmdRetStr = "";
+		
+		if(keygenParams.getKeyGenAlgo().compareTo(KeyGenerateParams.KEYGEN_ALGO_SELECT_DH) == 0
+		|| keygenParams.getKeyGenAlgo().compareTo(KeyGenerateParams.KEYGEN_ALGO_SELECT_DSA) == 0)
+		{
+			cmdRetStr = privKeyGenerate(keygenParams, paramFileName);
+			
+			cmdRetStr += privKeyGenerateFromParamFile(keygenParams, paramFileName, privateKeyFileName);
+		}
+		else
+		{
+			cmdRetStr = privKeyGenerate(keygenParams, privateKeyFileName);
+		}
+		
+		String passwd = null;
+		
+		if(keygenParams.getEncryptKeyFile() == true)
+		{
+			passwd = keygenParams.getFileEncryptionPassword();
+		}
+		
+		cmdRetStr += pubKeyGenerate(privateKeyFileName, passwd, keygenParams.getKeyFileFormat());
+		
+		cmdRetStr += privKeyView(privateKeyFileName, passwd, keygenParams.getKeyFileFormat());
+		
+		return cmdRetStr;
+	}
+	
+	public String privKeyGenerateFromParamFile(KeyGenerateParams keygenParams, String paramFile, String privKeyFile) 
+	{
+		clProcess.addCommandLineStr("openssl"); 
+		clProcess.addCommandLineStr("genpkey");
+		clProcess.addCommandLineStr("-paramfile");
+		clProcess.addCommandLineStr(paramFile);
+		clProcess.addCommandLineStr("-out");
+		clProcess.addCommandLineStr(privKeyFile);
+
+		if(keygenParams.getEncryptKeyFile() == true)	
+		{
+			clProcess.addCommandLineStr(keygenParams.getFileEncryptionCipher());
+			clProcess.addCommandLineStr("-pass");
+			clProcess.addCommandLineStr("pass:" + keygenParams.getFileEncryptionPassword());
+		}
+		
+		String cmdRetStr = clProcess.runCommand();
+		
+		clProcess.clearCommandLineStr();
+		
+		return cmdRetStr;	
+	}
+	
+	public String privKeyGenerate(KeyGenerateParams keygenParams, String privateKeyFile) 
+	{
+		clProcess.addCommandLineStr("openssl"); 
+		clProcess.addCommandLineStr("genpkey");
+		clProcess.addCommandLineStr("-outform");
+		clProcess.addCommandLineStr(keygenParams.getKeyFileFormat());
+		
+		if(keygenParams.getKeyGenAlgo().compareTo(KeyGenerateParams.KEYGEN_ALGO_SELECT_DH) == 0
+		|| keygenParams.getKeyGenAlgo().compareTo(KeyGenerateParams.KEYGEN_ALGO_SELECT_DSA) == 0)
+		{
+			clProcess.addCommandLineStr("-genparam");
+		}
+		
+		clProcess.addCommandLineStr("-algorithm");
+		clProcess.addCommandLineStr(keygenParams.getKeyGenAlgo());
+		clProcess.addCommandLineStr("-out");
+		clProcess.addCommandLineStr(privateKeyFile);
+		
 		if(keygenParams.getKeyGenAlgo().compareTo(KeyGenerateParams.KEYGEN_ALGO_SELECT_RSA) == 0)
 		{
-			return keyGenerateRSA(keygenParams);
+			clProcess.addCommandLineStr("-pkeyopt");
+			clProcess.addCommandLineStr("rsa_keygen_bits:" + keygenParams.getKeyLength());
+		}
+		
+		if(keygenParams.getKeyGenAlgo().compareTo(KeyGenerateParams.KEYGEN_ALGO_SELECT_DH) == 0)
+		{
+			clProcess.addCommandLineStr("-pkeyopt");
+			clProcess.addCommandLineStr("dh_paramgen_prime_len:" + keygenParams.getKeyLength());
+		}
+		
+		if(keygenParams.getKeyGenAlgo().compareTo(KeyGenerateParams.KEYGEN_ALGO_SELECT_DSA) == 0)
+		{
+			clProcess.addCommandLineStr("-pkeyopt");
+			clProcess.addCommandLineStr("dsa_paramgen_bits:" + keygenParams.getKeyLength());
 		}
 		
 		if(keygenParams.getKeyGenAlgo().compareTo(KeyGenerateParams.KEYGEN_ALGO_SELECT_ECC) == 0)
 		{
-			return keyGenerateECC(keygenParams);
+			clProcess.addCommandLineStr("-pkeyopt");
+			clProcess.addCommandLineStr("ec_paramgen_curve:" + keygenParams.getElepticCurveName());
 		}
 		
-		return null;
-	}
-
-	private String keyGenerateECC(KeyGenerateParams keygenParams) 
-	{
-		String prvKeyFile = "\"" + keygenParams.getWorkingDirectory() + "\\privkey_" + keygenParams.getElepticCurveName() + "_ec.key\"";
-		String pubKeyFile = "\"" + keygenParams.getWorkingDirectory() + "\\pubkey_" + keygenParams.getElepticCurveName() + "_ec." + keygenParams.getKeyFileFormat().toLowerCase() + "\"";
-		String prvKeyFilePkcs8 = "\"" + keygenParams.getWorkingDirectory() + "\\privkey_" + keygenParams.getElepticCurveName() + "_pkcs8_ec.pem\"";
+		if(keygenParams.getEncryptKeyFile() == true)	
+		{
+			clProcess.addCommandLineStr(keygenParams.getFileEncryptionCipher());
+			clProcess.addCommandLineStr("-pass");
+			clProcess.addCommandLineStr("pass:" + keygenParams.getFileEncryptionPassword());
+		}
 		
-		clProcess.addCommandLineStr("openssl"); 
-		clProcess.addCommandLineStr("ecparam");
-		clProcess.addCommandLineStr("-genkey");
-		clProcess.addCommandLineStr("-name");
-		clProcess.addCommandLineStr(keygenParams.getElepticCurveName());
-		clProcess.addCommandLineStr("-out");
-		clProcess.addCommandLineStr(prvKeyFile);
-						
 		String cmdRetStr = clProcess.runCommand();
-		
-		clProcess.clearCommandLineStr();
-		
-		if(cmdRetStr.compareTo("") != 0)
-		{
-			return cmdRetStr;
-		}
-		
-		cmdRetStr += "\n ------------------------------------------------ \n";
-		
-		clProcess.addCommandLineStr("openssl"); 
-		clProcess.addCommandLineStr("pkcs8");
-		
-		if(keygenParams.getEncryptKeyFile() == true)	
-		{
-			clProcess.addCommandLineStr("-passout");
-			clProcess.addCommandLineStr("pass::" + new String(keygenParams.getFileEncryptionPassword()));
-		}
-		else
-		{
-			clProcess.addCommandLineStr("-nocrypt");
-		}
-		
-		clProcess.addCommandLineStr("-topk8");
-		clProcess.addCommandLineStr("-in");
-		clProcess.addCommandLineStr(prvKeyFile);
-		clProcess.addCommandLineStr("-out");
-		clProcess.addCommandLineStr(prvKeyFilePkcs8);
-		
-		cmdRetStr += clProcess.runCommand();
-		cmdRetStr += "\n ------------------------------------------------ \n";
-		clProcess.clearCommandLineStr();
-		
-		
-		clProcess.addCommandLineStr("openssl"); 
-		clProcess.addCommandLineStr("ec");
-		clProcess.addCommandLineStr("-pubout");
-		clProcess.addCommandLineStr("-in");
-		clProcess.addCommandLineStr(prvKeyFilePkcs8);
-		
-		if(keygenParams.getEncryptKeyFile() == true)	
-		{
-			clProcess.addCommandLineStr("-passin");
-			clProcess.addCommandLineStr("pass::" + keygenParams.getFileEncryptionPassword());
-		}
-		
-		clProcess.addCommandLineStr("-out");
-		clProcess.addCommandLineStr(pubKeyFile);
-		clProcess.addCommandLineStr("-outform");
-		clProcess.addCommandLineStr(keygenParams.getKeyFileFormat());
-		
-		cmdRetStr += clProcess.runCommand();
-		cmdRetStr += "\n ------------------------------------------------ \n";		
-		clProcess.clearCommandLineStr();
-		
-		clProcess.addCommandLineStr("openssl"); 
-		clProcess.addCommandLineStr("ec");
-		
-		if(keygenParams.getEncryptKeyFile() == true)	
-		{
-			clProcess.addCommandLineStr("-passin");
-			clProcess.addCommandLineStr("pass::" + keygenParams.getFileEncryptionPassword());
-		}
-		
-		clProcess.addCommandLineStr("-in");
-		clProcess.addCommandLineStr(prvKeyFilePkcs8);
-		clProcess.addCommandLineStr("-noout");
-		clProcess.addCommandLineStr("-text");
-		
-		cmdRetStr += clProcess.runCommand();
 		
 		clProcess.clearCommandLineStr();
 		
 		return cmdRetStr;
 	}
-
-	private String keyGenerateRSA(KeyGenerateParams keygenParams) 
+	
+	public String pubKeyGenerate(String privKeyFileName, String passwd, String fileformat) 
 	{
-		String prvKeyFile = "\"" + keygenParams.getWorkingDirectory() + "\\privkey_" + keygenParams.getRsaKeyLength() + "_rsa.key\"";
-		String pubKeyFile = "\"" + keygenParams.getWorkingDirectory() + "\\pubkey_" + keygenParams.getRsaKeyLength() + "_rsa." + keygenParams.getKeyFileFormat().toLowerCase() + "\"";
-		
 		clProcess.addCommandLineStr("openssl"); 
-		clProcess.addCommandLineStr("genrsa");
-		
-		if(keygenParams.getEncryptKeyFile() == true)	
-		{
-			clProcess.addCommandLineStr(keygenParams.getFileEncryptionCipher().replaceAll(" ", ""));
-			clProcess.addCommandLineStr("-passout");
-			clProcess.addCommandLineStr("pass::" + new String(keygenParams.getFileEncryptionPassword()));
-		}
-		
+		clProcess.addCommandLineStr("pkey");
+		clProcess.addCommandLineStr("-pubout");
+		clProcess.addCommandLineStr("-outform");
+		clProcess.addCommandLineStr(fileformat.toLowerCase());
 		clProcess.addCommandLineStr("-out");
-		clProcess.addCommandLineStr(prvKeyFile);
+		clProcess.addCommandLineStr(privKeyFileName.replace("." + fileformat.toLowerCase(), "_pub" + "." + fileformat.toLowerCase()));
+		clProcess.addCommandLineStr("-inform");
+		clProcess.addCommandLineStr(fileformat.toLowerCase());
+		clProcess.addCommandLineStr("-in");
+		clProcess.addCommandLineStr(privKeyFileName);
 		
-		clProcess.addCommandLineStr(keygenParams.getRsaKeyLength());
-		
+		if(passwd != null)	
+		{
+			clProcess.addCommandLineStr("-passin");
+			clProcess.addCommandLineStr("pass:" + passwd);
+		}
 		
 		String cmdRetStr = clProcess.runCommand();
-		cmdRetStr += "\n ------------------------------------------------ \n";
-						
-		clProcess.clearCommandLineStr();
-		
-		clProcess.addCommandLineStr("openssl"); 
-		clProcess.addCommandLineStr("rsa");
-		clProcess.addCommandLineStr("-pubout");
-		clProcess.addCommandLineStr("-in");
-		clProcess.addCommandLineStr(prvKeyFile);
-		
-		if(keygenParams.getEncryptKeyFile() == true)	
-		{
-			clProcess.addCommandLineStr("-passin");
-			clProcess.addCommandLineStr("pass::" + keygenParams.getFileEncryptionPassword());
-		}
-		
-		clProcess.addCommandLineStr("-outform");
-		clProcess.addCommandLineStr(keygenParams.getKeyFileFormat());
-		clProcess.addCommandLineStr("-out");
-		clProcess.addCommandLineStr(pubKeyFile);
-
-		cmdRetStr += clProcess.runCommand();
-		cmdRetStr += "\n ------------------------------------------------ \n";
-										
-		clProcess.clearCommandLineStr();
-		
-		clProcess.addCommandLineStr("openssl"); 
-		clProcess.addCommandLineStr("rsa");
-		
-		if(keygenParams.getEncryptKeyFile() == true)	
-		{
-			clProcess.addCommandLineStr("-passin");
-			clProcess.addCommandLineStr("pass::" + keygenParams.getFileEncryptionPassword());
-		}
-		
-		clProcess.addCommandLineStr("-in");
-		clProcess.addCommandLineStr(prvKeyFile);
-		clProcess.addCommandLineStr("-noout");
-		clProcess.addCommandLineStr("-text");
-			  
-		cmdRetStr += clProcess.runCommand();
 		
 		clProcess.clearCommandLineStr();
 		
 		return cmdRetStr;
-	}   
+	}
+	
+	public String privKeyView(String privKeyFileName, String passwd, String fileformat) 
+	{
+		clProcess.addCommandLineStr("openssl"); 
+		clProcess.addCommandLineStr("pkey");
+		clProcess.addCommandLineStr("-text");
+		clProcess.addCommandLineStr("-inform");
+		clProcess.addCommandLineStr(fileformat.toLowerCase());
+		clProcess.addCommandLineStr("-in");
+		clProcess.addCommandLineStr(privKeyFileName);
+		
+		if(passwd != null)	
+		{
+			clProcess.addCommandLineStr("-passin");
+			clProcess.addCommandLineStr("pass:" + passwd);
+		}
+		
+		String cmdRetStr = clProcess.runCommand();
+		
+		clProcess.clearCommandLineStr();
+		
+		return cmdRetStr;
+	}
+	
+	public String pubKeyView(String pubKeyFileName, String passwd, String fileformat) 
+	{
+		clProcess.addCommandLineStr("openssl"); 
+		clProcess.addCommandLineStr("pkey");
+		clProcess.addCommandLineStr("-inform");
+		clProcess.addCommandLineStr(fileformat.toLowerCase());
+		clProcess.addCommandLineStr("-pubin");
+		clProcess.addCommandLineStr("-in");
+		clProcess.addCommandLineStr(pubKeyFileName);
+		clProcess.addCommandLineStr("-text");
+		
+		String cmdRetStr = clProcess.runCommand();
+		
+		clProcess.clearCommandLineStr();
+		
+		return cmdRetStr;
+	}
 }
