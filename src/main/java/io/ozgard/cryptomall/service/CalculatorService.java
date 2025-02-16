@@ -138,44 +138,35 @@ public class CalculatorService
 	
 	public String keyGenerate(KeyGenerateParams keygenParams) 
 	{
-		String privateKeyFileName = "\"" + keygenParams.getWorkingDirectory() + "\\" + keygenParams.getKeyGenAlgo().toLowerCase() + "_privkey" + "." + keygenParams.getKeyFileFormat().toLowerCase() + "\"";
-		String paramFileName = "\"" + keygenParams.getWorkingDirectory() + "\\" + keygenParams.getKeyGenAlgo().toLowerCase() + "_param" + "." + keygenParams.getKeyFileFormat().toLowerCase() + "\"";
 		String cmdRetStr = "";
 		
 		if(keygenParams.getKeyGenAlgo().compareTo(KeyGenerateParams.KEYGEN_ALGO_SELECT_DH) == 0
 		|| keygenParams.getKeyGenAlgo().compareTo(KeyGenerateParams.KEYGEN_ALGO_SELECT_DSA) == 0)
 		{
-			cmdRetStr = privKeyGenerate(keygenParams, paramFileName);
+			cmdRetStr = privKeyGenerate(keygenParams);
 			
-			cmdRetStr += privKeyGenerateFromParamFile(keygenParams, paramFileName, privateKeyFileName);
+			cmdRetStr += privKeyGenerateFromParamFile(keygenParams);
 		}
 		else
 		{
-			cmdRetStr = privKeyGenerate(keygenParams, privateKeyFileName);
+			cmdRetStr = privKeyGenerate(keygenParams);
 		}
 		
-		String passwd = null;
+		cmdRetStr += pubKeyGenerate(keygenParams);
 		
-		if(keygenParams.getEncryptKeyFile() == true)
-		{
-			passwd = keygenParams.getFileEncryptionPassword();
-		}
-		
-		cmdRetStr += pubKeyGenerate(privateKeyFileName, passwd, keygenParams.getKeyFileFormat());
-		
-		cmdRetStr += privKeyView(privateKeyFileName, passwd, keygenParams.getKeyFileFormat());
+		cmdRetStr += privKeyView(keygenParams);
 		
 		return cmdRetStr;
 	}
 	
-	public String privKeyGenerateFromParamFile(KeyGenerateParams keygenParams, String paramFile, String privKeyFile) 
+	public String privKeyGenerateFromParamFile(KeyGenerateParams keygenParams) 
 	{
 		clProcess.addCommandLineStr("openssl"); 
 		clProcess.addCommandLineStr("genpkey");
 		clProcess.addCommandLineStr("-paramfile");
-		clProcess.addCommandLineStr(paramFile);
+		clProcess.addCommandLineStr(keygenParams.getParamFilePath());
 		clProcess.addCommandLineStr("-out");
-		clProcess.addCommandLineStr(privKeyFile);
+		clProcess.addCommandLineStr(keygenParams.getPrivKeyFilePath());
 
 		if(keygenParams.getEncryptKeyFile() == true)	
 		{
@@ -191,7 +182,7 @@ public class CalculatorService
 		return cmdRetStr;	
 	}
 	
-	public String privKeyGenerate(KeyGenerateParams keygenParams, String privateKeyFile) 
+	public String privKeyGenerate(KeyGenerateParams keygenParams) 
 	{
 		clProcess.addCommandLineStr("openssl"); 
 		clProcess.addCommandLineStr("genpkey");
@@ -207,7 +198,16 @@ public class CalculatorService
 		clProcess.addCommandLineStr("-algorithm");
 		clProcess.addCommandLineStr(keygenParams.getKeyGenAlgo());
 		clProcess.addCommandLineStr("-out");
-		clProcess.addCommandLineStr(privateKeyFile);
+		
+		if(keygenParams.getKeyGenAlgo().compareTo(KeyGenerateParams.KEYGEN_ALGO_SELECT_DH) == 0
+		|| keygenParams.getKeyGenAlgo().compareTo(KeyGenerateParams.KEYGEN_ALGO_SELECT_DSA) == 0)
+		{
+			clProcess.addCommandLineStr(keygenParams.getParamFilePath());
+		}
+		else
+		{
+			clProcess.addCommandLineStr(keygenParams.getPrivKeyFilePath());
+		}
 		
 		if(keygenParams.getKeyGenAlgo().compareTo(KeyGenerateParams.KEYGEN_ALGO_SELECT_RSA) == 0)
 		{
@@ -232,8 +232,8 @@ public class CalculatorService
 			clProcess.addCommandLineStr("-pkeyopt");
 			clProcess.addCommandLineStr("ec_paramgen_curve:" + keygenParams.getElepticCurveName());
 		}
-		
-		if(keygenParams.getEncryptKeyFile() == true)	
+
+		if(keygenParams.getEncryptKeyFile() == true && !(keygenParams.getKeyGenAlgo().compareTo(KeyGenerateParams.KEYGEN_ALGO_SELECT_DH) == 0 || keygenParams.getKeyGenAlgo().compareTo(KeyGenerateParams.KEYGEN_ALGO_SELECT_DSA) == 0))	
 		{
 			clProcess.addCommandLineStr(keygenParams.getFileEncryptionCipher());
 			clProcess.addCommandLineStr("-pass");
@@ -247,24 +247,24 @@ public class CalculatorService
 		return cmdRetStr;
 	}
 	
-	public String pubKeyGenerate(String privKeyFileName, String passwd, String fileformat) 
+	public String pubKeyGenerate(KeyGenerateParams keygenParams) 
 	{
 		clProcess.addCommandLineStr("openssl"); 
 		clProcess.addCommandLineStr("pkey");
 		clProcess.addCommandLineStr("-pubout");
 		clProcess.addCommandLineStr("-outform");
-		clProcess.addCommandLineStr(fileformat.toLowerCase());
+		clProcess.addCommandLineStr(keygenParams.getKeyFileFormat());
 		clProcess.addCommandLineStr("-out");
-		clProcess.addCommandLineStr(privKeyFileName.replace("." + fileformat.toLowerCase(), "_pub" + "." + fileformat.toLowerCase()));
+		clProcess.addCommandLineStr(keygenParams.getPubKeyFilePath());
 		clProcess.addCommandLineStr("-inform");
-		clProcess.addCommandLineStr(fileformat.toLowerCase());
+		clProcess.addCommandLineStr(keygenParams.getKeyFileFormat());
 		clProcess.addCommandLineStr("-in");
-		clProcess.addCommandLineStr(privKeyFileName);
+		clProcess.addCommandLineStr(keygenParams.getPrivKeyFilePath());
 		
-		if(passwd != null)	
+		if(keygenParams.getEncryptKeyFile() == true)	
 		{
 			clProcess.addCommandLineStr("-passin");
-			clProcess.addCommandLineStr("pass:" + passwd);
+			clProcess.addCommandLineStr("pass:" + keygenParams.getFileEncryptionPassword());
 		}
 		
 		String cmdRetStr = clProcess.runCommand();
@@ -274,20 +274,20 @@ public class CalculatorService
 		return cmdRetStr;
 	}
 	
-	public String privKeyView(String privKeyFileName, String passwd, String fileformat) 
+	public String privKeyView(KeyGenerateParams keygenParams) 
 	{
 		clProcess.addCommandLineStr("openssl"); 
 		clProcess.addCommandLineStr("pkey");
 		clProcess.addCommandLineStr("-text");
 		clProcess.addCommandLineStr("-inform");
-		clProcess.addCommandLineStr(fileformat.toLowerCase());
+		clProcess.addCommandLineStr(keygenParams.getKeyFileFormat());
 		clProcess.addCommandLineStr("-in");
-		clProcess.addCommandLineStr(privKeyFileName);
+		clProcess.addCommandLineStr(keygenParams.getPrivKeyFilePath());
 		
-		if(passwd != null)	
+		if(keygenParams.getEncryptKeyFile() == true)	
 		{
 			clProcess.addCommandLineStr("-passin");
-			clProcess.addCommandLineStr("pass:" + passwd);
+			clProcess.addCommandLineStr("pass:" + keygenParams.getFileEncryptionPassword());
 		}
 		
 		String cmdRetStr = clProcess.runCommand();
@@ -297,15 +297,15 @@ public class CalculatorService
 		return cmdRetStr;
 	}
 	
-	public String pubKeyView(String pubKeyFileName, String passwd, String fileformat) 
+	public String pubKeyView(KeyGenerateParams keygenParams) 
 	{
 		clProcess.addCommandLineStr("openssl"); 
 		clProcess.addCommandLineStr("pkey");
 		clProcess.addCommandLineStr("-inform");
-		clProcess.addCommandLineStr(fileformat.toLowerCase());
+		clProcess.addCommandLineStr(keygenParams.getKeyFileFormat());
 		clProcess.addCommandLineStr("-pubin");
 		clProcess.addCommandLineStr("-in");
-		clProcess.addCommandLineStr(pubKeyFileName);
+		clProcess.addCommandLineStr(keygenParams.getPubKeyFilePath());
 		clProcess.addCommandLineStr("-text");
 		
 		String cmdRetStr = clProcess.runCommand();

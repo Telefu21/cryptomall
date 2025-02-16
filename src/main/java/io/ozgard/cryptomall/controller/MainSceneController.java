@@ -2,6 +2,8 @@ package io.ozgard.cryptomall.controller;
 
 import java.io.File;
 import java.net.URL;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ResourceBundle;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +22,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
 import javafx.stage.DirectoryChooser;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import net.rgielen.fxweaver.core.FxmlView;
 
@@ -33,6 +36,7 @@ public class MainSceneController implements Initializable
 	private CalculatorService calculatorService;
 	@Autowired
 	KeyGenerateParams keygenParams;
+	
 	@FXML
 	@Autowired
 	TextField textFieldWorkingDirectory;
@@ -53,7 +57,10 @@ public class MainSceneController implements Initializable
 	ComboBox<String> comboKeygenElipticCurveName;
 	@FXML
 	@Autowired
-	TitledPane titledPaneKeygenRSAParams;
+	TitledPane titledPaneKeygenProcessing;
+	@FXML
+	@Autowired
+	TitledPane titledPaneKeygenSettings;
 	@FXML
 	PasswordField passFieldKeyGenFilePasswd;
 	@FXML
@@ -64,7 +71,19 @@ public class MainSceneController implements Initializable
 	Button buttonKeyGenGenerate;
 	@FXML
 	@Autowired
+	Button buttonKeyFileConvertConvert;
+	@FXML
+	@Autowired
 	TextArea texAreaLogOutput;
+	@FXML
+	@Autowired
+	TextField textFieldKeyFileConvertFilePath;
+	@FXML
+	@Autowired
+	TextField passFieldKeyFileConvertPasswd;
+	@FXML
+	@Autowired
+	ComboBox<String> comboKeyFileConvertConversionOptions;
 	
 	static public void setStage(Stage stageT)
 	{
@@ -82,7 +101,11 @@ public class MainSceneController implements Initializable
 		comboKeyGenAlgSelect.setValue(KeyGenerateParams.KEYGEN_ALGO_SELECT_RSA);
 		comboKeyGenKeyLength.setItems(FXCollections.observableArrayList(KeyGenerateParams.KEYGEN_KEY_LENGHT_512,KeyGenerateParams.KEYGEN_KEY_LENGHT_1024, KeyGenerateParams.KEYGEN_KEY_LENGHT_2048, KeyGenerateParams.KEYGEN_KEY_LENGHT_4096));
 		comboKeyGenKeyLength.setValue(KeyGenerateParams.KEYGEN_KEY_LENGHT_1024);
-		titledPaneKeygenRSAParams.setCollapsible(false);
+		comboKeyFileConvertConversionOptions.setItems(FXCollections.observableArrayList(KeyGenerateParams.KEYGEN_CONVERT_PUB_FROM_PRIV, KeyGenerateParams.KEYGEN_CONVERT_PRIVKEY_TO_VIEW, KeyGenerateParams.KEYGEN_CONVERT_PUBKEY_TO_VIEW,
+				KeyGenerateParams.KEYGEN_CONVERT_PEM_TO_DER, KeyGenerateParams.KEYGEN_CONVERT_DER_TO_PEM, KeyGenerateParams.KEYGEN_CONVERT_TO_BASE64, KeyGenerateParams.KEYGEN_CONVERT_FROM_BASE64));
+		comboKeyFileConvertConversionOptions.setValue(KeyGenerateParams.KEYGEN_CONVERT_PUB_FROM_PRIV);
+		titledPaneKeygenSettings.setCollapsible(false);
+		titledPaneKeygenProcessing.setCollapsible(false);
 		passFieldKeyGenFilePasswd.setDisable(true);
 		comboKeyGenFileEncyptCipher.setDisable(true);
 		comboKeygenElipticCurveName.setDisable(true);
@@ -95,6 +118,9 @@ public class MainSceneController implements Initializable
 		String [] cipherList = calculatorService.getListCiphers();
 		comboKeyGenFileEncyptCipher.setItems(FXCollections.observableArrayList(cipherList));
 		comboKeyGenFileEncyptCipher.setValue(cipherList[0]);
+		
+		buttonKeyGenGenerate.setDisable(true);
+		buttonKeyFileConvertConvert.setDisable(true);
 	}
 	
 	@FXML
@@ -109,6 +135,7 @@ public class MainSceneController implements Initializable
 		if (selectedDirectory != null) 
         {
 			textFieldWorkingDirectory.setText(selectedDirectory.getAbsolutePath());
+			buttonKeyGenGenerate.setDisable(false);
         }
 	}
 	
@@ -118,11 +145,7 @@ public class MainSceneController implements Initializable
 		 if (checkBoxKeyGenEncryptKeyFile.isSelected())
 		 {
 			 passFieldKeyGenFilePasswd.setDisable(false);
-			 
-			 if(comboKeyGenAlgSelect.getValue().compareTo(KeyGenerateParams.KEYGEN_ALGO_SELECT_ECC) != 0)
-			 {
-				 comboKeyGenFileEncyptCipher.setDisable(false);
-			 }
+			 comboKeyGenFileEncyptCipher.setDisable(false);
 		 }
 		 
 		 if (!checkBoxKeyGenEncryptKeyFile.isSelected())
@@ -135,39 +158,138 @@ public class MainSceneController implements Initializable
 	@FXML
 	void keyGenAlgoChanged()
 	{
-		if (comboKeyGenAlgSelect.getValue() == KeyGenerateParams.KEYGEN_ALGO_SELECT_RSA
-		 || comboKeyGenAlgSelect.getValue() == KeyGenerateParams.KEYGEN_ALGO_SELECT_DSA)
-		{
-			comboKeyGenKeyLength.setDisable(false);
-			comboKeygenElipticCurveName.setDisable(true);
-			
-			if (checkBoxKeyGenEncryptKeyFile.isSelected())
-			{
-				passFieldKeyGenFilePasswd.setDisable(false);
-				comboKeyGenFileEncyptCipher.setDisable(false);
-			}
-		}
+		if (comboKeyGenAlgSelect.getValue() == KeyGenerateParams.KEYGEN_ALGO_SELECT_ED25519
+		 || comboKeyGenAlgSelect.getValue() == KeyGenerateParams.KEYGEN_ALGO_SELECT_ED448
+		 || comboKeyGenAlgSelect.getValue() == KeyGenerateParams.KEYGEN_ALGO_SELECT_X25519
+		 || comboKeyGenAlgSelect.getValue() == KeyGenerateParams.KEYGEN_ALGO_SELECT_X448)
+		 {
+			 comboKeyGenKeyLength.setDisable(true);
+			 comboKeygenElipticCurveName.setDisable(true);
+			 comboKeyGenKeyFileFormat.setDisable(false);
+		 }
+		
+		if (comboKeyGenAlgSelect.getValue() == KeyGenerateParams.KEYGEN_ALGO_SELECT_DSA
+		 || comboKeyGenAlgSelect.getValue() == KeyGenerateParams.KEYGEN_ALGO_SELECT_DH)
+		 {
+			 comboKeyGenKeyLength.setDisable(false);
+			 comboKeygenElipticCurveName.setDisable(true);
+			 comboKeyGenKeyFileFormat.setValue(KeyGenerateParams.KEYGEN_FILE_FORMAT_SELECT_PEM);
+			 comboKeyGenKeyFileFormat.setDisable(true);
+		 }
+		
+		if (comboKeyGenAlgSelect.getValue() == KeyGenerateParams.KEYGEN_ALGO_SELECT_RSA)
+		 {
+			 comboKeyGenKeyLength.setDisable(false);
+			 comboKeygenElipticCurveName.setDisable(true);
+			 comboKeyGenKeyFileFormat.setDisable(false);
+		 }
 		 
 		 if (comboKeyGenAlgSelect.getValue() == KeyGenerateParams.KEYGEN_ALGO_SELECT_ECC)
 		 {
 			 comboKeyGenKeyLength.setDisable(true);
 			 comboKeygenElipticCurveName.setDisable(false);
-			 comboKeyGenFileEncyptCipher.setDisable(true);
+			 comboKeyGenKeyFileFormat.setDisable(false);
 		 }
 	}
 	
 	@FXML
-	void keyGenerateKeyFile()
+	void buttonKeyGenGenerateOnMouseClicked()
 	{
-		keygenParams.setWorkingDirectory(textFieldWorkingDirectory.getText());
 		keygenParams.setElepticCurveName(comboKeygenElipticCurveName.getValue());
 		keygenParams.setEncryptKeyFile(checkBoxKeyGenEncryptKeyFile.isSelected());
 		keygenParams.setFileEncryptionCipher(comboKeyGenFileEncyptCipher.getValue());
 		keygenParams.setFileEncryptionPassword(passFieldKeyGenFilePasswd.getText());
 		keygenParams.setKeyFileFormat(comboKeyGenKeyFileFormat.getValue());
 		keygenParams.setKeyGenAlgo(comboKeyGenAlgSelect.getValue());
-		keygenParams.setRsaKeyLength(comboKeyGenKeyLength.getValue());
+		keygenParams.setKeyLength(comboKeyGenKeyLength.getValue());
 		
-		texAreaLogOutput.setText(calculatorService.keyGenerate(keygenParams));
+		keygenParams.setPrivKeyFilePath("\"" + textFieldWorkingDirectory.getText() + "\\" + comboKeyGenAlgSelect.getValue().toLowerCase() + "_privkey" + "." + comboKeyGenKeyFileFormat.getValue().toLowerCase() + "\"");
+		keygenParams.setParamFilePath("\"" + textFieldWorkingDirectory.getText() + "\\" + comboKeyGenAlgSelect.getValue().toLowerCase() + "_param" + "." + comboKeyGenKeyFileFormat.getValue().toLowerCase() + "\"");
+		keygenParams.setPubKeyFilePath("\"" + textFieldWorkingDirectory.getText() + "\\" + comboKeyGenAlgSelect.getValue().toLowerCase() + "_pubkey" + "." + comboKeyGenKeyFileFormat.getValue().toLowerCase() + "\"");
+		
+		setLogOutput(calculatorService.keyGenerate(keygenParams));
+	}
+	
+	@FXML
+	void buttonKeyFileConvertConvertOnMouseClicked()
+	{
+		switch(comboKeyFileConvertConversionOptions.getValue())
+		{
+			case KeyGenerateParams.KEYGEN_CONVERT_DER_TO_PEM:
+				break;
+				
+			case KeyGenerateParams.KEYGEN_CONVERT_PEM_TO_DER:
+				break;
+				
+			case KeyGenerateParams.KEYGEN_CONVERT_PRIVKEY_TO_VIEW:
+				keygenParams.setPrivKeyFilePath(textFieldKeyFileConvertFilePath.getText());
+				keygenParams.setKeyFileFormat("PEM");
+				
+				if(passFieldKeyFileConvertPasswd.getText().compareTo(" ") != 0)
+				{
+					keygenParams.setFileEncryptionPassword(passFieldKeyFileConvertPasswd.getText());
+					keygenParams.setEncryptKeyFile(true);
+				}
+				else
+				{
+					keygenParams.setEncryptKeyFile(false);
+				}
+				
+				setLogOutput(calculatorService.privKeyView(keygenParams));
+				break;
+				
+			case KeyGenerateParams.KEYGEN_CONVERT_PUBKEY_TO_VIEW:
+				keygenParams.setPubKeyFilePath(textFieldKeyFileConvertFilePath.getText());
+				keygenParams.setKeyFileFormat("PEM");
+				setLogOutput(calculatorService.pubKeyView(keygenParams));
+				break;
+				
+			case KeyGenerateParams.KEYGEN_CONVERT_PUB_FROM_PRIV:
+				keygenParams.setPrivKeyFilePath(textFieldKeyFileConvertFilePath.getText());
+				keygenParams.setPubKeyFilePath("\"" + textFieldWorkingDirectory.getText() + "\\" + "converted_pubkey" + ".pem" + "\"");
+				keygenParams.setKeyFileFormat("PEM");
+				
+				if(passFieldKeyFileConvertPasswd.getText().compareTo("") != 0)
+				{
+					keygenParams.setFileEncryptionPassword(passFieldKeyFileConvertPasswd.getText());
+					keygenParams.setEncryptKeyFile(true);
+				}
+				else
+				{
+					keygenParams.setEncryptKeyFile(false);
+				}
+				
+				setLogOutput(calculatorService.pubKeyGenerate(keygenParams));
+				break;
+				
+			case KeyGenerateParams.KEYGEN_CONVERT_FROM_BASE64:
+				break;
+				
+			case KeyGenerateParams.KEYGEN_CONVERT_TO_BASE64:
+				break;
+			
+		}
+	}
+	
+	@FXML
+	void browseKeyGenConvertFileSelect()
+	{
+		FileChooser fileChooser = new FileChooser();
+		
+		fileChooser.setTitle("Select Input File");
+		
+		final File selectedFile = fileChooser.showOpenDialog(stage);
+        
+		if (selectedFile != null) 
+        {
+			textFieldKeyFileConvertFilePath.setText(selectedFile.getAbsolutePath());
+			buttonKeyFileConvertConvert.setDisable(false);
+        }
+	}
+	
+	void setLogOutput(String text)
+	{
+		texAreaLogOutput.setText(/*texAreaLogOutput.getText() +*/  "------------- [" + LocalDate.now() + " Time: " + LocalTime.now() + " ] ------------- \n\n" + text + "\n\n" );
+		//texAreaLogOutput.setScrollTop(Double.MAX_VALUE);
 	}
 }
