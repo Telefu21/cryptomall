@@ -199,13 +199,13 @@ public class MainSceneController implements Initializable
 		keygenParams.setEncryptKeyFile(checkBoxKeyGenEncryptKeyFile.isSelected());
 		keygenParams.setFileEncryptionCipher(comboKeyGenFileEncyptCipher.getValue());
 		keygenParams.setFileEncryptionPassword(passFieldKeyGenFilePasswd.getText());
-		keygenParams.setKeyFileFormat(comboKeyGenKeyFileFormat.getValue());
+		keygenParams.setInKeyFileFormat(comboKeyGenKeyFileFormat.getValue());
+		keygenParams.setOutKeyFileFormat(comboKeyGenKeyFileFormat.getValue());
 		keygenParams.setKeyGenAlgo(comboKeyGenAlgSelect.getValue());
 		keygenParams.setKeyLength(comboKeyGenKeyLength.getValue());
 		
-		keygenParams.setPrivKeyFilePath("\"" + textFieldWorkingDirectory.getText() + "\\" + comboKeyGenAlgSelect.getValue().toLowerCase() + "_privkey" + "." + comboKeyGenKeyFileFormat.getValue().toLowerCase() + "\"");
-		keygenParams.setParamFilePath("\"" + textFieldWorkingDirectory.getText() + "\\" + comboKeyGenAlgSelect.getValue().toLowerCase() + "_param" + "." + comboKeyGenKeyFileFormat.getValue().toLowerCase() + "\"");
-		keygenParams.setPubKeyFilePath("\"" + textFieldWorkingDirectory.getText() + "\\" + comboKeyGenAlgSelect.getValue().toLowerCase() + "_pubkey" + "." + comboKeyGenKeyFileFormat.getValue().toLowerCase() + "\"");
+		keygenParams.setInputFilePath("\"" + textFieldWorkingDirectory.getText() + "\\" + comboKeyGenAlgSelect.getValue().toLowerCase() + "_privkey" + "." + comboKeyGenKeyFileFormat.getValue().toLowerCase() + "\"");
+		keygenParams.setOutputFilePath("\"" + textFieldWorkingDirectory.getText() + "\\" + comboKeyGenAlgSelect.getValue().toLowerCase() + "_privkey" + "." + comboKeyGenKeyFileFormat.getValue().toLowerCase() + "\"");
 		
 		setLogOutput(calculatorService.keyGenerate(keygenParams));
 	}
@@ -216,14 +216,17 @@ public class MainSceneController implements Initializable
 		switch(comboKeyFileConvertConversionOptions.getValue())
 		{
 			case KeyGenerateParams.KEYGEN_CONVERT_DER_TO_PEM:
+				setLogOutput(calculatorService.convertFilePemDer(keygenParams));
 				break;
 				
 			case KeyGenerateParams.KEYGEN_CONVERT_PEM_TO_DER:
+				setLogOutput(calculatorService.convertFilePemDer(keygenParams));
 				break;
 				
 			case KeyGenerateParams.KEYGEN_CONVERT_PRIVKEY_TO_VIEW:
-				keygenParams.setPrivKeyFilePath(textFieldKeyFileConvertFilePath.getText());
-				keygenParams.setKeyFileFormat("PEM");
+				keygenParams.setInputFilePath("\"" + textFieldKeyFileConvertFilePath.getText() + "\"");
+				keygenParams.setInKeyFileFormat("PEM");
+				keygenParams.setOutKeyFileFormat("PEM");
 				
 				if(passFieldKeyFileConvertPasswd.getText().compareTo(" ") != 0)
 				{
@@ -239,15 +242,17 @@ public class MainSceneController implements Initializable
 				break;
 				
 			case KeyGenerateParams.KEYGEN_CONVERT_PUBKEY_TO_VIEW:
-				keygenParams.setPubKeyFilePath(textFieldKeyFileConvertFilePath.getText());
-				keygenParams.setKeyFileFormat("PEM");
+				keygenParams.setInputFilePath("\"" + textFieldKeyFileConvertFilePath.getText() + "\"");
+				keygenParams.setInKeyFileFormat("PEM");
+				keygenParams.setOutKeyFileFormat("PEM");
 				setLogOutput(calculatorService.pubKeyView(keygenParams));
 				break;
 				
 			case KeyGenerateParams.KEYGEN_CONVERT_PUB_FROM_PRIV:
-				keygenParams.setPrivKeyFilePath(textFieldKeyFileConvertFilePath.getText());
-				keygenParams.setPubKeyFilePath("\"" + textFieldWorkingDirectory.getText() + "\\" + "converted_pubkey" + ".pem" + "\"");
-				keygenParams.setKeyFileFormat("PEM");
+				keygenParams.setInputFilePath("\"" + textFieldKeyFileConvertFilePath.getText() + "\"");
+				keygenParams.setOutputFilePath("\"" + textFieldWorkingDirectory.getText() + "\\" + "converted_pubkey" + ".pem" + "\"");
+				keygenParams.setInKeyFileFormat("PEM");
+				keygenParams.setOutKeyFileFormat("PEM");
 				
 				if(passFieldKeyFileConvertPasswd.getText().compareTo("") != 0)
 				{
@@ -263,11 +268,12 @@ public class MainSceneController implements Initializable
 				break;
 				
 			case KeyGenerateParams.KEYGEN_CONVERT_FROM_BASE64:
+				
 				break;
 				
 			case KeyGenerateParams.KEYGEN_CONVERT_TO_BASE64:
+				
 				break;
-			
 		}
 	}
 	
@@ -289,7 +295,7 @@ public class MainSceneController implements Initializable
 	
 	void setLogOutput(String text)
 	{
-		texAreaLogOutput.setText(/*texAreaLogOutput.getText() +*/  "------------- [" + LocalDate.now() + " Time: " + LocalTime.now() + " ] ------------- \n\n" + text + "\n\n" );
-		//texAreaLogOutput.setScrollTop(Double.MAX_VALUE);
+		texAreaLogOutput.setText(texAreaLogOutput.getText() +  "------------- [" + LocalDate.now() + " Time: " + LocalTime.now() + " ] ------------- \n\n" + text + "\n\n" );
+		texAreaLogOutput.setScrollTop(Double.MAX_VALUE);
 	}
 }

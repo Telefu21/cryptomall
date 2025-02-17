@@ -29,45 +29,35 @@ public class KeyGenerateParams
 	public static final String KEYGEN_KEY_LENGHT_2048 = "2048";
 	public static final String KEYGEN_KEY_LENGHT_4096 = "4096";
 	
-	String	pubKeyFilePath;
-	String	privKeyFilePath;
-	String	paramFilePath;
+	String	outputFilePath;
+	String	inputFilePath;
 	String	keyGenAlgo;
-	String	keyFileFormat;
+	String	inKeyFileFormat;
+	String	outKeyFileFormat;
 	String	keyLength;
 	String	elepticCurveName;
 	String	fileEncryptionCipher;
 	String	fileEncryptionPassword;
 	Boolean encryptKeyFile;
 	
-	public String getPubKeyFilePath() 
+	public String getOutputFilePath() 
 	{
-		return pubKeyFilePath;
+		return outputFilePath;
 	}
 	
-	public void setPubKeyFilePath(String pubKeyFilePath) 
+	public void setOutputFilePath(String outputFilePath) 
 	{
-		this.pubKeyFilePath = pubKeyFilePath;
+		this.outputFilePath = outputFilePath;
 	}
 	
-	public String getPrivKeyFilePath() 
+	public String getInputFilePath() 
 	{
-		return privKeyFilePath;
+		return inputFilePath;
 	}
 	
-	public void setPrivKeyFilePath(String privKeyFilePath) 
+	public void setInputFilePath(String inputFilePath) 
 	{
-		this.privKeyFilePath = privKeyFilePath;
-	}
-	
-	public String getParamFilePath() 
-	{
-		return paramFilePath;
-	}
-	
-	public void setParamFilePath(String paramFilePath) 
-	{
-		this.paramFilePath = paramFilePath;
+		this.inputFilePath = inputFilePath;
 	}
 	
 	public String getKeyGenAlgo() 
@@ -78,16 +68,6 @@ public class KeyGenerateParams
 	public void setKeyGenAlgo(String keyGenAlgo) 
 	{
 		this.keyGenAlgo = keyGenAlgo;
-	}
-	
-	public String getKeyFileFormat() 
-	{
-		return keyFileFormat;
-	}
-	
-	public void setKeyFileFormat(String keyFileFormat) 
-	{
-		this.keyFileFormat = keyFileFormat;
 	}
 	
 	public String getKeyLength() 
@@ -138,5 +118,25 @@ public class KeyGenerateParams
 	public void setEncryptKeyFile(Boolean encryptKeyFile) 
 	{
 		this.encryptKeyFile = encryptKeyFile;
+	}
+	
+	public String getInKeyFileFormat() 
+	{
+		return inKeyFileFormat;
+	}
+
+	public void setInKeyFileFormat(String inKeyFileFormat) 
+	{
+		this.inKeyFileFormat = inKeyFileFormat;
+	}
+
+	public String getOutKeyFileFormat() 
+	{
+		return outKeyFileFormat;
+	}
+
+	public void setOutKeyFileFormat(String outKeyFileFormat) 
+	{
+		this.outKeyFileFormat = outKeyFileFormat;
 	}
 }

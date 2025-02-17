@@ -143,30 +143,51 @@ public class CalculatorService
 		if(keygenParams.getKeyGenAlgo().compareTo(KeyGenerateParams.KEYGEN_ALGO_SELECT_DH) == 0
 		|| keygenParams.getKeyGenAlgo().compareTo(KeyGenerateParams.KEYGEN_ALGO_SELECT_DSA) == 0)
 		{
-			cmdRetStr = privKeyGenerate(keygenParams);
+			cmdRetStr = paramFileGenerate(keygenParams);
 			
-			cmdRetStr += privKeyGenerateFromParamFile(keygenParams);
+			cmdRetStr += privKeyGenerate(keygenParams);
 		}
 		else
 		{
 			cmdRetStr = privKeyGenerate(keygenParams);
 		}
 		
-		cmdRetStr += pubKeyGenerate(keygenParams);
-		
-		cmdRetStr += privKeyView(keygenParams);
-		
 		return cmdRetStr;
 	}
 	
-	public String privKeyGenerateFromParamFile(KeyGenerateParams keygenParams) 
+	public String privKeyGenerate(KeyGenerateParams keygenParams) 
 	{
 		clProcess.addCommandLineStr("openssl"); 
 		clProcess.addCommandLineStr("genpkey");
-		clProcess.addCommandLineStr("-paramfile");
-		clProcess.addCommandLineStr(keygenParams.getParamFilePath());
+		clProcess.addCommandLineStr("-outform");
+		clProcess.addCommandLineStr(keygenParams.getOutKeyFileFormat());
+		
+		if(keygenParams.getKeyGenAlgo().compareTo(KeyGenerateParams.KEYGEN_ALGO_SELECT_DH) == 0
+		|| keygenParams.getKeyGenAlgo().compareTo(KeyGenerateParams.KEYGEN_ALGO_SELECT_DSA) == 0)
+		{
+			clProcess.addCommandLineStr("-paramfile");
+			clProcess.addCommandLineStr(keygenParams.getInputFilePath());
+		}
+		else
+		{
+			clProcess.addCommandLineStr("-algorithm");
+			clProcess.addCommandLineStr(keygenParams.getKeyGenAlgo());
+		}
+		
 		clProcess.addCommandLineStr("-out");
-		clProcess.addCommandLineStr(keygenParams.getPrivKeyFilePath());
+		clProcess.addCommandLineStr(keygenParams.getOutputFilePath());
+		
+		if(keygenParams.getKeyGenAlgo().compareTo(KeyGenerateParams.KEYGEN_ALGO_SELECT_RSA) == 0)
+		{
+			clProcess.addCommandLineStr("-pkeyopt");
+			clProcess.addCommandLineStr("rsa_keygen_bits:" + keygenParams.getKeyLength());
+		}
+		
+		if(keygenParams.getKeyGenAlgo().compareTo(KeyGenerateParams.KEYGEN_ALGO_SELECT_ECC) == 0)
+		{
+			clProcess.addCommandLineStr("-pkeyopt");
+			clProcess.addCommandLineStr("ec_paramgen_curve:" + keygenParams.getElepticCurveName());
+		}
 
 		if(keygenParams.getEncryptKeyFile() == true)	
 		{
@@ -179,65 +200,30 @@ public class CalculatorService
 		
 		clProcess.clearCommandLineStr();
 		
-		return cmdRetStr;	
+		return cmdRetStr;
 	}
 	
-	public String privKeyGenerate(KeyGenerateParams keygenParams) 
+	public String paramFileGenerate(KeyGenerateParams keygenParams) 
 	{
 		clProcess.addCommandLineStr("openssl"); 
 		clProcess.addCommandLineStr("genpkey");
 		clProcess.addCommandLineStr("-outform");
-		clProcess.addCommandLineStr(keygenParams.getKeyFileFormat());
-		
-		if(keygenParams.getKeyGenAlgo().compareTo(KeyGenerateParams.KEYGEN_ALGO_SELECT_DH) == 0
-		|| keygenParams.getKeyGenAlgo().compareTo(KeyGenerateParams.KEYGEN_ALGO_SELECT_DSA) == 0)
-		{
-			clProcess.addCommandLineStr("-genparam");
-		}
-		
+		clProcess.addCommandLineStr(keygenParams.getOutKeyFileFormat());
+		clProcess.addCommandLineStr("-genparam");
 		clProcess.addCommandLineStr("-algorithm");
 		clProcess.addCommandLineStr(keygenParams.getKeyGenAlgo());
 		clProcess.addCommandLineStr("-out");
-		
-		if(keygenParams.getKeyGenAlgo().compareTo(KeyGenerateParams.KEYGEN_ALGO_SELECT_DH) == 0
-		|| keygenParams.getKeyGenAlgo().compareTo(KeyGenerateParams.KEYGEN_ALGO_SELECT_DSA) == 0)
-		{
-			clProcess.addCommandLineStr(keygenParams.getParamFilePath());
-		}
-		else
-		{
-			clProcess.addCommandLineStr(keygenParams.getPrivKeyFilePath());
-		}
-		
-		if(keygenParams.getKeyGenAlgo().compareTo(KeyGenerateParams.KEYGEN_ALGO_SELECT_RSA) == 0)
-		{
-			clProcess.addCommandLineStr("-pkeyopt");
-			clProcess.addCommandLineStr("rsa_keygen_bits:" + keygenParams.getKeyLength());
-		}
+		clProcess.addCommandLineStr(keygenParams.getOutputFilePath());
+		clProcess.addCommandLineStr("-pkeyopt");
 		
 		if(keygenParams.getKeyGenAlgo().compareTo(KeyGenerateParams.KEYGEN_ALGO_SELECT_DH) == 0)
 		{
-			clProcess.addCommandLineStr("-pkeyopt");
 			clProcess.addCommandLineStr("dh_paramgen_prime_len:" + keygenParams.getKeyLength());
 		}
 		
 		if(keygenParams.getKeyGenAlgo().compareTo(KeyGenerateParams.KEYGEN_ALGO_SELECT_DSA) == 0)
 		{
-			clProcess.addCommandLineStr("-pkeyopt");
 			clProcess.addCommandLineStr("dsa_paramgen_bits:" + keygenParams.getKeyLength());
-		}
-		
-		if(keygenParams.getKeyGenAlgo().compareTo(KeyGenerateParams.KEYGEN_ALGO_SELECT_ECC) == 0)
-		{
-			clProcess.addCommandLineStr("-pkeyopt");
-			clProcess.addCommandLineStr("ec_paramgen_curve:" + keygenParams.getElepticCurveName());
-		}
-
-		if(keygenParams.getEncryptKeyFile() == true && !(keygenParams.getKeyGenAlgo().compareTo(KeyGenerateParams.KEYGEN_ALGO_SELECT_DH) == 0 || keygenParams.getKeyGenAlgo().compareTo(KeyGenerateParams.KEYGEN_ALGO_SELECT_DSA) == 0))	
-		{
-			clProcess.addCommandLineStr(keygenParams.getFileEncryptionCipher());
-			clProcess.addCommandLineStr("-pass");
-			clProcess.addCommandLineStr("pass:" + keygenParams.getFileEncryptionPassword());
 		}
 		
 		String cmdRetStr = clProcess.runCommand();
@@ -253,13 +239,13 @@ public class CalculatorService
 		clProcess.addCommandLineStr("pkey");
 		clProcess.addCommandLineStr("-pubout");
 		clProcess.addCommandLineStr("-outform");
-		clProcess.addCommandLineStr(keygenParams.getKeyFileFormat());
+		clProcess.addCommandLineStr(keygenParams.getOutKeyFileFormat());
 		clProcess.addCommandLineStr("-out");
-		clProcess.addCommandLineStr(keygenParams.getPubKeyFilePath());
+		clProcess.addCommandLineStr(keygenParams.getOutputFilePath());
 		clProcess.addCommandLineStr("-inform");
-		clProcess.addCommandLineStr(keygenParams.getKeyFileFormat());
+		clProcess.addCommandLineStr(keygenParams.getInKeyFileFormat());
 		clProcess.addCommandLineStr("-in");
-		clProcess.addCommandLineStr(keygenParams.getPrivKeyFilePath());
+		clProcess.addCommandLineStr(keygenParams.getInputFilePath());
 		
 		if(keygenParams.getEncryptKeyFile() == true)	
 		{
@@ -274,15 +260,35 @@ public class CalculatorService
 		return cmdRetStr;
 	}
 	
+	public String convertFilePemDer(KeyGenerateParams keygenParams) 
+	{
+		clProcess.addCommandLineStr("openssl"); 
+		clProcess.addCommandLineStr("pkey");
+		clProcess.addCommandLineStr("-outform");
+		clProcess.addCommandLineStr(keygenParams.getOutKeyFileFormat());
+		clProcess.addCommandLineStr("-out");
+		clProcess.addCommandLineStr(keygenParams.getOutputFilePath());
+		clProcess.addCommandLineStr("-inform");
+		clProcess.addCommandLineStr(keygenParams.getInKeyFileFormat());
+		clProcess.addCommandLineStr("-in");
+		clProcess.addCommandLineStr(keygenParams.getInputFilePath());
+		
+		String cmdRetStr = clProcess.runCommand();
+		
+		clProcess.clearCommandLineStr();
+		
+		return cmdRetStr;
+	}
+	
 	public String privKeyView(KeyGenerateParams keygenParams) 
 	{
 		clProcess.addCommandLineStr("openssl"); 
 		clProcess.addCommandLineStr("pkey");
 		clProcess.addCommandLineStr("-text");
 		clProcess.addCommandLineStr("-inform");
-		clProcess.addCommandLineStr(keygenParams.getKeyFileFormat());
+		clProcess.addCommandLineStr(keygenParams.getInKeyFileFormat());
 		clProcess.addCommandLineStr("-in");
-		clProcess.addCommandLineStr(keygenParams.getPrivKeyFilePath());
+		clProcess.addCommandLineStr(keygenParams.getInputFilePath());
 		
 		if(keygenParams.getEncryptKeyFile() == true)	
 		{
@@ -302,10 +308,10 @@ public class CalculatorService
 		clProcess.addCommandLineStr("openssl"); 
 		clProcess.addCommandLineStr("pkey");
 		clProcess.addCommandLineStr("-inform");
-		clProcess.addCommandLineStr(keygenParams.getKeyFileFormat());
+		clProcess.addCommandLineStr(keygenParams.getInKeyFileFormat());
 		clProcess.addCommandLineStr("-pubin");
 		clProcess.addCommandLineStr("-in");
-		clProcess.addCommandLineStr(keygenParams.getPubKeyFilePath());
+		clProcess.addCommandLineStr(keygenParams.getInputFilePath());
 		clProcess.addCommandLineStr("-text");
 		
 		String cmdRetStr = clProcess.runCommand();
