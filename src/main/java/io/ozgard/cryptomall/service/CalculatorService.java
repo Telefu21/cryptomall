@@ -280,6 +280,39 @@ public class CalculatorService
 		return cmdRetStr;
 	}
 	
+	public String convertFileBase64ToAny(KeyGenerateParams keygenParams) 
+	{
+		clProcess.addCommandLineStr("openssl");
+		clProcess.addCommandLineStr("base64");
+		clProcess.addCommandLineStr("-d");
+		clProcess.addCommandLineStr("-out");
+		clProcess.addCommandLineStr(keygenParams.getOutputFilePath());
+		clProcess.addCommandLineStr("-in");
+		clProcess.addCommandLineStr(keygenParams.getInputFilePath());
+		
+		String cmdRetStr = clProcess.runCommand();
+		
+		clProcess.clearCommandLineStr();
+		
+		return cmdRetStr;
+	}
+	
+	public String convertFileAnyToBase64(KeyGenerateParams keygenParams) 
+	{
+		clProcess.addCommandLineStr("openssl");
+		clProcess.addCommandLineStr("base64");
+		clProcess.addCommandLineStr("-out");
+		clProcess.addCommandLineStr(keygenParams.getOutputFilePath());
+		clProcess.addCommandLineStr("-in");
+		clProcess.addCommandLineStr(keygenParams.getInputFilePath());
+		
+		String cmdRetStr = clProcess.runCommand();
+		
+		clProcess.clearCommandLineStr();
+		
+		return cmdRetStr;
+	}
+	
 	public String privKeyView(KeyGenerateParams keygenParams) 
 	{
 		clProcess.addCommandLineStr("openssl"); 
