@@ -2,8 +2,6 @@ package io.ozgard.cryptomall.params;
 
 import org.springframework.stereotype.Component;
 
-import javafx.util.Callback;
-
 @Component
 public class KeyGenerateParams 
 {

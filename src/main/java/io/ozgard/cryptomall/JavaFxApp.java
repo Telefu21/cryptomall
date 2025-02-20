@@ -13,6 +13,7 @@ import javafx.application.Platform;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Tab;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
@@ -37,6 +38,7 @@ public class JavaFxApp extends Application
                     context.registerBean(Button.class);
                     context.registerBean(TitledPane.class);
                     context.registerBean(CheckBox.class);
+                    context.registerBean(Tab.class);
                 };
                 
         this.context = new SpringApplicationBuilder()
