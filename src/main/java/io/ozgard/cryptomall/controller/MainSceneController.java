@@ -9,11 +9,13 @@ import java.util.ResourceBundle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import io.ozgard.cryptomall.params.EncryptDecryptParams;
 import io.ozgard.cryptomall.params.KeyGenerateParams;
 import io.ozgard.cryptomall.service.CalculatorService;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.PasswordField;
@@ -36,6 +38,8 @@ public class MainSceneController implements Initializable
 	private CalculatorService calculatorService;
 	@Autowired
 	KeyGenerateParams keygenParams;
+	@Autowired
+	EncryptDecryptParams encryptDecryptParams;
 	
 	@FXML
 	@Autowired
@@ -68,10 +72,19 @@ public class MainSceneController implements Initializable
 	CheckBox checkBoxKeyGenEncryptKeyFile;
 	@FXML
 	@Autowired
+	CheckBox checkBoxEncryptDecyptEnableRSAOaep;
+	@FXML
+	@Autowired
 	TextArea texAreaLogOutput;
 	@FXML
 	@Autowired
 	TextField textFieldKeyFileConvertFilePath;
+	@FXML
+	@Autowired
+	TextField textFieldEncryptDecyptBrowseKeyFile;
+	@FXML
+	@Autowired
+	TextField textFieldEncryptDecryptPassPhrase;
 	@FXML
 	@Autowired
 	TextField passFieldKeyFileConvertPasswd;
@@ -81,6 +94,36 @@ public class MainSceneController implements Initializable
 	@FXML
 	@Autowired
 	Tab tabKeyGenerate;
+	@FXML
+	@Autowired
+	ComboBox<String> comboEncryptDecryptCipher;
+	@FXML
+	@Autowired
+	ComboBox<String> comboEncryptDecyptHashFunction;
+	@FXML
+	@Autowired
+	ComboBox<String> comboEncryptDecryptType;
+	@FXML
+	@Autowired
+	CheckBox checkBoxEncryptDecryptAddSalt;
+	@FXML
+	@Autowired
+	TitledPane titledPaneEncryptDecryptFile;
+	@FXML
+	@Autowired
+	TitledPane titledPaneEncryptDecryptText;
+	@FXML
+	@Autowired
+	Button buttonEncryptDecyptBrowseKeyFile;
+	@FXML
+	@Autowired
+	TextArea textAreaEncryptDecryptText;
+	@FXML
+	@Autowired
+	Button buttonEncryptDecryptTextTrigger;
+	@FXML
+	@Autowired
+	Button buttonEncryptDecryptFileTrigger;
 	
 	static public void setStage(Stage stageT)
 	{
@@ -101,8 +144,19 @@ public class MainSceneController implements Initializable
 		comboKeyFileConvertConversionOptions.setItems(FXCollections.observableArrayList(KeyGenerateParams.KEYGEN_CONVERT_PUB_FROM_PRIV, KeyGenerateParams.KEYGEN_CONVERT_PRIVKEY_TO_VIEW, KeyGenerateParams.KEYGEN_CONVERT_PUBKEY_TO_VIEW,
 				KeyGenerateParams.KEYGEN_CONVERT_PEM_TO_DER, KeyGenerateParams.KEYGEN_CONVERT_DER_TO_PEM, KeyGenerateParams.KEYGEN_CONVERT_TO_BASE64, KeyGenerateParams.KEYGEN_CONVERT_FROM_BASE64));
 		comboKeyFileConvertConversionOptions.setValue(KeyGenerateParams.KEYGEN_CONVERT_PUB_FROM_PRIV);
+		comboEncryptDecryptType.setItems(FXCollections.observableArrayList(EncryptDecryptParams.ENCRYPT_DECRYPT_TYPE_SYM_ENCRYPTION, EncryptDecryptParams.ENCRYPT_DECRYPT_TYPE_SYM_DECRYPTION, EncryptDecryptParams.ENCRYPT_DECRYPT_TYPE_ASYM_ENCRYPTION, EncryptDecryptParams.ENCRYPT_DECRYPT_TYPE_ASYM_DECRYPTION));
+		comboEncryptDecryptType.setValue(EncryptDecryptParams.ENCRYPT_DECRYPT_TYPE_SYM_ENCRYPTION);
+		
 		titledPaneKeygenSettings.setCollapsible(false);
 		titledPaneKeygenProcessing.setCollapsible(false);
+		titledPaneEncryptDecryptFile.setCollapsible(false);
+		titledPaneEncryptDecryptText.setCollapsible(false);
+		
+		checkBoxEncryptDecyptEnableRSAOaep.setDisable(true);
+		comboEncryptDecyptHashFunction.setDisable(true);
+		textFieldEncryptDecyptBrowseKeyFile.setDisable(true);
+		buttonEncryptDecyptBrowseKeyFile.setDisable(true);
+		
 		passFieldKeyGenFilePasswd.setDisable(true);
 		comboKeyGenFileEncyptCipher.setDisable(true);
 		comboKeygenElipticCurveName.setDisable(true);
@@ -115,7 +169,13 @@ public class MainSceneController implements Initializable
 		String [] cipherList = calculatorService.getListCiphers();
 		comboKeyGenFileEncyptCipher.setItems(FXCollections.observableArrayList(cipherList));
 		comboKeyGenFileEncyptCipher.setValue(cipherList[0]);
-
+		comboEncryptDecryptCipher.setItems(FXCollections.observableArrayList(cipherList));
+		comboEncryptDecryptCipher.setValue(cipherList[0]);
+		
+		String [] hashList = calculatorService.getListHashFuncs();
+		comboEncryptDecyptHashFunction.setItems(FXCollections.observableArrayList(hashList));
+		comboEncryptDecyptHashFunction.setValue(hashList[0]);
+		
 		tabKeyGenerate.setDisable(true);
 	}
 	
@@ -181,6 +241,54 @@ public class MainSceneController implements Initializable
 			 comboKeyGenKeyLength.setDisable(true);
 			 comboKeygenElipticCurveName.setDisable(false);
 		 }
+	}
+	
+	@FXML
+	void encryptDecryptTypeChanged()
+	{
+		if(comboEncryptDecryptType.getValue() == EncryptDecryptParams.ENCRYPT_DECRYPT_TYPE_SYM_ENCRYPTION || comboEncryptDecryptType.getValue() == EncryptDecryptParams.ENCRYPT_DECRYPT_TYPE_SYM_DECRYPTION)
+		{
+			checkBoxEncryptDecyptEnableRSAOaep.setSelected(false);
+			checkBoxEncryptDecyptEnableRSAOaep.setDisable(true);
+			comboEncryptDecyptHashFunction.setDisable(true);
+			textFieldEncryptDecyptBrowseKeyFile.setDisable(true);
+			buttonEncryptDecyptBrowseKeyFile.setDisable(true);
+			comboEncryptDecryptCipher.setDisable(false);
+			textFieldEncryptDecryptPassPhrase.setDisable(false);
+			checkBoxEncryptDecryptAddSalt.setDisable(false);
+			titledPaneEncryptDecryptText.setDisable(false);
+			titledPaneEncryptDecryptFile.setText("File Encryption");
+			buttonEncryptDecryptFileTrigger.setText("Encrypt File");
+			
+			if(comboEncryptDecryptType.getValue() == EncryptDecryptParams.ENCRYPT_DECRYPT_TYPE_SYM_DECRYPTION)
+			{
+				titledPaneEncryptDecryptText.setDisable(true);
+				titledPaneEncryptDecryptFile.setText("File Decryption");
+				buttonEncryptDecryptFileTrigger.setText("Decrypt File");
+			}
+		}
+		
+		if(comboEncryptDecryptType.getValue() == EncryptDecryptParams.ENCRYPT_DECRYPT_TYPE_ASYM_ENCRYPTION || comboEncryptDecryptType.getValue() == EncryptDecryptParams.ENCRYPT_DECRYPT_TYPE_ASYM_DECRYPTION)
+		{
+			checkBoxEncryptDecyptEnableRSAOaep.setSelected(false);
+			checkBoxEncryptDecyptEnableRSAOaep.setDisable(false);
+			comboEncryptDecyptHashFunction.setDisable(true);
+			textFieldEncryptDecyptBrowseKeyFile.setDisable(false);
+			buttonEncryptDecyptBrowseKeyFile.setDisable(false);
+			comboEncryptDecryptCipher.setDisable(true);
+			textFieldEncryptDecryptPassPhrase.setDisable(true);
+			checkBoxEncryptDecryptAddSalt.setDisable(true);
+			titledPaneEncryptDecryptText.setDisable(false);
+			titledPaneEncryptDecryptFile.setText("File Encryption");
+			buttonEncryptDecryptFileTrigger.setText("Encrypt File");
+			
+			if(comboEncryptDecryptType.getValue() == EncryptDecryptParams.ENCRYPT_DECRYPT_TYPE_ASYM_DECRYPTION)
+			{
+				titledPaneEncryptDecryptText.setDisable(true);
+				titledPaneEncryptDecryptFile.setText("File Decryption");
+				buttonEncryptDecryptFileTrigger.setText("Decrypt File");
+			}
+		}
 	}
 	
 	@FXML
@@ -304,6 +412,19 @@ public class MainSceneController implements Initializable
         {
 			textFieldKeyFileConvertFilePath.setText(selectedFile.getAbsolutePath());
         }
+	}
+	
+	@FXML
+	void checkBoxEncryptDecyptEnableRSAOaepOnAction()
+	{
+		if(checkBoxEncryptDecyptEnableRSAOaep.isSelected())
+		{
+			comboEncryptDecyptHashFunction.setDisable(false);
+		}
+		else
+		{
+			comboEncryptDecyptHashFunction.setDisable(true);
+		}
 	}
 	
 	void setLogOutput(String text)
