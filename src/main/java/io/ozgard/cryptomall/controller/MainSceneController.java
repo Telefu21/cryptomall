@@ -36,6 +36,7 @@ public class MainSceneController implements Initializable
 	
 	@Autowired
 	private CalculatorService calculatorService;
+	
 	@Autowired
 	KeyGenerateParams keygenParams;
 	@Autowired
@@ -81,7 +82,10 @@ public class MainSceneController implements Initializable
 	TextField textFieldKeyFileConvertFilePath;
 	@FXML
 	@Autowired
-	TextField textFieldEncryptDecyptBrowseKeyFile;
+	TextField textFieldEncryptDecryptBrowseKeyFile;
+	@FXML
+	@Autowired
+	TextField textFieldEncryptDecryptBrowseFile;
 	@FXML
 	@Autowired
 	TextField textFieldEncryptDecryptPassPhrase;
@@ -94,6 +98,9 @@ public class MainSceneController implements Initializable
 	@FXML
 	@Autowired
 	Tab tabKeyGenerate;
+	@FXML
+	@Autowired
+	Tab tabEncryptDecrypt;
 	@FXML
 	@Autowired
 	ComboBox<String> comboEncryptDecryptCipher;
@@ -154,7 +161,7 @@ public class MainSceneController implements Initializable
 		
 		checkBoxEncryptDecyptEnableRSAOaep.setDisable(true);
 		comboEncryptDecyptHashFunction.setDisable(true);
-		textFieldEncryptDecyptBrowseKeyFile.setDisable(true);
+		textFieldEncryptDecryptBrowseKeyFile.setDisable(true);
 		buttonEncryptDecyptBrowseKeyFile.setDisable(true);
 		
 		passFieldKeyGenFilePasswd.setDisable(true);
@@ -177,6 +184,7 @@ public class MainSceneController implements Initializable
 		comboEncryptDecyptHashFunction.setValue(hashList[0]);
 		
 		tabKeyGenerate.setDisable(true);
+		tabEncryptDecrypt.setDisable(true);
 	}
 	
 	@FXML
@@ -192,6 +200,47 @@ public class MainSceneController implements Initializable
         {
 			textFieldWorkingDirectory.setText(selectedDirectory.getAbsolutePath());
 			tabKeyGenerate.setDisable(false);
+			tabEncryptDecrypt.setDisable(false);
+        }
+	}
+	
+	@FXML
+	void browseEncryptDecryptFileOnClick()
+	{
+		FileChooser fileChooser = new FileChooser();
+		
+		fileChooser.setTitle("Select File To Encrypt/Decrypt");
+		
+		if(textFieldWorkingDirectory.getText().contains("\\") == true)
+		{
+			fileChooser.setInitialDirectory(new File(textFieldWorkingDirectory.getText()));
+		}
+		
+		final File selectedFile = fileChooser.showOpenDialog(stage);
+        
+		if (selectedFile != null) 
+        {
+			textFieldEncryptDecryptBrowseFile.setText(selectedFile.getAbsolutePath());
+        }
+	}
+	
+	@FXML
+	void browseEncryptDecryptKeyFileOnClick()
+	{
+		FileChooser fileChooser = new FileChooser();
+		
+		fileChooser.setTitle("Select Private Key File");
+		
+		if(textFieldWorkingDirectory.getText().contains("\\") == true)
+		{
+			fileChooser.setInitialDirectory(new File(textFieldWorkingDirectory.getText()));
+		}
+		
+		final File selectedFile = fileChooser.showOpenDialog(stage);
+        
+		if (selectedFile != null) 
+        {
+			textFieldEncryptDecryptBrowseKeyFile.setText(selectedFile.getAbsolutePath());
         }
 	}
 	
@@ -251,7 +300,7 @@ public class MainSceneController implements Initializable
 			checkBoxEncryptDecyptEnableRSAOaep.setSelected(false);
 			checkBoxEncryptDecyptEnableRSAOaep.setDisable(true);
 			comboEncryptDecyptHashFunction.setDisable(true);
-			textFieldEncryptDecyptBrowseKeyFile.setDisable(true);
+			textFieldEncryptDecryptBrowseKeyFile.setDisable(true);
 			buttonEncryptDecyptBrowseKeyFile.setDisable(true);
 			comboEncryptDecryptCipher.setDisable(false);
 			textFieldEncryptDecryptPassPhrase.setDisable(false);
@@ -273,7 +322,7 @@ public class MainSceneController implements Initializable
 			checkBoxEncryptDecyptEnableRSAOaep.setSelected(false);
 			checkBoxEncryptDecyptEnableRSAOaep.setDisable(false);
 			comboEncryptDecyptHashFunction.setDisable(true);
-			textFieldEncryptDecyptBrowseKeyFile.setDisable(false);
+			textFieldEncryptDecryptBrowseKeyFile.setDisable(false);
 			buttonEncryptDecyptBrowseKeyFile.setDisable(false);
 			comboEncryptDecryptCipher.setDisable(true);
 			textFieldEncryptDecryptPassPhrase.setDisable(true);
@@ -392,6 +441,50 @@ public class MainSceneController implements Initializable
 				setLogOutput(calculatorService.convertFileBase64ToAny(keygenParams));
 				break;
 		}
+	}
+	
+	@FXML
+	void buttonEncryptDecryptFileOnMouseClick()
+	{
+		String outputFileName = textFieldWorkingDirectory.getText() + "\\" + textFieldEncryptDecryptBrowseFile.getText().split("\\\\")[textFieldEncryptDecryptBrowseFile.getText().split("\\\\").length - 1].split("\\.")[0];
+		
+		encryptDecryptParams.setAddSalt(checkBoxEncryptDecryptAddSalt.isSelected());
+		encryptDecryptParams.setCipher(comboEncryptDecryptCipher.getValue());
+		encryptDecryptParams.setEnableRSAOaep(checkBoxEncryptDecyptEnableRSAOaep.isSelected());
+		encryptDecryptParams.setEncryptDecryptFilePath("\"" + textFieldEncryptDecryptBrowseFile.getText() + "\"");
+		encryptDecryptParams.setEncryptDecryptTextInput(textAreaEncryptDecryptText.getText());
+		encryptDecryptParams.setHashFunction(comboEncryptDecyptHashFunction.getValue().replaceAll("-", ""));
+		encryptDecryptParams.setKeyFilePath("\"" + textFieldEncryptDecryptBrowseKeyFile.getText() + "\"");
+		encryptDecryptParams.setPassPhrase(textFieldEncryptDecryptPassPhrase.getText());
+		
+		switch(comboEncryptDecryptType.getValue())
+		{
+			case EncryptDecryptParams.ENCRYPT_DECRYPT_TYPE_SYM_ENCRYPTION:
+				encryptDecryptParams.setOutputFilePath("\"" + outputFileName + encryptDecryptParams.getCipher().replaceAll(" ", "") + ".enc" + "\"");
+				setLogOutput(calculatorService.symmetricEncrypt(encryptDecryptParams));
+				break;
+				
+			case EncryptDecryptParams.ENCRYPT_DECRYPT_TYPE_ASYM_ENCRYPTION:
+				encryptDecryptParams.setOutputFilePath("\"" + outputFileName + ".enc" + "\"");
+				setLogOutput(calculatorService.asymmetricEncrypt(encryptDecryptParams));
+				break;
+				
+			case EncryptDecryptParams.ENCRYPT_DECRYPT_TYPE_SYM_DECRYPTION:
+				encryptDecryptParams.setOutputFilePath("\"" + outputFileName + encryptDecryptParams.getCipher().replaceAll(" ", "") + ".dec" + "\"");
+				setLogOutput(calculatorService.symmetricDecrypt(encryptDecryptParams));
+				break;
+				
+			case EncryptDecryptParams.ENCRYPT_DECRYPT_TYPE_ASYM_DECRYPTION:
+				encryptDecryptParams.setOutputFilePath("\"" + outputFileName + ".dec" + "\"");
+				setLogOutput(calculatorService.asymmetricDecrypt(encryptDecryptParams));
+				break;
+		}
+	}
+	
+	@FXML
+	void buttonEncryptDecryptTextOnMouseClick()
+	{
+		
 	}
 	
 	@FXML

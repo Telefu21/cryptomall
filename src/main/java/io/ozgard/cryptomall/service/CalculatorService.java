@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import io.ozgard.cryptomall.model.CommandLineProcess;
+import io.ozgard.cryptomall.params.EncryptDecryptParams;
 import io.ozgard.cryptomall.params.KeyGenerateParams;
 
 @Service
@@ -346,6 +347,126 @@ public class CalculatorService
 		clProcess.addCommandLineStr("-in");
 		clProcess.addCommandLineStr(keygenParams.getInputFilePath());
 		clProcess.addCommandLineStr("-text");
+		
+		String cmdRetStr = clProcess.runCommand();
+		
+		clProcess.clearCommandLineStr();
+		
+		return cmdRetStr;
+	}
+
+	public String symmetricEncrypt(EncryptDecryptParams encryptDecryptParams) 
+	{
+		clProcess.addCommandLineStr("openssl"); 
+		clProcess.addCommandLineStr("enc");
+		clProcess.addCommandLineStr(encryptDecryptParams.getCipher());
+		clProcess.addCommandLineStr("-pbkdf2");
+		clProcess.addCommandLineStr("-in");
+		clProcess.addCommandLineStr(encryptDecryptParams.getEncryptDecryptFilePath());
+		clProcess.addCommandLineStr("-out");
+		clProcess.addCommandLineStr(encryptDecryptParams.getOutputFilePath());
+		clProcess.addCommandLineStr("-pass");
+		clProcess.addCommandLineStr("pass:" + encryptDecryptParams.getPassPhrase());
+		
+		if(encryptDecryptParams.getAddSalt() == false)
+		{
+			clProcess.addCommandLineStr("-nosalt");
+		}
+
+		String cmdRetStr = clProcess.runCommand();
+				
+		clProcess.clearCommandLineStr();
+		
+		return cmdRetStr;
+	}
+
+	public String asymmetricEncrypt(EncryptDecryptParams encryptDecryptParams) 
+	{
+		clProcess.addCommandLineStr("openssl"); 
+		clProcess.addCommandLineStr("pkeyutl");
+		clProcess.addCommandLineStr("-encrypt");
+		clProcess.addCommandLineStr("-pubin");
+		clProcess.addCommandLineStr("-inkey");
+		clProcess.addCommandLineStr(encryptDecryptParams.getKeyFilePath());
+		clProcess.addCommandLineStr("-in");
+		clProcess.addCommandLineStr(encryptDecryptParams.getEncryptDecryptFilePath());
+		
+		if(encryptDecryptParams.getEnableRSAOaep() == true)
+		{
+			clProcess.addCommandLineStr("-pkeyopt"); 
+			clProcess.addCommandLineStr("rsa_padding_mode:oaep");
+			clProcess.addCommandLineStr("-pkeyopt");
+			clProcess.addCommandLineStr("rsa_oaep_md:" + encryptDecryptParams.getHashFunction());
+			clProcess.addCommandLineStr("-pkeyopt");
+			clProcess.addCommandLineStr("rsa_mgf1_md:" + encryptDecryptParams.getHashFunction());
+		}
+		
+		clProcess.addCommandLineStr("-out");
+		clProcess.addCommandLineStr(encryptDecryptParams.getOutputFilePath());
+		
+		String cmdRetStr = clProcess.runCommand();
+		
+		if(cmdRetStr.compareTo("") != 0)
+		{
+			if(encryptDecryptParams.getEnableRSAOaep() == true)
+			{
+				cmdRetStr += "\nRSA Oaep Error: Hash Function not supported for given RSA key length, key length should be more than digest length";
+			}
+		}
+		
+		clProcess.clearCommandLineStr();
+		
+		return cmdRetStr;
+	}
+
+	public String symmetricDecrypt(EncryptDecryptParams encryptDecryptParams) 
+	{
+		clProcess.addCommandLineStr("openssl"); 
+		clProcess.addCommandLineStr("enc");
+		clProcess.addCommandLineStr(encryptDecryptParams.getCipher());
+		clProcess.addCommandLineStr("-pbkdf2");
+		clProcess.addCommandLineStr("-d");
+		clProcess.addCommandLineStr("-in");
+		clProcess.addCommandLineStr(encryptDecryptParams.getEncryptDecryptFilePath());
+		clProcess.addCommandLineStr("-out");
+		clProcess.addCommandLineStr(encryptDecryptParams.getOutputFilePath());
+		clProcess.addCommandLineStr("-pass");
+		clProcess.addCommandLineStr("pass:" + encryptDecryptParams.getPassPhrase());
+		
+		if(encryptDecryptParams.getAddSalt() == false)
+		{
+			clProcess.addCommandLineStr("-nosalt");
+		}
+		
+		String cmdRetStr = clProcess.runCommand();
+		
+		clProcess.clearCommandLineStr();
+		
+		return cmdRetStr;
+	}
+
+	public String asymmetricDecrypt(EncryptDecryptParams encryptDecryptParams) 
+	{
+		clProcess.addCommandLineStr("openssl"); 
+		clProcess.addCommandLineStr("pkeyutl");
+		clProcess.addCommandLineStr("-decrypt");
+		clProcess.addCommandLineStr("-inkey");
+		clProcess.addCommandLineStr(encryptDecryptParams.getKeyFilePath());
+		clProcess.addCommandLineStr("-in");
+		clProcess.addCommandLineStr(encryptDecryptParams.getEncryptDecryptFilePath());
+		
+		if(encryptDecryptParams.getEnableRSAOaep()== true)
+		{
+			clProcess.addCommandLineStr("-pkeyopt"); 
+			clProcess.addCommandLineStr("rsa_padding_mode:oaep");
+			clProcess.addCommandLineStr("-pkeyopt");
+			clProcess.addCommandLineStr("rsa_oaep_md:" + encryptDecryptParams.getHashFunction());
+			clProcess.addCommandLineStr("-pkeyopt");
+			clProcess.addCommandLineStr("rsa_mgf1_md:" + encryptDecryptParams.getHashFunction());
+		}
+		
+		clProcess.addCommandLineStr("-out");
+		clProcess.addCommandLineStr(encryptDecryptParams.getOutputFilePath());
 		
 		String cmdRetStr = clProcess.runCommand();
 		

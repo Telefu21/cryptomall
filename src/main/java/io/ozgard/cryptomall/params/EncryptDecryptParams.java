@@ -15,10 +15,21 @@ public class EncryptDecryptParams
 	String	passPhrase;
 	String	keyFilePath;
 	String	encryptDecryptFilePath;
+	String	outputFilePath;
 	String	encryptDecryptTextInput;
 	Boolean	enableRSAOaep;
 	Boolean	addSalt;
 	
+	public String getOutputFilePath() 
+	{
+		return outputFilePath;
+	}
+
+	public void setOutputFilePath(String outputFilePath) 
+	{
+		this.outputFilePath = outputFilePath;
+	}
+
 	public String getCipher() 
 	{
 		return cipher;
