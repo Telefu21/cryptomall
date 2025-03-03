@@ -95,7 +95,7 @@
                      </children></AnchorPane>
             </content>
           </Tab>
-          <Tab fx:id="tabEncryptDecrypt" text="Encrypt &amp; Decyrpt">
+          <Tab fx:id="tabEncryptDecrypt" text="Encrypt/Decyrpt/Hash/MAC Processing">
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
@@ -113,32 +113,27 @@
                            <content>
                               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="76.0" prefWidth="713.0">
                                  <children>
-                                    <TextField fx:id="textFieldEncryptDecryptBrowseFile" editable="false" layoutX="12.0" layoutY="12.0" prefHeight="26.0" prefWidth="614.0" />
+                                    <TextField fx:id="textFieldEncryptDecryptBrowseFile" editable="false" layoutX="12.0" layoutY="12.0" prefHeight="26.0" prefWidth="614.0" text="Select File to Encrypt" />
                                     <Button fx:id="buttonEncryptDecryptBrowseFile" layoutX="634.0" layoutY="12.0" mnemonicParsing="false" onMouseClicked="#browseEncryptDecryptFileOnClick" prefHeight="25.0" prefWidth="66.0" text="Browse" />
                                     <Button fx:id="buttonEncryptDecryptFileTrigger" layoutX="258.0" layoutY="46.0" mnemonicParsing="false" onMouseClicked="#buttonEncryptDecryptFileOnMouseClick" prefHeight="26.0" prefWidth="182.0" text="Encrypt File" />
                                  </children>
                               </AnchorPane>
                            </content>
                         </TitledPane>
-                        <TextField fx:id="textFieldEncryptDecryptBrowseKeyFile" editable="false" layoutX="14.0" layoutY="98.0" prefHeight="26.0" prefWidth="629.0" text="Select Asymmetric Key File " />
+                        <TextField fx:id="textFieldEncryptDecryptBrowseKeyFile" editable="false" layoutX="14.0" layoutY="98.0" prefHeight="26.0" prefWidth="629.0" text="Select Key File " />
                         <Button fx:id="buttonEncryptDecyptBrowseKeyFile" layoutX="649.0" layoutY="98.0" mnemonicParsing="false" onMouseClicked="#browseEncryptDecryptKeyFileOnClick" prefHeight="26.0" prefWidth="66.0" text="Browse" />
                         <ComboBox fx:id="comboEncryptDecryptType" layoutX="15.0" layoutY="14.0" onAction="#encryptDecryptTypeChanged" prefHeight="26.0" prefWidth="249.0" />
                         <ComboBox fx:id="comboEncryptDecryptCipher" layoutX="85.0" layoutY="54.0" prefHeight="26.0" prefWidth="180.0" />
                         <Label fx:id="labelEncryptDecypCipher" layoutX="15.0" layoutY="58.0" prefHeight="18.0" prefWidth="47.0" text="Cipher:" />
                         <Label fx:id="labelEncryptDecryptPassPhrase" layoutX="290.0" layoutY="58.0" prefHeight="18.0" prefWidth="78.0" text="Pass Phrase:" />
-                        <TextField fx:id="textFieldEncryptDecryptPassPhrase" layoutX="365.0" layoutY="55.0" prefHeight="26.0" prefWidth="229.0" />
-                        <CheckBox fx:id="checkBoxEncryptDecryptAddSalt" layoutX="629.0" layoutY="58.0" mnemonicParsing="false" prefHeight="18.0" prefWidth="85.0" text="Add Salt" />
+                        <CheckBox fx:id="checkBoxEncryptDecryptAddSalt" layoutX="601.0" layoutY="60.0" mnemonicParsing="false" prefHeight="18.0" prefWidth="85.0" text="Add Salt" />
                         <CheckBox fx:id="checkBoxEncryptDecyptEnableRSAOaep" layoutX="329.0" layoutY="18.0" mnemonicParsing="false" onAction="#checkBoxEncryptDecyptEnableRSAOaepOnAction" prefHeight="18.0" prefWidth="135.0" text="Enable RSA Oaep" />
                         <ComboBox fx:id="comboEncryptDecyptHashFunction" layoutX="573.0" layoutY="14.0" prefHeight="26.0" prefWidth="142.0" />
                         <Label fx:id="labelEncryptDecyptHashFunction" layoutX="471.0" layoutY="18.0" prefHeight="18.0" prefWidth="94.0" text="Hash Function:" />
+                        <PasswordField fx:id="textFieldEncryptDecryptPassPhrase" layoutX="365.0" layoutY="56.0" prefHeight="26.0" prefWidth="210.0" />
                      </children></AnchorPane>
             </content>
           </Tab>
-            <Tab fx:id="tabHashingMAC" text="Hashing &amp; MAC">
-               <content>
-                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
-               </content>
-            </Tab>
             <Tab fx:id="tabSignVerify" text="Sign &amp; Verify">
                <content>
                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
@@ -147,11 +142,6 @@
             <Tab fx:id="tabCertificateManagement" text="Certificate Management">
                <content>
                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
-               </content>
-            </Tab>
-            <Tab fx:id="tabFileOperations" text="File Operations">
-               <content>
-                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="380.0" prefWidth="900.0" />
                </content>
             </Tab>
         </tabs>

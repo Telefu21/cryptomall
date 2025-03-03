@@ -87,8 +87,7 @@ public class MainSceneController implements Initializable
 	@Autowired
 	TextField textFieldEncryptDecryptBrowseFile;
 	@FXML
-	@Autowired
-	TextField textFieldEncryptDecryptPassPhrase;
+	PasswordField textFieldEncryptDecryptPassPhrase;
 	@FXML
 	@Autowired
 	TextField passFieldKeyFileConvertPasswd;
@@ -151,7 +150,8 @@ public class MainSceneController implements Initializable
 		comboKeyFileConvertConversionOptions.setItems(FXCollections.observableArrayList(KeyGenerateParams.KEYGEN_CONVERT_PUB_FROM_PRIV, KeyGenerateParams.KEYGEN_CONVERT_PRIVKEY_TO_VIEW, KeyGenerateParams.KEYGEN_CONVERT_PUBKEY_TO_VIEW,
 				KeyGenerateParams.KEYGEN_CONVERT_PEM_TO_DER, KeyGenerateParams.KEYGEN_CONVERT_DER_TO_PEM, KeyGenerateParams.KEYGEN_CONVERT_TO_BASE64, KeyGenerateParams.KEYGEN_CONVERT_FROM_BASE64));
 		comboKeyFileConvertConversionOptions.setValue(KeyGenerateParams.KEYGEN_CONVERT_PUB_FROM_PRIV);
-		comboEncryptDecryptType.setItems(FXCollections.observableArrayList(EncryptDecryptParams.ENCRYPT_DECRYPT_TYPE_SYM_ENCRYPTION, EncryptDecryptParams.ENCRYPT_DECRYPT_TYPE_SYM_DECRYPTION, EncryptDecryptParams.ENCRYPT_DECRYPT_TYPE_ASYM_ENCRYPTION, EncryptDecryptParams.ENCRYPT_DECRYPT_TYPE_ASYM_DECRYPTION));
+		comboEncryptDecryptType.setItems(FXCollections.observableArrayList(EncryptDecryptParams.ENCRYPT_DECRYPT_TYPE_SYM_ENCRYPTION, EncryptDecryptParams.ENCRYPT_DECRYPT_TYPE_SYM_DECRYPTION, EncryptDecryptParams.ENCRYPT_DECRYPT_TYPE_ASYM_ENCRYPTION, 
+				EncryptDecryptParams.ENCRYPT_DECRYPT_TYPE_ASYM_DECRYPTION, EncryptDecryptParams.ENCRYPT_DECRYPT_TYPE_GENERATE_HASH, EncryptDecryptParams.ENCRYPT_DECRYPT_TYPE_GENERATE_CMAC, EncryptDecryptParams.ENCRYPT_DECRYPT_TYPE_GENERATE_HMAC));
 		comboEncryptDecryptType.setValue(EncryptDecryptParams.ENCRYPT_DECRYPT_TYPE_SYM_ENCRYPTION);
 		
 		titledPaneKeygenSettings.setCollapsible(false);
@@ -308,12 +308,16 @@ public class MainSceneController implements Initializable
 			titledPaneEncryptDecryptText.setDisable(false);
 			titledPaneEncryptDecryptFile.setText("File Encryption");
 			buttonEncryptDecryptFileTrigger.setText("Encrypt File");
+			textFieldEncryptDecryptBrowseFile.setText("Select File to Encrypt");
+			titledPaneEncryptDecryptText.setText("Text Encryption");
+			buttonEncryptDecryptTextTrigger.setText("Encrypt");
 			
 			if(comboEncryptDecryptType.getValue() == EncryptDecryptParams.ENCRYPT_DECRYPT_TYPE_SYM_DECRYPTION)
 			{
 				titledPaneEncryptDecryptText.setDisable(true);
 				titledPaneEncryptDecryptFile.setText("File Decryption");
 				buttonEncryptDecryptFileTrigger.setText("Decrypt File");
+				textFieldEncryptDecryptBrowseFile.setText("Select File to Decrypt");
 			}
 		}
 		
@@ -330,12 +334,65 @@ public class MainSceneController implements Initializable
 			titledPaneEncryptDecryptText.setDisable(false);
 			titledPaneEncryptDecryptFile.setText("File Encryption");
 			buttonEncryptDecryptFileTrigger.setText("Encrypt File");
+			textFieldEncryptDecryptBrowseKeyFile.setText("Select Public Key File");
+			textFieldEncryptDecryptBrowseFile.setText("Select File to Encrypt - Size should be less than key size");
+			titledPaneEncryptDecryptText.setText("Text Encryption");
+			buttonEncryptDecryptTextTrigger.setText("Encrypt");
 			
 			if(comboEncryptDecryptType.getValue() == EncryptDecryptParams.ENCRYPT_DECRYPT_TYPE_ASYM_DECRYPTION)
 			{
 				titledPaneEncryptDecryptText.setDisable(true);
 				titledPaneEncryptDecryptFile.setText("File Decryption");
 				buttonEncryptDecryptFileTrigger.setText("Decrypt File");
+				textFieldEncryptDecryptBrowseKeyFile.setText("Select Private Key File");
+				textFieldEncryptDecryptBrowseFile.setText("Select File to Decrypt");
+			}
+		}
+		
+		if(comboEncryptDecryptType.getValue() == EncryptDecryptParams.ENCRYPT_DECRYPT_TYPE_GENERATE_HASH)
+		{
+			checkBoxEncryptDecyptEnableRSAOaep.setSelected(false);
+			checkBoxEncryptDecyptEnableRSAOaep.setDisable(true);
+			comboEncryptDecyptHashFunction.setDisable(false);
+			textFieldEncryptDecryptBrowseKeyFile.setDisable(true);
+			buttonEncryptDecyptBrowseKeyFile.setDisable(true);
+			comboEncryptDecryptCipher.setDisable(true);
+			textFieldEncryptDecryptPassPhrase.setDisable(true);
+			checkBoxEncryptDecryptAddSalt.setDisable(true);
+			titledPaneEncryptDecryptText.setDisable(false);
+			titledPaneEncryptDecryptFile.setText("File Hashing");
+			buttonEncryptDecryptFileTrigger.setText("Generate Hash");
+			textFieldEncryptDecryptBrowseKeyFile.setText("Select Key File");
+			textFieldEncryptDecryptBrowseFile.setText("Select File to Hash Generate");
+			titledPaneEncryptDecryptText.setText("Text Hash Generate");
+			buttonEncryptDecryptTextTrigger.setText("Generate");
+		}
+		
+		if(comboEncryptDecryptType.getValue() == EncryptDecryptParams.ENCRYPT_DECRYPT_TYPE_GENERATE_CMAC || comboEncryptDecryptType.getValue() == EncryptDecryptParams.ENCRYPT_DECRYPT_TYPE_GENERATE_HMAC)
+		{
+			checkBoxEncryptDecyptEnableRSAOaep.setSelected(false);
+			checkBoxEncryptDecyptEnableRSAOaep.setDisable(true);
+			comboEncryptDecyptHashFunction.setDisable(false);
+			textFieldEncryptDecryptBrowseKeyFile.setDisable(true);
+			buttonEncryptDecyptBrowseKeyFile.setDisable(true);
+			comboEncryptDecryptCipher.setDisable(false);
+			textFieldEncryptDecryptPassPhrase.setDisable(false);
+			checkBoxEncryptDecryptAddSalt.setDisable(true);
+			titledPaneEncryptDecryptText.setDisable(false);
+			titledPaneEncryptDecryptFile.setText("File CMAC Generation");
+			buttonEncryptDecryptFileTrigger.setText("Generate CMAC");
+			textFieldEncryptDecryptBrowseKeyFile.setText("Select Key File");
+			textFieldEncryptDecryptBrowseFile.setText("Select File to CMAC Generate");
+			titledPaneEncryptDecryptText.setText("Text CMAC Generation");
+			buttonEncryptDecryptTextTrigger.setText("Generate");
+			
+			if(comboEncryptDecryptType.getValue() == EncryptDecryptParams.ENCRYPT_DECRYPT_TYPE_GENERATE_HMAC)
+			{
+				comboEncryptDecryptCipher.setDisable(true);
+				titledPaneEncryptDecryptFile.setText("File HMAC Generation");
+				buttonEncryptDecryptFileTrigger.setText("Generate HMAC");
+				textFieldEncryptDecryptBrowseFile.setText("Select File to HMAC Generate");
+				titledPaneEncryptDecryptText.setText("Text HMAC Generation");
 			}
 		}
 	}

@@ -9,6 +9,9 @@ public class EncryptDecryptParams
 	public static final String ENCRYPT_DECRYPT_TYPE_ASYM_DECRYPTION = "Asymmetric Decryption";
 	public static final String ENCRYPT_DECRYPT_TYPE_SYM_ENCRYPTION = "Symmetric Encryption";
 	public static final String ENCRYPT_DECRYPT_TYPE_SYM_DECRYPTION = "Symmetric Decryption";
+	public static final String ENCRYPT_DECRYPT_TYPE_GENERATE_HASH = "Generate Hash";
+	public static final String ENCRYPT_DECRYPT_TYPE_GENERATE_HMAC = "Generate HMAC";
+	public static final String ENCRYPT_DECRYPT_TYPE_GENERATE_CMAC = "Generate CMAC";
 	
 	String	cipher;
 	String	hashFunction;
