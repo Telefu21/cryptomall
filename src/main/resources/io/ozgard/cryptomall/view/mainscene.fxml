@@ -115,7 +115,8 @@
                                  <children>
                                     <TextField fx:id="textFieldEncryptDecryptBrowseFile" editable="false" layoutX="12.0" layoutY="12.0" prefHeight="26.0" prefWidth="614.0" text="Select File to Encrypt" />
                                     <Button fx:id="buttonEncryptDecryptBrowseFile" layoutX="634.0" layoutY="12.0" mnemonicParsing="false" onMouseClicked="#browseEncryptDecryptFileOnClick" prefHeight="25.0" prefWidth="66.0" text="Browse" />
-                                    <Button fx:id="buttonEncryptDecryptFileTrigger" layoutX="258.0" layoutY="46.0" mnemonicParsing="false" onMouseClicked="#buttonEncryptDecryptFileOnMouseClick" prefHeight="26.0" prefWidth="182.0" text="Encrypt File" />
+                                    <Button fx:id="buttonEncryptDecryptFileTrigger" disable="true" layoutX="258.0" layoutY="46.0" mnemonicParsing="false" onMouseClicked="#buttonEncryptDecryptFileOnMouseClick" prefHeight="26.0" prefWidth="182.0" text="Encrypt File" />
+                                    <CheckBox fx:id="checkBoxEncryptDecryptBinaryOutput" layoutX="12.0" layoutY="50.0" mnemonicParsing="false" prefHeight="18.0" prefWidth="138.0" text="Binary Output File" />
                                  </children>
                               </AnchorPane>
                            </content>

@@ -474,4 +474,118 @@ public class CalculatorService
 		
 		return cmdRetStr;
 	}
+
+	public String generateHash(EncryptDecryptParams encryptDecryptParams) 
+	{
+		clProcess.addCommandLineStr("openssl"); 
+		clProcess.addCommandLineStr("dgst");
+		clProcess.addCommandLineStr(encryptDecryptParams.getHashFunction());
+		
+		if(encryptDecryptParams.getBinaryOutputFile()== true)
+		{
+			clProcess.addCommandLineStr("-binary"); 
+		}
+		
+		clProcess.addCommandLineStr("-out");
+		clProcess.addCommandLineStr(encryptDecryptParams.getOutputFilePath());
+		clProcess.addCommandLineStr(encryptDecryptParams.getEncryptDecryptFilePath());
+		
+		String cmdRetStr = clProcess.runCommand();
+		
+		clProcess.clearCommandLineStr();
+		
+		return cmdRetStr;
+	}
+
+	public String generateCMac(EncryptDecryptParams encryptDecryptParams) 
+	{
+		int passwdLen = calculatePasswordLenghtforCMac(encryptDecryptParams);
+		
+		if(passwdLen != 0)
+		{
+			return "!!! Password length should be " + passwdLen + " !!!";
+		}
+		
+		clProcess.addCommandLineStr("openssl"); 
+		clProcess.addCommandLineStr("dgst");
+		clProcess.addCommandLineStr(encryptDecryptParams.getHashFunction());
+		
+		if(encryptDecryptParams.getBinaryOutputFile() == true)
+			
+		{
+			clProcess.addCommandLineStr("-binary"); 
+		}
+		
+		clProcess.addCommandLineStr("-mac");
+		clProcess.addCommandLineStr("cmac");
+		clProcess.addCommandLineStr("-macopt");
+		clProcess.addCommandLineStr("cipher:"  + encryptDecryptParams.getCipher());
+		clProcess.addCommandLineStr("-macopt");
+		clProcess.addCommandLineStr("key:"  + encryptDecryptParams.getPassPhrase());
+		
+		clProcess.addCommandLineStr("-out");
+		clProcess.addCommandLineStr(encryptDecryptParams.getOutputFilePath());
+		clProcess.addCommandLineStr(encryptDecryptParams.getEncryptDecryptFilePath());
+		
+		String cmdRetStr = clProcess.runCommand();
+		
+		clProcess.clearCommandLineStr();
+		
+		return cmdRetStr;
+	}
+
+	public String generateHMac(EncryptDecryptParams encryptDecryptParams) 
+	{
+		clProcess.addCommandLineStr("openssl"); 
+		clProcess.addCommandLineStr("dgst");
+		clProcess.addCommandLineStr(encryptDecryptParams.getHashFunction());
+		
+		if(encryptDecryptParams.getBinaryOutputFile( )== true)
+		{
+			clProcess.addCommandLineStr("-binary"); 
+		}
+		
+		clProcess.addCommandLineStr("-mac");
+		clProcess.addCommandLineStr("hmac");
+		clProcess.addCommandLineStr("-macopt");
+		clProcess.addCommandLineStr("key:"  + encryptDecryptParams.getPassPhrase());
+		
+		clProcess.addCommandLineStr("-out");
+		clProcess.addCommandLineStr(encryptDecryptParams.getOutputFilePath());
+		clProcess.addCommandLineStr(encryptDecryptParams.getEncryptDecryptFilePath());
+		
+		String cmdRetStr = clProcess.runCommand();
+		
+		clProcess.clearCommandLineStr();
+		
+		return cmdRetStr;
+	}
+	
+	private int calculatePasswordLenghtforCMac(EncryptDecryptParams encryptDecryptParams) 
+	{
+		int		passwdLen = 8;
+		String	cipherName = encryptDecryptParams.getCipher();
+		
+		if(cipherName.contains("128") || cipherName.contains("des-ede-cbc") || cipherName.contains("idea-cbc")  || cipherName.contains("seed-cbc") || cipherName.contains("sm4-cbc"))
+		{
+			passwdLen = 16;
+		}
+		
+		if(cipherName.contains("192") || cipherName.contains("des-ede3-cbc") || cipherName.contains("desx-cb"))
+		{
+			passwdLen = 24;
+		}
+		
+		if(cipherName.contains("256"))
+		{
+			passwdLen = 32;
+		}
+
+		if(encryptDecryptParams.getPassPhrase().length() == passwdLen)
+		{
+			return 0;
+		}
+		
+		return passwdLen;
+	}
 }

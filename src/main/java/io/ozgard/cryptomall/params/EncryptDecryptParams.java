@@ -22,7 +22,18 @@ public class EncryptDecryptParams
 	String	encryptDecryptTextInput;
 	Boolean	enableRSAOaep;
 	Boolean	addSalt;
+	Boolean binaryOutputFile;
 	
+	public Boolean getBinaryOutputFile() 
+	{
+		return binaryOutputFile;
+	}
+
+	public void setBinaryOutputFile(Boolean binaryOutputFile) 
+	{
+		this.binaryOutputFile = binaryOutputFile;
+	}
+
 	public String getOutputFilePath() 
 	{
 		return outputFilePath;

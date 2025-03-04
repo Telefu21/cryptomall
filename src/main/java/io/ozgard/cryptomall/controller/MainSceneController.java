@@ -130,7 +130,9 @@ public class MainSceneController implements Initializable
 	@FXML
 	@Autowired
 	Button buttonEncryptDecryptFileTrigger;
-	
+	@FXML
+	@Autowired
+	CheckBox checkBoxEncryptDecryptBinaryOutput;
 	static public void setStage(Stage stageT)
 	{
 		stage = stageT;
@@ -168,6 +170,7 @@ public class MainSceneController implements Initializable
 		comboKeyGenFileEncyptCipher.setDisable(true);
 		comboKeygenElipticCurveName.setDisable(true);
 		checkBoxKeyGenEncryptKeyFile.setSelected(false);
+		checkBoxEncryptDecryptBinaryOutput.setVisible(false);
 		
 		String [] ecList = calculatorService.getListElipticCurveName();
 		comboKeygenElipticCurveName.setItems(FXCollections.observableArrayList(ecList));
@@ -209,7 +212,7 @@ public class MainSceneController implements Initializable
 	{
 		FileChooser fileChooser = new FileChooser();
 		
-		fileChooser.setTitle("Select File To Encrypt/Decrypt");
+		fileChooser.setTitle("Select File");
 		
 		if(textFieldWorkingDirectory.getText().contains("\\") == true)
 		{
@@ -220,6 +223,7 @@ public class MainSceneController implements Initializable
         
 		if (selectedFile != null) 
         {
+			buttonEncryptDecryptFileTrigger.setDisable(false);
 			textFieldEncryptDecryptBrowseFile.setText(selectedFile.getAbsolutePath());
         }
 	}
@@ -295,6 +299,8 @@ public class MainSceneController implements Initializable
 	@FXML
 	void encryptDecryptTypeChanged()
 	{
+		buttonEncryptDecryptFileTrigger.setDisable(true);
+		
 		if(comboEncryptDecryptType.getValue() == EncryptDecryptParams.ENCRYPT_DECRYPT_TYPE_SYM_ENCRYPTION || comboEncryptDecryptType.getValue() == EncryptDecryptParams.ENCRYPT_DECRYPT_TYPE_SYM_DECRYPTION)
 		{
 			checkBoxEncryptDecyptEnableRSAOaep.setSelected(false);
@@ -311,6 +317,7 @@ public class MainSceneController implements Initializable
 			textFieldEncryptDecryptBrowseFile.setText("Select File to Encrypt");
 			titledPaneEncryptDecryptText.setText("Text Encryption");
 			buttonEncryptDecryptTextTrigger.setText("Encrypt");
+			checkBoxEncryptDecryptBinaryOutput.setVisible(false);
 			
 			if(comboEncryptDecryptType.getValue() == EncryptDecryptParams.ENCRYPT_DECRYPT_TYPE_SYM_DECRYPTION)
 			{
@@ -338,6 +345,7 @@ public class MainSceneController implements Initializable
 			textFieldEncryptDecryptBrowseFile.setText("Select File to Encrypt - Size should be less than key size");
 			titledPaneEncryptDecryptText.setText("Text Encryption");
 			buttonEncryptDecryptTextTrigger.setText("Encrypt");
+			checkBoxEncryptDecryptBinaryOutput.setVisible(false);
 			
 			if(comboEncryptDecryptType.getValue() == EncryptDecryptParams.ENCRYPT_DECRYPT_TYPE_ASYM_DECRYPTION)
 			{
@@ -366,6 +374,7 @@ public class MainSceneController implements Initializable
 			textFieldEncryptDecryptBrowseFile.setText("Select File to Hash Generate");
 			titledPaneEncryptDecryptText.setText("Text Hash Generate");
 			buttonEncryptDecryptTextTrigger.setText("Generate");
+			checkBoxEncryptDecryptBinaryOutput.setVisible(true);
 		}
 		
 		if(comboEncryptDecryptType.getValue() == EncryptDecryptParams.ENCRYPT_DECRYPT_TYPE_GENERATE_CMAC || comboEncryptDecryptType.getValue() == EncryptDecryptParams.ENCRYPT_DECRYPT_TYPE_GENERATE_HMAC)
@@ -385,6 +394,7 @@ public class MainSceneController implements Initializable
 			textFieldEncryptDecryptBrowseFile.setText("Select File to CMAC Generate");
 			titledPaneEncryptDecryptText.setText("Text CMAC Generation");
 			buttonEncryptDecryptTextTrigger.setText("Generate");
+			checkBoxEncryptDecryptBinaryOutput.setVisible(true);
 			
 			if(comboEncryptDecryptType.getValue() == EncryptDecryptParams.ENCRYPT_DECRYPT_TYPE_GENERATE_HMAC)
 			{
@@ -467,7 +477,7 @@ public class MainSceneController implements Initializable
 				
 			case KeyGenerateParams.KEYGEN_CONVERT_PUB_FROM_PRIV:
 				keygenParams.setInputFilePath("\"" + textFieldKeyFileConvertFilePath.getText() + "\"");
-				keygenParams.setOutputFilePath("\"" + outputFileName  + ".pub.pem" + "\"");
+				keygenParams.setOutputFilePath("\"" + outputFileName  + "_pub.pem" + "\"");
 				keygenParams.setInKeyFileFormat(KeyGenerateParams.KEYGEN_FILE_FORMAT_SELECT_PEM);
 				keygenParams.setOutKeyFileFormat(KeyGenerateParams.KEYGEN_FILE_FORMAT_SELECT_PEM);
 				
@@ -510,14 +520,14 @@ public class MainSceneController implements Initializable
 		encryptDecryptParams.setEnableRSAOaep(checkBoxEncryptDecyptEnableRSAOaep.isSelected());
 		encryptDecryptParams.setEncryptDecryptFilePath("\"" + textFieldEncryptDecryptBrowseFile.getText() + "\"");
 		encryptDecryptParams.setEncryptDecryptTextInput(textAreaEncryptDecryptText.getText());
-		encryptDecryptParams.setHashFunction(comboEncryptDecyptHashFunction.getValue().replaceAll("-", ""));
+		encryptDecryptParams.setHashFunction(comboEncryptDecyptHashFunction.getValue());
 		encryptDecryptParams.setKeyFilePath("\"" + textFieldEncryptDecryptBrowseKeyFile.getText() + "\"");
 		encryptDecryptParams.setPassPhrase(textFieldEncryptDecryptPassPhrase.getText());
 		
 		switch(comboEncryptDecryptType.getValue())
 		{
 			case EncryptDecryptParams.ENCRYPT_DECRYPT_TYPE_SYM_ENCRYPTION:
-				encryptDecryptParams.setOutputFilePath("\"" + outputFileName + encryptDecryptParams.getCipher().replaceAll(" ", "") + ".enc" + "\"");
+				encryptDecryptParams.setOutputFilePath("\"" + outputFileName + "_" + encryptDecryptParams.getCipher().replaceAll(" ", "") + ".enc" + "\"");
 				setLogOutput(calculatorService.symmetricEncrypt(encryptDecryptParams));
 				break;
 				
@@ -527,13 +537,32 @@ public class MainSceneController implements Initializable
 				break;
 				
 			case EncryptDecryptParams.ENCRYPT_DECRYPT_TYPE_SYM_DECRYPTION:
-				encryptDecryptParams.setOutputFilePath("\"" + outputFileName + encryptDecryptParams.getCipher().replaceAll(" ", "") + ".dec" + "\"");
+				encryptDecryptParams.setOutputFilePath("\"" + outputFileName + ".dec" + "\"");
 				setLogOutput(calculatorService.symmetricDecrypt(encryptDecryptParams));
 				break;
 				
 			case EncryptDecryptParams.ENCRYPT_DECRYPT_TYPE_ASYM_DECRYPTION:
 				encryptDecryptParams.setOutputFilePath("\"" + outputFileName + ".dec" + "\"");
 				setLogOutput(calculatorService.asymmetricDecrypt(encryptDecryptParams));
+				break;
+				
+			case EncryptDecryptParams.ENCRYPT_DECRYPT_TYPE_GENERATE_HASH:
+				encryptDecryptParams.setOutputFilePath("\"" + outputFileName + encryptDecryptParams.getHashFunction().replaceAll(" ", "") + ".hash" + "\"");
+				encryptDecryptParams.setBinaryOutputFile(checkBoxEncryptDecryptBinaryOutput.isSelected());
+				setLogOutput(calculatorService.generateHash(encryptDecryptParams));
+				break;
+				
+			case EncryptDecryptParams.ENCRYPT_DECRYPT_TYPE_GENERATE_CMAC:
+				encryptDecryptParams.setOutputFilePath("\"" + outputFileName + encryptDecryptParams.getHashFunction().replaceAll(" ", "") + encryptDecryptParams.getCipher().replaceAll(" ", "") + ".cmac" + "\"");
+				encryptDecryptParams.setCipher(comboEncryptDecryptCipher.getValue().replaceFirst("-", ""));
+				encryptDecryptParams.setBinaryOutputFile(checkBoxEncryptDecryptBinaryOutput.isSelected());
+				setLogOutput(calculatorService.generateCMac(encryptDecryptParams));
+				break;
+				
+			case EncryptDecryptParams.ENCRYPT_DECRYPT_TYPE_GENERATE_HMAC:
+				encryptDecryptParams.setOutputFilePath("\"" + outputFileName + encryptDecryptParams.getHashFunction().replaceAll(" ", "") + ".hmac" + "\"");
+				encryptDecryptParams.setBinaryOutputFile(checkBoxEncryptDecryptBinaryOutput.isSelected());
+				setLogOutput(calculatorService.generateHMac(encryptDecryptParams));
 				break;
 		}
 	}
