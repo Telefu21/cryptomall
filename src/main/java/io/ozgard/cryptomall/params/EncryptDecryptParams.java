@@ -17,21 +17,21 @@ public class EncryptDecryptParams
 	String	hashFunction;
 	String	passPhrase;
 	String	keyFilePath;
-	String	encryptDecryptFilePath;
+	String	inputFilePath;
 	String	outputFilePath;
-	String	encryptDecryptTextInput;
+	String	textInput;
 	Boolean	enableRSAOaep;
-	Boolean	addSalt;
-	Boolean binaryOutputFile;
+	Boolean	addSaltEnabled;
+	Boolean binaryOutputFileEnabled;
 	
-	public Boolean getBinaryOutputFile() 
+	public Boolean getBinaryOutputFileEnabled() 
 	{
-		return binaryOutputFile;
+		return binaryOutputFileEnabled;
 	}
 
-	public void setBinaryOutputFile(Boolean binaryOutputFile) 
+	public void setBinaryOutputFileEnabled(Boolean binaryOutputFile) 
 	{
-		this.binaryOutputFile = binaryOutputFile;
+		this.binaryOutputFileEnabled = binaryOutputFile;
 	}
 
 	public String getOutputFilePath() 
@@ -84,24 +84,24 @@ public class EncryptDecryptParams
 		this.keyFilePath = keyFilePath;
 	}
 	
-	public String getEncryptDecryptFilePath() 
+	public String getInputFilePath() 
 	{
-		return encryptDecryptFilePath;
+		return inputFilePath;
 	}
 	
-	public void setEncryptDecryptFilePath(String encryptDecryptFilePath) 
+	public void setInputFilePath(String encryptDecryptFilePath) 
 	{
-		this.encryptDecryptFilePath = encryptDecryptFilePath;
+		this.inputFilePath = encryptDecryptFilePath;
 	}
 	
-	public String getEncryptDecryptTextInput() 
+	public String getTextInput() 
 	{
-		return encryptDecryptTextInput;
+		return textInput;
 	}
 	
-	public void setEncryptDecryptTextInput(String encryptDecryptTextInput) 
+	public void setTextInput(String encryptDecryptTextInput) 
 	{
-		this.encryptDecryptTextInput = encryptDecryptTextInput;
+		this.textInput = encryptDecryptTextInput;
 	}
 	
 	public Boolean getEnableRSAOaep() 
@@ -114,15 +114,13 @@ public class EncryptDecryptParams
 		this.enableRSAOaep = enableRSAOaep;
 	}
 	
-	public Boolean getAddSalt() 
+	public Boolean getAddSaltEnabled() 
 	{
-		return addSalt;
+		return addSaltEnabled;
 	}
 	
-	public void setAddSalt(Boolean addSalt) 
+	public void setAddSaltEnabled(Boolean addSalt) 
 	{
-		this.addSalt = addSalt;
+		this.addSaltEnabled = addSalt;
 	}
-	
-	
 }

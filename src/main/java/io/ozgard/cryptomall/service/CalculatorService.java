@@ -1,6 +1,11 @@
 package io.ozgard.cryptomall.service;
 
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,6 +16,8 @@ import io.ozgard.cryptomall.params.KeyGenerateParams;
 @Service
 public class CalculatorService 
 {
+    private static final String UNKNOWN_CHARACTER = ".";
+    
 	@Autowired
 	CommandLineProcess clProcess;
 	
@@ -362,13 +369,13 @@ public class CalculatorService
 		clProcess.addCommandLineStr(encryptDecryptParams.getCipher());
 		clProcess.addCommandLineStr("-pbkdf2");
 		clProcess.addCommandLineStr("-in");
-		clProcess.addCommandLineStr(encryptDecryptParams.getEncryptDecryptFilePath());
+		clProcess.addCommandLineStr(encryptDecryptParams.getInputFilePath());
 		clProcess.addCommandLineStr("-out");
 		clProcess.addCommandLineStr(encryptDecryptParams.getOutputFilePath());
 		clProcess.addCommandLineStr("-pass");
 		clProcess.addCommandLineStr("pass:" + encryptDecryptParams.getPassPhrase());
 		
-		if(encryptDecryptParams.getAddSalt() == false)
+		if(encryptDecryptParams.getAddSaltEnabled() == false)
 		{
 			clProcess.addCommandLineStr("-nosalt");
 		}
@@ -389,16 +396,16 @@ public class CalculatorService
 		clProcess.addCommandLineStr("-inkey");
 		clProcess.addCommandLineStr(encryptDecryptParams.getKeyFilePath());
 		clProcess.addCommandLineStr("-in");
-		clProcess.addCommandLineStr(encryptDecryptParams.getEncryptDecryptFilePath());
+		clProcess.addCommandLineStr(encryptDecryptParams.getInputFilePath());
 		
 		if(encryptDecryptParams.getEnableRSAOaep() == true)
 		{
 			clProcess.addCommandLineStr("-pkeyopt"); 
 			clProcess.addCommandLineStr("rsa_padding_mode:oaep");
 			clProcess.addCommandLineStr("-pkeyopt");
-			clProcess.addCommandLineStr("rsa_oaep_md:" + encryptDecryptParams.getHashFunction());
+			clProcess.addCommandLineStr("rsa_oaep_md:" + encryptDecryptParams.getHashFunction().replaceFirst("-", ""));
 			clProcess.addCommandLineStr("-pkeyopt");
-			clProcess.addCommandLineStr("rsa_mgf1_md:" + encryptDecryptParams.getHashFunction());
+			clProcess.addCommandLineStr("rsa_mgf1_md:" + encryptDecryptParams.getHashFunction().replaceFirst("-", ""));
 		}
 		
 		clProcess.addCommandLineStr("-out");
@@ -427,13 +434,13 @@ public class CalculatorService
 		clProcess.addCommandLineStr("-pbkdf2");
 		clProcess.addCommandLineStr("-d");
 		clProcess.addCommandLineStr("-in");
-		clProcess.addCommandLineStr(encryptDecryptParams.getEncryptDecryptFilePath());
+		clProcess.addCommandLineStr(encryptDecryptParams.getInputFilePath());
 		clProcess.addCommandLineStr("-out");
 		clProcess.addCommandLineStr(encryptDecryptParams.getOutputFilePath());
 		clProcess.addCommandLineStr("-pass");
 		clProcess.addCommandLineStr("pass:" + encryptDecryptParams.getPassPhrase());
 		
-		if(encryptDecryptParams.getAddSalt() == false)
+		if(encryptDecryptParams.getAddSaltEnabled() == false)
 		{
 			clProcess.addCommandLineStr("-nosalt");
 		}
@@ -453,7 +460,7 @@ public class CalculatorService
 		clProcess.addCommandLineStr("-inkey");
 		clProcess.addCommandLineStr(encryptDecryptParams.getKeyFilePath());
 		clProcess.addCommandLineStr("-in");
-		clProcess.addCommandLineStr(encryptDecryptParams.getEncryptDecryptFilePath());
+		clProcess.addCommandLineStr(encryptDecryptParams.getInputFilePath());
 		
 		if(encryptDecryptParams.getEnableRSAOaep()== true)
 		{
@@ -481,14 +488,14 @@ public class CalculatorService
 		clProcess.addCommandLineStr("dgst");
 		clProcess.addCommandLineStr(encryptDecryptParams.getHashFunction());
 		
-		if(encryptDecryptParams.getBinaryOutputFile()== true)
+		if(encryptDecryptParams.getBinaryOutputFileEnabled()== true)
 		{
 			clProcess.addCommandLineStr("-binary"); 
 		}
 		
 		clProcess.addCommandLineStr("-out");
 		clProcess.addCommandLineStr(encryptDecryptParams.getOutputFilePath());
-		clProcess.addCommandLineStr(encryptDecryptParams.getEncryptDecryptFilePath());
+		clProcess.addCommandLineStr(encryptDecryptParams.getInputFilePath());
 		
 		String cmdRetStr = clProcess.runCommand();
 		
@@ -510,7 +517,7 @@ public class CalculatorService
 		clProcess.addCommandLineStr("dgst");
 		clProcess.addCommandLineStr(encryptDecryptParams.getHashFunction());
 		
-		if(encryptDecryptParams.getBinaryOutputFile() == true)
+		if(encryptDecryptParams.getBinaryOutputFileEnabled() == true)
 			
 		{
 			clProcess.addCommandLineStr("-binary"); 
@@ -525,7 +532,7 @@ public class CalculatorService
 		
 		clProcess.addCommandLineStr("-out");
 		clProcess.addCommandLineStr(encryptDecryptParams.getOutputFilePath());
-		clProcess.addCommandLineStr(encryptDecryptParams.getEncryptDecryptFilePath());
+		clProcess.addCommandLineStr(encryptDecryptParams.getInputFilePath());
 		
 		String cmdRetStr = clProcess.runCommand();
 		
@@ -540,7 +547,7 @@ public class CalculatorService
 		clProcess.addCommandLineStr("dgst");
 		clProcess.addCommandLineStr(encryptDecryptParams.getHashFunction());
 		
-		if(encryptDecryptParams.getBinaryOutputFile( )== true)
+		if(encryptDecryptParams.getBinaryOutputFileEnabled( )== true)
 		{
 			clProcess.addCommandLineStr("-binary"); 
 		}
@@ -552,7 +559,7 @@ public class CalculatorService
 		
 		clProcess.addCommandLineStr("-out");
 		clProcess.addCommandLineStr(encryptDecryptParams.getOutputFilePath());
-		clProcess.addCommandLineStr(encryptDecryptParams.getEncryptDecryptFilePath());
+		clProcess.addCommandLineStr(encryptDecryptParams.getInputFilePath());
 		
 		String cmdRetStr = clProcess.runCommand();
 		
@@ -588,4 +595,51 @@ public class CalculatorService
 		
 		return passwdLen;
 	}
+	
+	public static String convertFileToHex(String fileName) throws IOException  
+	{
+        StringBuilder result = new StringBuilder();
+        StringBuilder hex = new StringBuilder();
+        StringBuilder input = new StringBuilder();
+
+        int count = 0;
+        int value;
+
+        try (InputStream inputStream = Files.newInputStream(Paths.get(fileName))) 
+        {
+			while ((value = inputStream.read()) != -1) 
+			{
+
+			    hex.append(String.format("%02X ", value));
+
+			    if (!Character.isISOControl(value)) 
+			    {
+			        input.append((char) value);
+			    } 
+			    else 
+			    {
+			        input.append(UNKNOWN_CHARACTER);
+			    }
+
+			    if (count == 14) 
+			    {
+			        result.append(String.format("%-60s | %s%n", hex, input));
+			        hex.setLength(0);
+			        input.setLength(0);
+			        count = 0;
+			    } 
+			    else 
+			    {
+			        count++;
+			    }
+			}
+		}
+        
+        if (count > 0) 
+        {
+            result.append(String.format("%-60s | %s%n", hex, input));
+        }
+
+        return result.toString();
+    }
 }

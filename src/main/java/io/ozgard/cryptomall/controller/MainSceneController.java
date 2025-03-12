@@ -19,10 +19,12 @@ import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.PasswordField;
+import javafx.scene.control.RadioButton;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
+import javafx.scene.control.ToggleGroup;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -42,6 +44,14 @@ public class MainSceneController implements Initializable
 	@Autowired
 	EncryptDecryptParams encryptDecryptParams;
 	
+	@FXML
+	@Autowired
+	RadioButton radioButtonVerifySignature;
+	@FXML
+	@Autowired
+	RadioButton radioButtonGenSignature;
+	@Autowired
+	ToggleGroup radioToppleGroup;
 	@FXML
 	@Autowired
 	TextField textFieldWorkingDirectory;
@@ -67,6 +77,9 @@ public class MainSceneController implements Initializable
 	@Autowired
 	TitledPane titledPaneKeygenSettings;
 	@FXML
+	@Autowired
+	TitledPane titledPanePrimeGeneration;
+	@FXML
 	PasswordField passFieldKeyGenFilePasswd;
 	@FXML
 	@Autowired
@@ -83,6 +96,15 @@ public class MainSceneController implements Initializable
 	@FXML
 	@Autowired
 	TextField textFieldEncryptDecryptBrowseKeyFile;
+	@FXML
+	@Autowired
+	TextField textFieldSignVerifyInputFilePath;
+	@FXML
+	@Autowired
+	TextField textFieldSignVerifyKeyFilePath;
+	@FXML
+	@Autowired
+	TextField textFieldSignVerifySignedFilePath;
 	@FXML
 	@Autowired
 	TextField textFieldEncryptDecryptBrowseFile;
@@ -102,6 +124,9 @@ public class MainSceneController implements Initializable
 	Tab tabEncryptDecrypt;
 	@FXML
 	@Autowired
+	Tab tabSignVerify;
+	@FXML
+	@Autowired
 	ComboBox<String> comboEncryptDecryptCipher;
 	@FXML
 	@Autowired
@@ -109,6 +134,9 @@ public class MainSceneController implements Initializable
 	@FXML
 	@Autowired
 	ComboBox<String> comboEncryptDecryptType;
+	@FXML
+	@Autowired
+	ComboBox<String> comboSignVerifyHashFunction;
 	@FXML
 	@Autowired
 	CheckBox checkBoxEncryptDecryptAddSalt;
@@ -132,7 +160,11 @@ public class MainSceneController implements Initializable
 	Button buttonEncryptDecryptFileTrigger;
 	@FXML
 	@Autowired
+	Button buttonSignVerifySignedFileBrowse;
+	@FXML
+	@Autowired
 	CheckBox checkBoxEncryptDecryptBinaryOutput;
+	
 	static public void setStage(Stage stageT)
 	{
 		stage = stageT;
@@ -160,6 +192,7 @@ public class MainSceneController implements Initializable
 		titledPaneKeygenProcessing.setCollapsible(false);
 		titledPaneEncryptDecryptFile.setCollapsible(false);
 		titledPaneEncryptDecryptText.setCollapsible(false);
+		titledPanePrimeGeneration.setCollapsible(false);
 		
 		checkBoxEncryptDecyptEnableRSAOaep.setDisable(true);
 		comboEncryptDecyptHashFunction.setDisable(true);
@@ -185,9 +218,18 @@ public class MainSceneController implements Initializable
 		String [] hashList = calculatorService.getListHashFuncs();
 		comboEncryptDecyptHashFunction.setItems(FXCollections.observableArrayList(hashList));
 		comboEncryptDecyptHashFunction.setValue(hashList[0]);
+		comboSignVerifyHashFunction.setItems(FXCollections.observableArrayList(hashList));
+		comboSignVerifyHashFunction.setValue(hashList[0]);
 		
 		tabKeyGenerate.setDisable(true);
 		tabEncryptDecrypt.setDisable(true);
+		tabSignVerify.setDisable(true);
+		
+		textFieldSignVerifyInputFilePath.setText("Select Input File");
+		textFieldSignVerifyKeyFilePath.setText("Select Private Key File");
+		textFieldSignVerifySignedFilePath.setText("Not Used in This Mode");
+		textFieldSignVerifySignedFilePath.setDisable(true);
+		buttonSignVerifySignedFileBrowse.setDisable(true);
 	}
 	
 	@FXML
@@ -204,6 +246,7 @@ public class MainSceneController implements Initializable
 			textFieldWorkingDirectory.setText(selectedDirectory.getAbsolutePath());
 			tabKeyGenerate.setDisable(false);
 			tabEncryptDecrypt.setDisable(false);
+			tabSignVerify.setDisable(false);
         }
 	}
 	
@@ -426,6 +469,60 @@ public class MainSceneController implements Initializable
 	}
 	
 	@FXML
+	void radioButtonVerifySignatureOnMouseClicked()
+	{
+		
+	}
+	
+	@FXML
+	void radioButtonGenerateSignatureOnMouseClicked()
+	{
+		radioButtonGenSignature.setSelected(true);
+		radioButtonVerifySignature.setSelected(false);
+		textFieldSignVerifyInputFilePath.setText("Select Input File");
+		textFieldSignVerifyKeyFilePath.setText("Select Private Key File");
+		textFieldSignVerifySignedFilePath.setText("Not Used in This Mode");
+		textFieldSignVerifySignedFilePath.setDisable(true);
+		buttonSignVerifySignedFileBrowse.setDisable(true);	
+	}
+	
+	@FXML
+	void buttonGenerateVerifySignatureOnMouseClicked()
+	{
+		radioButtonGenSignature.setSelected(false);
+		radioButtonVerifySignature.setSelected(true);
+		textFieldSignVerifyInputFilePath.setText("Select Original File");
+		textFieldSignVerifyKeyFilePath.setText("Select Public Key File");
+		textFieldSignVerifySignedFilePath.setText("Select Signature File");
+		textFieldSignVerifySignedFilePath.setDisable(false);
+		buttonSignVerifySignedFileBrowse.setDisable(false);	
+	}
+	
+	@FXML
+	void buttonPrimeGenerateOnMouseClicked()
+	{
+		
+	}
+	
+	@FXML
+	void buttonSignVerifyInputFileBrowseOnMouseClicked()
+	{
+		browseFile("Select Input File", textFieldSignVerifyInputFilePath);
+	}
+	
+	@FXML
+	void buttonSignVerifyKeyFileBrowseOnMouseClicked()
+	{
+		browseFile("Select Key File", textFieldSignVerifyKeyFilePath);
+	}
+	
+	@FXML
+	void buttonSignVerifySignedFileBrowseOnMouseClicked()
+	{
+		browseFile("Select Signed File", textFieldSignVerifySignedFilePath);
+	}
+	
+	@FXML
 	void buttonKeyFileConvertConvertOnMouseClicked()
 	{
 		String outputFileName = textFieldWorkingDirectory.getText() + "\\" + textFieldKeyFileConvertFilePath.getText().split("\\\\")[textFieldKeyFileConvertFilePath.getText().split("\\\\").length - 1].split("\\.")[0];
@@ -515,11 +612,11 @@ public class MainSceneController implements Initializable
 	{
 		String outputFileName = textFieldWorkingDirectory.getText() + "\\" + textFieldEncryptDecryptBrowseFile.getText().split("\\\\")[textFieldEncryptDecryptBrowseFile.getText().split("\\\\").length - 1].split("\\.")[0];
 		
-		encryptDecryptParams.setAddSalt(checkBoxEncryptDecryptAddSalt.isSelected());
+		encryptDecryptParams.setAddSaltEnabled(checkBoxEncryptDecryptAddSalt.isSelected());
 		encryptDecryptParams.setCipher(comboEncryptDecryptCipher.getValue());
 		encryptDecryptParams.setEnableRSAOaep(checkBoxEncryptDecyptEnableRSAOaep.isSelected());
-		encryptDecryptParams.setEncryptDecryptFilePath("\"" + textFieldEncryptDecryptBrowseFile.getText() + "\"");
-		encryptDecryptParams.setEncryptDecryptTextInput(textAreaEncryptDecryptText.getText());
+		encryptDecryptParams.setInputFilePath("\"" + textFieldEncryptDecryptBrowseFile.getText() + "\"");
+		encryptDecryptParams.setTextInput(textAreaEncryptDecryptText.getText());
 		encryptDecryptParams.setHashFunction(comboEncryptDecyptHashFunction.getValue());
 		encryptDecryptParams.setKeyFilePath("\"" + textFieldEncryptDecryptBrowseKeyFile.getText() + "\"");
 		encryptDecryptParams.setPassPhrase(textFieldEncryptDecryptPassPhrase.getText());
@@ -548,20 +645,20 @@ public class MainSceneController implements Initializable
 				
 			case EncryptDecryptParams.ENCRYPT_DECRYPT_TYPE_GENERATE_HASH:
 				encryptDecryptParams.setOutputFilePath("\"" + outputFileName + encryptDecryptParams.getHashFunction().replaceAll(" ", "") + ".hash" + "\"");
-				encryptDecryptParams.setBinaryOutputFile(checkBoxEncryptDecryptBinaryOutput.isSelected());
+				encryptDecryptParams.setBinaryOutputFileEnabled(checkBoxEncryptDecryptBinaryOutput.isSelected());
 				setLogOutput(calculatorService.generateHash(encryptDecryptParams));
 				break;
 				
 			case EncryptDecryptParams.ENCRYPT_DECRYPT_TYPE_GENERATE_CMAC:
 				encryptDecryptParams.setOutputFilePath("\"" + outputFileName + encryptDecryptParams.getHashFunction().replaceAll(" ", "") + encryptDecryptParams.getCipher().replaceAll(" ", "") + ".cmac" + "\"");
 				encryptDecryptParams.setCipher(comboEncryptDecryptCipher.getValue().replaceFirst("-", ""));
-				encryptDecryptParams.setBinaryOutputFile(checkBoxEncryptDecryptBinaryOutput.isSelected());
+				encryptDecryptParams.setBinaryOutputFileEnabled(checkBoxEncryptDecryptBinaryOutput.isSelected());
 				setLogOutput(calculatorService.generateCMac(encryptDecryptParams));
 				break;
 				
 			case EncryptDecryptParams.ENCRYPT_DECRYPT_TYPE_GENERATE_HMAC:
 				encryptDecryptParams.setOutputFilePath("\"" + outputFileName + encryptDecryptParams.getHashFunction().replaceAll(" ", "") + ".hmac" + "\"");
-				encryptDecryptParams.setBinaryOutputFile(checkBoxEncryptDecryptBinaryOutput.isSelected());
+				encryptDecryptParams.setBinaryOutputFileEnabled(checkBoxEncryptDecryptBinaryOutput.isSelected());
 				setLogOutput(calculatorService.generateHMac(encryptDecryptParams));
 				break;
 		}
@@ -604,6 +701,25 @@ public class MainSceneController implements Initializable
 		{
 			comboEncryptDecyptHashFunction.setDisable(true);
 		}
+	}
+	
+	private void browseFile(String title, TextField textField)
+	{
+		FileChooser fileChooser = new FileChooser();
+		
+		fileChooser.setTitle(title);
+		
+		if(textFieldWorkingDirectory.getText().contains("\\") == true)
+		{
+			fileChooser.setInitialDirectory(new File(textFieldWorkingDirectory.getText()));
+		}
+		
+		final File selectedFile = fileChooser.showOpenDialog(stage);
+        
+		if (selectedFile != null) 
+        {
+			textField.setText(selectedFile.getAbsolutePath());
+        }
 	}
 	
 	void setLogOutput(String text)
