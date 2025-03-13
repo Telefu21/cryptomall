@@ -41,7 +41,7 @@
    <bottom>
       <HBox prefHeight="238.0" prefWidth="730.0" BorderPane.alignment="CENTER">
          <children>
-            <TextArea fx:id="texAreaLogOutput" prefHeight="181.0" prefWidth="710.0" HBox.hgrow="ALWAYS">
+            <TextArea fx:id="texAreaLogOutput" prefHeight="211.0" prefWidth="710.0" HBox.hgrow="ALWAYS">
                <HBox.margin>
                   <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                </HBox.margin>
@@ -184,9 +184,9 @@
                         </HBox>
                         <ComboBox fx:id="comboSignVerifyHashFunction" layoutX="102.0" layoutY="50.0" prefHeight="26.0" prefWidth="174.0" />
                         <Label fx:id="labelSignVerifyHashFunction" layoutX="14.0" layoutY="54.0" prefHeight="18.0" prefWidth="94.0" text="Hash Function:" />
-                        <RadioButton fx:id="radioButtonGenerateSignature" layoutX="193.0" layoutY="22.0" mnemonicParsing="false" onMouseClicked="#radioButtonGenerateSignatureOnMouseClicked" prefHeight="18.0" prefWidth="154.0" selected="true" text="Generate Signature " />
-                        <RadioButton fx:id="radioButtonVerifySignature" layoutX="382.0" layoutY="22.0" mnemonicParsing="false" onMouseClicked="#radioButtonVerifySignatureOnMouseClicked" prefHeight="18.0" prefWidth="154.0" text="Verify Signature " />
-                        <CheckBox fx:id="checkBoxSignVerifyEnableRSAPSS" layoutX="325.0" layoutY="53.0" mnemonicParsing="false" onAction="#checkBoxEncryptDecyptEnableRSAOaepOnAction" prefHeight="18.0" prefWidth="128.0" text="Enable RSA PSS" />
+                        <RadioButton fx:id="radioButtonGenerateSignature" layoutX="193.0" layoutY="22.0" mnemonicParsing="false" onAction="#radioButtonGenerateSignatureOnAction" prefHeight="18.0" prefWidth="154.0" selected="true" text="Generate Signature " />
+                        <RadioButton fx:id="radioButtonVerifySignature" layoutX="382.0" layoutY="22.0" mnemonicParsing="false" onAction="#radioButtonVerifySignatureOnAction" prefHeight="18.0" prefWidth="154.0" text="Verify Signature " />
+                        <CheckBox fx:id="checkBoxSignVerifyEnableRSAPSS" layoutX="325.0" layoutY="53.0" mnemonicParsing="false" onAction="#checkBoxSignVerifyEnableRSAPSSOnAction" prefHeight="18.0" prefWidth="128.0" text="Enable RSA PSS" />
                         <Label fx:id="labelSignVerifySaltLength" layoutX="471.0" layoutY="54.0" prefHeight="18.0" prefWidth="83.0" text="Salt Length:" />
                         <TextField fx:id="textFieldSignVerifySaltLength" layoutX="560.0" layoutY="50.0" text="0" />
                         <Button fx:id="buttonGenerateVerifySignature" layoutX="263.0" layoutY="228.0" mnemonicParsing="false" onMouseClicked="#buttonGenerateVerifySignatureOnMouseClicked" prefHeight="26.0" prefWidth="203.0" text="Generate Signature" />

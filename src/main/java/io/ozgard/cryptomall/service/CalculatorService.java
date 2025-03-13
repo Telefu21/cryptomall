@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import io.ozgard.cryptomall.model.CommandLineProcess;
 import io.ozgard.cryptomall.params.EncryptDecryptParams;
 import io.ozgard.cryptomall.params.KeyGenerateParams;
+import io.ozgard.cryptomall.params.SignVerifyPrimeParams;
 
 @Service
 public class CalculatorService 
@@ -642,4 +643,62 @@ public class CalculatorService
 
         return result.toString();
     }
+
+	public String generatePrime(SignVerifyPrimeParams signVerifyPrimeParams) 
+	{
+		clProcess.addCommandLineStr("openssl"); 
+		clProcess.addCommandLineStr("prime");
+		clProcess.addCommandLineStr("-generate");
+		clProcess.addCommandLineStr("-bits");
+		clProcess.addCommandLineStr(signVerifyPrimeParams.getPrimeLength());
+		
+		if(signVerifyPrimeParams.isHexOutPrime()== true)
+		{
+			clProcess.addCommandLineStr("-hex"); 
+		}
+		
+		if(signVerifyPrimeParams.isSafePrime()== true)
+		{
+			clProcess.addCommandLineStr("-safe"); 
+		}
+		
+		String cmdRetStr = clProcess.runCommand();
+		
+		clProcess.clearCommandLineStr();
+		
+		return cmdRetStr;
+	}
+
+	public String generateSignature(SignVerifyPrimeParams signVerifyPrimeParams) 
+	{
+		clProcess.addCommandLineStr("openssl"); 
+		clProcess.addCommandLineStr("dgst");
+		clProcess.addCommandLineStr(signVerifyPrimeParams.getHashFunction());
+		clProcess.addCommandLineStr("-sign");
+		clProcess.addCommandLineStr(signVerifyPrimeParams.getKeyFilePath());
+		
+		if(signVerifyPrimeParams.isRsaPssEnabled( )== true)
+		{
+			clProcess.addCommandLineStr("-sigopt"); 
+			clProcess.addCommandLineStr("rsa_padding_mode:pss");
+			clProcess.addCommandLineStr("-sigopt"); 
+			clProcess.addCommandLineStr("rsa_pss_saltlen:" + signVerifyPrimeParams.getSaltLen());
+		}
+		
+		clProcess.addCommandLineStr("-out");
+		clProcess.addCommandLineStr(signVerifyPrimeParams.getOutputFilePath());
+		clProcess.addCommandLineStr(signVerifyPrimeParams.getInputFilePath());
+		
+		String cmdRetStr = clProcess.runCommand();
+		
+		clProcess.clearCommandLineStr();
+		
+		return cmdRetStr;
+	}
+
+	public String verifySignature(SignVerifyPrimeParams signVerifyPrimeParams) 
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

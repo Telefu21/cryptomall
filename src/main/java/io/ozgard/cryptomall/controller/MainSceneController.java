@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import io.ozgard.cryptomall.params.EncryptDecryptParams;
 import io.ozgard.cryptomall.params.KeyGenerateParams;
+import io.ozgard.cryptomall.params.SignVerifyPrimeParams;
 import io.ozgard.cryptomall.service.CalculatorService;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
@@ -24,7 +25,6 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
-import javafx.scene.control.ToggleGroup;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -43,15 +43,15 @@ public class MainSceneController implements Initializable
 	KeyGenerateParams keygenParams;
 	@Autowired
 	EncryptDecryptParams encryptDecryptParams;
+	@Autowired
+	SignVerifyPrimeParams signVerifyPrimeParams;
 	
 	@FXML
 	@Autowired
 	RadioButton radioButtonVerifySignature;
 	@FXML
 	@Autowired
-	RadioButton radioButtonGenSignature;
-	@Autowired
-	ToggleGroup radioToppleGroup;
+	RadioButton radioButtonGenerateSignature;
 	@FXML
 	@Autowired
 	TextField textFieldWorkingDirectory;
@@ -86,7 +86,13 @@ public class MainSceneController implements Initializable
 	CheckBox checkBoxKeyGenEncryptKeyFile;
 	@FXML
 	@Autowired
+	CheckBox checkBoxPrimeHexOutput;
+	@FXML
+	@Autowired
 	CheckBox checkBoxEncryptDecyptEnableRSAOaep;
+	@FXML
+	@Autowired
+	CheckBox checkBoxGenerateSafePrime;
 	@FXML
 	@Autowired
 	TextArea texAreaLogOutput;
@@ -107,9 +113,15 @@ public class MainSceneController implements Initializable
 	TextField textFieldSignVerifySignedFilePath;
 	@FXML
 	@Autowired
+	TextField textFieldSignVerifySaltLength;
+	@FXML
+	@Autowired
 	TextField textFieldEncryptDecryptBrowseFile;
 	@FXML
 	PasswordField textFieldEncryptDecryptPassPhrase;
+	@FXML
+	@Autowired
+	TextField textFieldPrimeLength;
 	@FXML
 	@Autowired
 	TextField passFieldKeyFileConvertPasswd;
@@ -160,10 +172,16 @@ public class MainSceneController implements Initializable
 	Button buttonEncryptDecryptFileTrigger;
 	@FXML
 	@Autowired
+	Button buttonGenerateVerifySignature;
+	@FXML
+	@Autowired
 	Button buttonSignVerifySignedFileBrowse;
 	@FXML
 	@Autowired
 	CheckBox checkBoxEncryptDecryptBinaryOutput;
+	@FXML
+	@Autowired
+	CheckBox checkBoxSignVerifyEnableRSAPSS;
 	
 	static public void setStage(Stage stageT)
 	{
@@ -230,6 +248,7 @@ public class MainSceneController implements Initializable
 		textFieldSignVerifySignedFilePath.setText("Not Used in This Mode");
 		textFieldSignVerifySignedFilePath.setDisable(true);
 		buttonSignVerifySignedFileBrowse.setDisable(true);
+		textFieldSignVerifySaltLength.setDisable(true);
 	}
 	
 	@FXML
@@ -274,21 +293,7 @@ public class MainSceneController implements Initializable
 	@FXML
 	void browseEncryptDecryptKeyFileOnClick()
 	{
-		FileChooser fileChooser = new FileChooser();
-		
-		fileChooser.setTitle("Select Private Key File");
-		
-		if(textFieldWorkingDirectory.getText().contains("\\") == true)
-		{
-			fileChooser.setInitialDirectory(new File(textFieldWorkingDirectory.getText()));
-		}
-		
-		final File selectedFile = fileChooser.showOpenDialog(stage);
-        
-		if (selectedFile != null) 
-        {
-			textFieldEncryptDecryptBrowseKeyFile.setText(selectedFile.getAbsolutePath());
-        }
+		browseFile("Select Private Key File", textFieldEncryptDecryptBrowseKeyFile);
 	}
 	
 	@FXML
@@ -469,39 +474,63 @@ public class MainSceneController implements Initializable
 	}
 	
 	@FXML
-	void radioButtonVerifySignatureOnMouseClicked()
+	void radioButtonVerifySignatureOnAction()
 	{
-		
-	}
-	
-	@FXML
-	void radioButtonGenerateSignatureOnMouseClicked()
-	{
-		radioButtonGenSignature.setSelected(true);
-		radioButtonVerifySignature.setSelected(false);
-		textFieldSignVerifyInputFilePath.setText("Select Input File");
-		textFieldSignVerifyKeyFilePath.setText("Select Private Key File");
-		textFieldSignVerifySignedFilePath.setText("Not Used in This Mode");
-		textFieldSignVerifySignedFilePath.setDisable(true);
-		buttonSignVerifySignedFileBrowse.setDisable(true);	
-	}
-	
-	@FXML
-	void buttonGenerateVerifySignatureOnMouseClicked()
-	{
-		radioButtonGenSignature.setSelected(false);
+		radioButtonGenerateSignature.setSelected(false);
 		radioButtonVerifySignature.setSelected(true);
 		textFieldSignVerifyInputFilePath.setText("Select Original File");
 		textFieldSignVerifyKeyFilePath.setText("Select Public Key File");
 		textFieldSignVerifySignedFilePath.setText("Select Signature File");
 		textFieldSignVerifySignedFilePath.setDisable(false);
 		buttonSignVerifySignedFileBrowse.setDisable(false);	
+		buttonGenerateVerifySignature.setText("Verify Signature");
+	}
+	
+	@FXML
+	void radioButtonGenerateSignatureOnAction()
+	{
+		radioButtonGenerateSignature.setSelected(true);
+		radioButtonVerifySignature.setSelected(false);
+		textFieldSignVerifyInputFilePath.setText("Select Input File");
+		textFieldSignVerifyKeyFilePath.setText("Select Private Key File");
+		textFieldSignVerifySignedFilePath.setText("Not Used in This Mode");
+		textFieldSignVerifySignedFilePath.setDisable(true);
+		buttonSignVerifySignedFileBrowse.setDisable(true);	
+		buttonGenerateVerifySignature.setText("Generate Signature");
+	}
+	
+	@FXML
+	void buttonGenerateVerifySignatureOnMouseClicked()
+	{
+		String outputFileName = textFieldWorkingDirectory.getText() + "\\" + textFieldSignVerifyInputFilePath.getText().split("\\\\")[textFieldSignVerifyInputFilePath.getText().split("\\\\").length - 1].split("\\.")[0];
+		
+		signVerifyPrimeParams.setInputFilePath("\"" + textFieldSignVerifyInputFilePath.getText() + "\"");
+		signVerifyPrimeParams.setHashFunction(comboSignVerifyHashFunction.getValue().replaceAll(" ", ""));
+		signVerifyPrimeParams.setSaltLen(textFieldSignVerifySaltLength.getText());
+		signVerifyPrimeParams.setKeyFilePath("\"" + textFieldSignVerifyKeyFilePath.getText() + "\"");
+		signVerifyPrimeParams.setRsaPssEnabled(checkBoxSignVerifyEnableRSAPSS.isSelected());
+		signVerifyPrimeParams.setSignatureFilePath("\"" + textFieldSignVerifySignedFilePath.getText() + "\"");
+		
+		if(radioButtonGenerateSignature.isSelected() == true)
+		{
+			signVerifyPrimeParams.setOutputFilePath("\"" + outputFileName + ".signature" + "\"");
+			setLogOutput(calculatorService.generateSignature(signVerifyPrimeParams));
+		}
+		
+		if(radioButtonVerifySignature.isSelected() == true)
+		{
+			setLogOutput(calculatorService.verifySignature(signVerifyPrimeParams));
+		}
 	}
 	
 	@FXML
 	void buttonPrimeGenerateOnMouseClicked()
 	{
+		signVerifyPrimeParams.setPrimeLength(textFieldPrimeLength.getText());
+		signVerifyPrimeParams.setHexOutPrime(checkBoxPrimeHexOutput.isSelected());
+		signVerifyPrimeParams.setSafePrime(checkBoxGenerateSafePrime.isSelected());
 		
+		setLogOutput(calculatorService.generatePrime(signVerifyPrimeParams));
 	}
 	
 	@FXML
@@ -673,21 +702,7 @@ public class MainSceneController implements Initializable
 	@FXML
 	void browseKeyGenConvertFileSelect()
 	{
-		FileChooser fileChooser = new FileChooser();
-		
-		fileChooser.setTitle("Select Input File");
-		
-		if(textFieldWorkingDirectory.getText().contains("\\") == true)
-		{
-			fileChooser.setInitialDirectory(new File(textFieldWorkingDirectory.getText()));
-		}
-		
-		final File selectedFile = fileChooser.showOpenDialog(stage);
-        
-		if (selectedFile != null) 
-        {
-			textFieldKeyFileConvertFilePath.setText(selectedFile.getAbsolutePath());
-        }
+		browseFile("Select Input File", textFieldKeyFileConvertFilePath);
 	}
 	
 	@FXML
@@ -700,6 +715,19 @@ public class MainSceneController implements Initializable
 		else
 		{
 			comboEncryptDecyptHashFunction.setDisable(true);
+		}
+	}
+	
+	@FXML
+	void checkBoxSignVerifyEnableRSAPSSOnAction()
+	{
+		if(checkBoxSignVerifyEnableRSAPSS.isSelected())
+		{
+			textFieldSignVerifySaltLength.setDisable(false);
+		}
+		else
+		{
+			textFieldSignVerifySaltLength.setDisable(true);
 		}
 	}
 	
@@ -724,7 +752,7 @@ public class MainSceneController implements Initializable
 	
 	void setLogOutput(String text)
 	{
-		texAreaLogOutput.setText(/*texAreaLogOutput.getText() +*/  "------------- [" + LocalDate.now() + " Time: " + LocalTime.now() + " ] ------------- \n\n" + text + "\n\n" );
-		//texAreaLogOutput.setScrollTop(Double.MAX_VALUE);
+		texAreaLogOutput.setText(texAreaLogOutput.getText() +  "------------- [" + LocalDate.now() + " Time: " + LocalTime.now() + " ] ------------- \n\n" + text + "\n\n" );
+		texAreaLogOutput.setScrollTop(Double.MAX_VALUE);
 	}
 }
