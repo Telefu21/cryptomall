@@ -698,7 +698,28 @@ public class CalculatorService
 
 	public String verifySignature(SignVerifyPrimeParams signVerifyPrimeParams) 
 	{
-		// TODO Auto-generated method stub
-		return null;
+		clProcess.addCommandLineStr("openssl"); 
+		clProcess.addCommandLineStr("dgst");
+		clProcess.addCommandLineStr(signVerifyPrimeParams.getHashFunction());
+		clProcess.addCommandLineStr("-verify");
+		clProcess.addCommandLineStr(signVerifyPrimeParams.getKeyFilePath());
+		
+		if(signVerifyPrimeParams.isRsaPssEnabled( )== true)
+		{
+			clProcess.addCommandLineStr("-sigopt"); 
+			clProcess.addCommandLineStr("rsa_padding_mode:pss");
+			clProcess.addCommandLineStr("-sigopt"); 
+			clProcess.addCommandLineStr("rsa_pss_saltlen:" + signVerifyPrimeParams.getSaltLen());
+		}
+		
+		clProcess.addCommandLineStr("-signature");
+		clProcess.addCommandLineStr(signVerifyPrimeParams.getSignatureFilePath());
+		clProcess.addCommandLineStr(signVerifyPrimeParams.getInputFilePath());
+		
+		String cmdRetStr = clProcess.runCommand();
+		
+		clProcess.clearCommandLineStr();
+		
+		return cmdRetStr;
 	}
 }

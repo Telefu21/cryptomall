@@ -139,6 +139,9 @@ public class MainSceneController implements Initializable
 	Tab tabSignVerify;
 	@FXML
 	@Autowired
+	Tab tabCertificateProcessing;
+	@FXML
+	@Autowired
 	ComboBox<String> comboEncryptDecryptCipher;
 	@FXML
 	@Autowired
@@ -242,6 +245,7 @@ public class MainSceneController implements Initializable
 		tabKeyGenerate.setDisable(true);
 		tabEncryptDecrypt.setDisable(true);
 		tabSignVerify.setDisable(true);
+		tabCertificateProcessing.setDisable(true);
 		
 		textFieldSignVerifyInputFilePath.setText("Select Input File");
 		textFieldSignVerifyKeyFilePath.setText("Select Private Key File");
@@ -266,6 +270,7 @@ public class MainSceneController implements Initializable
 			tabKeyGenerate.setDisable(false);
 			tabEncryptDecrypt.setDisable(false);
 			tabSignVerify.setDisable(false);
+			tabCertificateProcessing.setDisable(false);
         }
 	}
 	
@@ -513,7 +518,7 @@ public class MainSceneController implements Initializable
 		
 		if(radioButtonGenerateSignature.isSelected() == true)
 		{
-			signVerifyPrimeParams.setOutputFilePath("\"" + outputFileName + ".signature" + "\"");
+			signVerifyPrimeParams.setOutputFilePath("\"" + outputFileName + signVerifyPrimeParams.getHashFunction() +  ".signature" + "\"");
 			setLogOutput(calculatorService.generateSignature(signVerifyPrimeParams));
 		}
 		

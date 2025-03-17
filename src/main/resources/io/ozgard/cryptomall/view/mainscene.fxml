@@ -39,7 +39,7 @@
       </HBox>
    </top>
    <bottom>
-      <HBox prefHeight="238.0" prefWidth="730.0" BorderPane.alignment="CENTER">
+      <HBox prefHeight="243.0" prefWidth="730.0" BorderPane.alignment="CENTER">
          <children>
             <TextArea fx:id="texAreaLogOutput" prefHeight="211.0" prefWidth="710.0" HBox.hgrow="ALWAYS">
                <HBox.margin>
@@ -52,7 +52,7 @@
    <center>
       <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
         <tabs>
-          <Tab fx:id="tabKeyGenerate" text="Key Processing">
+          <Tab fx:id="tabKeyGenerate" text="Key &amp; File Processing">
             <content>
               <AnchorPane fx:id="keyProcessingTab" minHeight="0.0" minWidth="0.0" prefHeight="348.0" prefWidth="730.0">
                      <children>
@@ -78,7 +78,7 @@
                               </AnchorPane>
                           </content>
                         </TitledPane>
-                        <TitledPane fx:id="titledPaneKeygenProcessing" animated="false" layoutX="16.0" layoutY="238.0" prefHeight="122.0" prefWidth="698.0" text="Key File Conversion &amp; Viewing">
+                        <TitledPane fx:id="titledPaneKeygenProcessing" animated="false" layoutX="16.0" layoutY="238.0" prefHeight="122.0" prefWidth="698.0" text="File Conversion &amp; Viewing">
                            <content>
                               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="102.0" prefWidth="697.0">
                                  <children>
@@ -96,7 +96,7 @@
                      </children></AnchorPane>
             </content>
           </Tab>
-          <Tab fx:id="tabEncryptDecrypt" text="Encrypt/Decyrpt/Hash/MAC Processing">
+          <Tab fx:id="tabEncryptDecrypt" text="Encrypt &amp; Decyrpt &amp; Hash &amp; MAC">
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
@@ -136,7 +136,7 @@
                      </children></AnchorPane>
             </content>
           </Tab>
-            <Tab fx:id="tabSignVerify" text="Sign/Verify/Prime">
+            <Tab fx:id="tabSignVerify" text="Sign &amp; Verify &amp; Prime">
                <content>
                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
@@ -209,7 +209,12 @@
                      </padding></AnchorPane>
                </content>
             </Tab>
-            <Tab fx:id="tabCertificateManagement" text="Certificate Management">
+            <Tab fx:id="tabCertificateProcessing" text="Certificate Processing">
+               <content>
+                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+               </content>
+            </Tab>
+            <Tab fx:id="tabHexViewCrc" text="CRC &amp; Hex View ">
                <content>
                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
                </content>
