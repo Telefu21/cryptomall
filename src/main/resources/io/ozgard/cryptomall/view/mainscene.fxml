@@ -41,7 +41,7 @@
    <bottom>
       <HBox prefHeight="243.0" prefWidth="730.0" BorderPane.alignment="CENTER">
          <children>
-            <TextArea fx:id="texAreaLogOutput" prefHeight="211.0" prefWidth="710.0" HBox.hgrow="ALWAYS">
+            <TextArea fx:id="texAreaLogOutput" editable="false" prefHeight="211.0" prefWidth="710.0" HBox.hgrow="ALWAYS">
                <HBox.margin>
                   <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                </HBox.margin>
@@ -216,7 +216,28 @@
             </Tab>
             <Tab fx:id="tabHexViewCrc" text="CRC &amp; Hex View ">
                <content>
-                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <HBox layoutX="8.0" layoutY="144.0" prefHeight="42.0" prefWidth="714.0">
+                           <children>
+                              <TextField fx:id="textFieldHexViewFilePath" editable="false" prefHeight="26.0" prefWidth="596.0">
+                                 <HBox.margin>
+                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                 </HBox.margin>
+                              </TextField>
+                              <Button fx:id="buttonHexViewFileBrowse" mnemonicParsing="false" onMouseClicked="#buttonHexViewFileBrowseOnMouseClicked" prefHeight="26.0" prefWidth="98.0" text="Browse">
+                                 <HBox.margin>
+                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                 </HBox.margin>
+                              </Button>
+                           </children>
+                        </HBox>
+                        <HBox layoutX="19.0" layoutY="14.0" prefHeight="129.0" prefWidth="691.0">
+                           <children>
+                              <TextArea fx:id="textAreaHexView" editable="false" prefHeight="126.0" prefWidth="692.0" />
+                           </children>
+                        </HBox>
+                     </children></AnchorPane>
                </content>
             </Tab>
         </tabs>

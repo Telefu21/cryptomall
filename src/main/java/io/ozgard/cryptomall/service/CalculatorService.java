@@ -597,7 +597,7 @@ public class CalculatorService
 		return passwdLen;
 	}
 	
-	public static String convertFileToHex(String fileName) throws IOException  
+	public String convertFileToHex(String fileName, Boolean isInputIncluded) throws IOException  
 	{
         StringBuilder result = new StringBuilder();
         StringBuilder hex = new StringBuilder();
@@ -640,7 +640,7 @@ public class CalculatorService
         {
             result.append(String.format("%-60s | %s%n", hex, input));
         }
-
+        
         return result.toString();
     }
 

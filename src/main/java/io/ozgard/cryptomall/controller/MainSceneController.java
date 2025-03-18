@@ -1,6 +1,7 @@
 package io.ozgard.cryptomall.controller;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -124,6 +125,9 @@ public class MainSceneController implements Initializable
 	TextField textFieldPrimeLength;
 	@FXML
 	@Autowired
+	TextField textFieldHexViewFilePath;
+	@FXML
+	@Autowired
 	TextField passFieldKeyFileConvertPasswd;
 	@FXML
 	@Autowired
@@ -167,6 +171,9 @@ public class MainSceneController implements Initializable
 	@FXML
 	@Autowired
 	TextArea textAreaEncryptDecryptText;
+	@FXML
+	@Autowired
+	TextArea textAreaHexView;
 	@FXML
 	@Autowired
 	Button buttonEncryptDecryptTextTrigger;
@@ -299,6 +306,21 @@ public class MainSceneController implements Initializable
 	void browseEncryptDecryptKeyFileOnClick()
 	{
 		browseFile("Select Private Key File", textFieldEncryptDecryptBrowseKeyFile);
+	}
+	
+	@FXML
+	void buttonHexViewFileBrowseOnMouseClicked()
+	{
+		browseFile("Select File to View in Hex Format", textFieldHexViewFilePath);
+		
+		try 
+		{
+			textAreaHexView.setText(calculatorService.convertFileToHex(textFieldHexViewFilePath.getText(), false));
+		} 
+		catch (IOException e) 
+		{
+			e.printStackTrace();
+		}
 	}
 	
 	@FXML
