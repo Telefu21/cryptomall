@@ -10,11 +10,14 @@ import java.util.ResourceBundle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import io.ozgard.cryptomall.params.CrcParams;
 import io.ozgard.cryptomall.params.EncryptDecryptParams;
 import io.ozgard.cryptomall.params.KeyGenerateParams;
 import io.ozgard.cryptomall.params.SignVerifyPrimeParams;
+import io.ozgard.cryptomall.service.CRCService;
 import io.ozgard.cryptomall.service.CalculatorService;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -39,6 +42,8 @@ public class MainSceneController implements Initializable
 	
 	@Autowired
 	private CalculatorService calculatorService;
+	@Autowired
+	private CRCService crcService;
 	
 	@Autowired
 	KeyGenerateParams keygenParams;
@@ -46,6 +51,8 @@ public class MainSceneController implements Initializable
 	EncryptDecryptParams encryptDecryptParams;
 	@Autowired
 	SignVerifyPrimeParams signVerifyPrimeParams;
+	@Autowired
+	CrcParams crcParams;
 	
 	@FXML
 	@Autowired
@@ -53,6 +60,18 @@ public class MainSceneController implements Initializable
 	@FXML
 	@Autowired
 	RadioButton radioButtonGenerateSignature;
+	@FXML
+	@Autowired
+	RadioButton radioButtonCRC8;
+	@FXML
+	@Autowired
+	RadioButton radioButtonCRC16;
+	@FXML
+	@Autowired
+	RadioButton radioButtonCRC32;
+	@FXML
+	@Autowired
+	RadioButton radioButtonCRC64;
 	@FXML
 	@Autowired
 	TextField textFieldWorkingDirectory;
@@ -90,6 +109,12 @@ public class MainSceneController implements Initializable
 	CheckBox checkBoxPrimeHexOutput;
 	@FXML
 	@Autowired
+	CheckBox checkBoxReflectInput;
+	@FXML
+	@Autowired
+	CheckBox checkBoxReflectOutput;
+	@FXML
+	@Autowired
 	CheckBox checkBoxEncryptDecyptEnableRSAOaep;
 	@FXML
 	@Autowired
@@ -103,6 +128,15 @@ public class MainSceneController implements Initializable
 	@FXML
 	@Autowired
 	TextField textFieldEncryptDecryptBrowseKeyFile;
+	@FXML
+	@Autowired
+	TextField textFieldCRCPolynominal;
+	@FXML
+	@Autowired
+	TextField textFieldCRCInitValue;
+	@FXML
+	@Autowired
+	TextField textFieldCRCXorValue;
 	@FXML
 	@Autowired
 	TextField textFieldSignVerifyInputFilePath;
@@ -147,6 +181,9 @@ public class MainSceneController implements Initializable
 	@FXML
 	@Autowired
 	ComboBox<String> comboEncryptDecryptCipher;
+	@FXML
+	@Autowired
+	ComboBox<String> comboBoxPredifinedCRC;
 	@FXML
 	@Autowired
 	ComboBox<String> comboEncryptDecyptHashFunction;
@@ -260,6 +297,8 @@ public class MainSceneController implements Initializable
 		textFieldSignVerifySignedFilePath.setDisable(true);
 		buttonSignVerifySignedFileBrowse.setDisable(true);
 		textFieldSignVerifySaltLength.setDisable(true);
+		
+		radioButtonCRC8OnAction();
 	}
 	
 	@FXML
@@ -480,6 +519,142 @@ public class MainSceneController implements Initializable
 				titledPaneEncryptDecryptText.setText("Text HMAC Generation");
 			}
 		}
+	}
+	
+	@FXML
+	void radioButtonCRC8OnAction()
+	{
+		radioButtonCRC8.setSelected(true);
+		radioButtonCRC16.setSelected(false);
+		radioButtonCRC32.setSelected(false);
+		radioButtonCRC64.setSelected(false);
+		
+		setCrcPredefinedValues(CrcParams.Crc8PredefinedParams);
+	}
+	
+	@FXML
+	void radioButtonCRC16OnAction()
+	{
+		radioButtonCRC8.setSelected(false);
+		radioButtonCRC16.setSelected(true);
+		radioButtonCRC32.setSelected(false);
+		radioButtonCRC64.setSelected(false);
+		
+		setCrcPredefinedValues(CrcParams.Crc16PredefinedParams);
+	}
+	
+	@FXML
+	void radioButtonCRC32OnAction()
+	{
+		radioButtonCRC8.setSelected(false);
+		radioButtonCRC16.setSelected(false);
+		radioButtonCRC32.setSelected(true);
+		radioButtonCRC64.setSelected(false);
+		
+		setCrcPredefinedValues(CrcParams.Crc32PredefinedParams);
+	}
+	
+	@FXML
+	void radioButtonCRC64OnAction()
+	{
+		radioButtonCRC8.setSelected(false);
+		radioButtonCRC16.setSelected(false);
+		radioButtonCRC32.setSelected(false);
+		radioButtonCRC64.setSelected(true);
+		
+		setCrcPredefinedValues(CrcParams.Crc64PredefinedParams);
+	}
+	
+	private void setCrcPredefinedValues(CrcParams [] crcParams)
+	{
+		ObservableList<String> itemList = FXCollections.observableArrayList();
+		
+		for(int i = 0; i < crcParams.length; i++)
+		{
+			itemList.add(crcParams[i].getPredefinedParamsStr());
+		}
+		
+		comboBoxPredifinedCRC.setItems(itemList);
+		comboBoxPredifinedCRC.setValue(crcParams[0].getPredefinedParamsStr());
+		
+		setCrcWidgetValues(crcParams[0]);
+	}
+	
+	private void setCrcWidgetValues(CrcParams crcParams)
+	{
+		textFieldCRCPolynominal.setText("0x" + Long.toHexString(crcParams.getPolynomial()));
+		textFieldCRCInitValue.setText("0x" + Long.toHexString(crcParams.getInit()));
+		textFieldCRCXorValue.setText("0x" + Long.toHexString(crcParams.getFinalXor()));
+		
+		if(radioButtonCRC32.isSelected())
+		{
+			textFieldCRCPolynominal.setText(textFieldCRCPolynominal.getText().replaceAll("0xFFFFFFFF", "0x"));
+			textFieldCRCInitValue.setText(textFieldCRCInitValue.getText().replaceAll("0xFFFFFFFF", "0x"));
+			textFieldCRCXorValue.setText(textFieldCRCXorValue.getText().replaceAll("0xFFFFFFFF", "0x"));
+		}
+		
+		checkBoxReflectInput.setSelected(crcParams.isReflectIn());
+		checkBoxReflectOutput.setSelected(crcParams.isReflectOut());	
+	}
+	
+	@FXML
+	void comboBoxPredifinedCRCOnAction()
+	{
+		int index = 0;
+		
+		if(radioButtonCRC8.isSelected())
+		{
+			for(index = 0; index < CrcParams.Crc8PredefinedParams.length; index++)
+			{
+				if(CrcParams.Crc8PredefinedParams[index].getPredefinedParamsStr() == comboBoxPredifinedCRC.getValue())
+				{
+					setCrcWidgetValues(CrcParams.Crc8PredefinedParams[index]);
+					return;
+				}
+			}
+		}
+		
+		if(radioButtonCRC16.isSelected())
+		{
+			for(index = 0; index < CrcParams.Crc16PredefinedParams.length; index++)
+			{
+				if(CrcParams.Crc16PredefinedParams[index].getPredefinedParamsStr() == comboBoxPredifinedCRC.getValue())
+				{
+					setCrcWidgetValues(CrcParams.Crc16PredefinedParams[index]);
+					return;
+				}
+			}
+		}
+		
+		if(radioButtonCRC32.isSelected())
+		{
+			for(index = 0; index < CrcParams.Crc32PredefinedParams.length; index++)
+			{
+				if(CrcParams.Crc32PredefinedParams[index].getPredefinedParamsStr() == comboBoxPredifinedCRC.getValue())
+				{
+					setCrcWidgetValues(CrcParams.Crc32PredefinedParams[index]);
+					return;
+				}
+			}
+		}
+		
+		if(radioButtonCRC64.isSelected())
+		{
+			for(index = 0; index < CrcParams.Crc64PredefinedParams.length; index++)
+			{
+				if(CrcParams.Crc64PredefinedParams[index].getPredefinedParamsStr() == comboBoxPredifinedCRC.getValue())
+				{
+					setCrcWidgetValues(CrcParams.Crc64PredefinedParams[index]);
+					return;
+				}
+			}
+		}
+	}
+	
+	@FXML
+	void buttonCRCGenerateOnMouseClicked()
+	{
+		
 	}
 	
 	@FXML

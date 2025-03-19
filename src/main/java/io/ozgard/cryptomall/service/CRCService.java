@@ -1,7 +1,10 @@
 package io.ozgard.cryptomall.service;
 
+import org.springframework.stereotype.Service;
+
 import io.ozgard.cryptomall.params.CrcParams;
 
+@Service
 public class CRCService
 {
 	 private CrcParams 	crcParams;
@@ -9,7 +12,7 @@ public class CRCService
 	 private long[] 	crctable;
 	 private long   	mask;
 
-	 private static long reflect(long in, int count)
+	 private long reflect(long in, int count)
 	 {
 	     long ret = in;
 	     
@@ -30,12 +33,12 @@ public class CRCService
 	     return ret;
 	 }
 	
-	 public static long calculateCRC(CrcParams crcParams, byte[] data)
+	 public long calculateCRC(CrcParams crcParams, byte[] data)
 	 {
 	     return calculateCRC(crcParams, data, 0, data.length);
 	 }
 	
-	 public static long calculateCRC(CrcParams crcParams, byte[] data, int offset, int length)
+	 public long calculateCRC(CrcParams crcParams, byte[] data, int offset, int length)
 	 {
 	     long curValue = crcParams.getInit();
 	     long topBit = 1L << (crcParams.getWidth() - 1);
@@ -161,7 +164,7 @@ public class CRCService
 	     for (int i=0; i< 256; i++)
 	     {
 	         tmp[0] = (byte)i;
-	         crctable[i] = CRCService.calculateCRC(tableParams, tmp);
+	         crctable[i] = calculateCRC(tableParams, tmp);
 	     }
 	 }
 	 
