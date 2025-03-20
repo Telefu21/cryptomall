@@ -8,9 +8,15 @@ import io.ozgard.cryptomall.params.CrcParams;
 public class CRCService
 {
 	 private CrcParams 	crcParams;
+	
 	 private long   	initValue;
 	 private long[] 	crctable;
 	 private long   	mask;
+	 
+	 public CRCService()
+	 {
+		 
+	 }
 
 	 private long reflect(long in, int count)
 	 {
@@ -117,11 +123,6 @@ public class CRCService
 	     return curValue;
 	 }
 	
-	 public long update (long curValue, byte[] chunk)
-	 {
-	     return update(curValue, chunk, 0, chunk.length);
-	 }
-	
 	 public long finalCRC(long curValue)
 	 {
 	     long ret=curValue;
@@ -145,9 +146,9 @@ public class CRCService
 	     return finalCRC(crc);
 	 }
 	
-	 public CRCService(CrcParams crcParams)
+	 public void init(CrcParams crcParams)
 	 {
-	     this.crcParams = new CrcParams(crcParams);
+	     this.crcParams = crcParams;//new CrcParams(crcParams);
 	
 	     initValue = (crcParams.isReflectIn()) ? reflect(crcParams.getInit(), crcParams.getWidth()) : crcParams.getInit();
 	     this.mask = ((crcParams.getWidth() >= 64) ? 0 : (1L << crcParams.getWidth())) - 1;

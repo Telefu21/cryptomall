@@ -247,7 +247,7 @@
                         <Label layoutX="20.0" layoutY="335.0" text="XOR Value (Hex):" />
                         <TextField fx:id="textFieldCRCXorValue" layoutX="141.0" layoutY="331.0" prefHeight="26.0" prefWidth="130.0" />
                         <TextArea fx:id="textAreaCRCInput" layoutX="279.0" layoutY="255.0" prefHeight="67.0" prefWidth="430.0" />
-                        <Button fx:id="buttonCRCGenerate" layoutX="443.0" layoutY="330.0" mnemonicParsing="false" onMouseClicked="#buttonCRCGenerateOnMouseClicked" prefHeight="26.0" prefWidth="198.0" text="Generate CRC in Text Area" />
+                        <Button fx:id="buttonCRCGenerate" layoutX="404.0" layoutY="331.0" mnemonicParsing="false" onMouseClicked="#buttonCRCGenerateOnMouseClicked" prefHeight="26.0" prefWidth="245.0" text="Generate CRC for Text Input and File" />
                         <CheckBox fx:id="checkBoxCRCInputHex" layoutX="279.0" layoutY="335.0" mnemonicParsing="false" text="Hex In Text Area" />
                      </children></AnchorPane>
                </content>

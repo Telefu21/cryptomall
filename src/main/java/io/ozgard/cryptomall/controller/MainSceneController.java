@@ -1,7 +1,10 @@
 package io.ozgard.cryptomall.controller;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -165,6 +168,9 @@ public class MainSceneController implements Initializable
 	TextField passFieldKeyFileConvertPasswd;
 	@FXML
 	@Autowired
+	TextArea textAreaCRCInput;
+	@FXML
+	@Autowired
 	ComboBox<String> comboKeyFileConvertConversionOptions;
 	@FXML
 	@Autowired
@@ -196,6 +202,9 @@ public class MainSceneController implements Initializable
 	@FXML
 	@Autowired
 	CheckBox checkBoxEncryptDecryptAddSalt;
+	@FXML
+	@Autowired
+	CheckBox checkBoxCRCInputHex;
 	@FXML
 	@Autowired
 	TitledPane titledPaneEncryptDecryptFile;
@@ -350,18 +359,21 @@ public class MainSceneController implements Initializable
 	@FXML
 	void buttonHexViewFileBrowseOnMouseClicked()
 	{
-		browseFile("Select File to View in Hex Format", textFieldHexViewFilePath);
+		Boolean isFileSelected = browseFile("Select File to View in Hex Format", textFieldHexViewFilePath);
 		
-		try 
+		if(isFileSelected)
 		{
-			textAreaHexView.setText(calculatorService.convertFileToHex(textFieldHexViewFilePath.getText(), false));
-		} 
-		catch (IOException e) 
-		{
-			e.printStackTrace();
+			try 
+			{
+				textAreaHexView.setText(calculatorService.convertFileToHex(textFieldHexViewFilePath.getText(), false));
+			} 
+			catch (IOException e) 
+			{
+				e.printStackTrace();
+			}
 		}
 	}
-	
+
 	@FXML
 	void keyGenEncryptKeyFileCheckBox()
 	{
@@ -524,6 +536,8 @@ public class MainSceneController implements Initializable
 	@FXML
 	void radioButtonCRC8OnAction()
 	{
+		crcParams.setWidth(8);
+		
 		radioButtonCRC8.setSelected(true);
 		radioButtonCRC16.setSelected(false);
 		radioButtonCRC32.setSelected(false);
@@ -535,6 +549,8 @@ public class MainSceneController implements Initializable
 	@FXML
 	void radioButtonCRC16OnAction()
 	{
+		crcParams.setWidth(16);
+		
 		radioButtonCRC8.setSelected(false);
 		radioButtonCRC16.setSelected(true);
 		radioButtonCRC32.setSelected(false);
@@ -546,6 +562,8 @@ public class MainSceneController implements Initializable
 	@FXML
 	void radioButtonCRC32OnAction()
 	{
+		crcParams.setWidth(32);
+		
 		radioButtonCRC8.setSelected(false);
 		radioButtonCRC16.setSelected(false);
 		radioButtonCRC32.setSelected(true);
@@ -557,6 +575,8 @@ public class MainSceneController implements Initializable
 	@FXML
 	void radioButtonCRC64OnAction()
 	{
+		crcParams.setWidth(64);
+		
 		radioButtonCRC8.setSelected(false);
 		radioButtonCRC16.setSelected(false);
 		radioButtonCRC32.setSelected(false);
@@ -582,17 +602,21 @@ public class MainSceneController implements Initializable
 	
 	private void setCrcWidgetValues(CrcParams crcParams)
 	{
-		textFieldCRCPolynominal.setText("0x" + Long.toHexString(crcParams.getPolynomial()));
-		textFieldCRCInitValue.setText("0x" + Long.toHexString(crcParams.getInit()));
-		textFieldCRCXorValue.setText("0x" + Long.toHexString(crcParams.getFinalXor()));
+		String polynomial = "0x" + Long.toHexString(crcParams.getPolynomial()).toUpperCase();
+		String init = "0x" + Long.toHexString(crcParams.getInit()).toUpperCase();
+		String finalXorValue = "0x" + Long.toHexString(crcParams.getFinalXor()).toUpperCase();
 		
 		if(radioButtonCRC32.isSelected())
 		{
-			textFieldCRCPolynominal.setText(textFieldCRCPolynominal.getText().replaceAll("0xFFFFFFFF", "0x"));
-			textFieldCRCInitValue.setText(textFieldCRCInitValue.getText().replaceAll("0xFFFFFFFF", "0x"));
-			textFieldCRCXorValue.setText(textFieldCRCXorValue.getText().replaceAll("0xFFFFFFFF", "0x"));
+			polynomial = polynomial.replaceAll("0xFFFFFFFF", "0x");
+			init = init.replaceAll("0xFFFFFFFF", "0x");
+			finalXorValue = finalXorValue.replaceAll("0xFFFFFFFF", "0x");
 		}
 		
+		textFieldCRCPolynominal.setText(polynomial);
+		textFieldCRCInitValue.setText(init);
+		textFieldCRCXorValue.setText(finalXorValue);
+	
 		checkBoxReflectInput.setSelected(crcParams.isReflectIn());
 		checkBoxReflectOutput.setSelected(crcParams.isReflectOut());	
 	}
@@ -653,8 +677,94 @@ public class MainSceneController implements Initializable
 	
 	@FXML
 	void buttonCRCGenerateOnMouseClicked()
-	{
+	{	
+		if(textAreaHexView.getText().length() == 0)
+		{
+			setLogOutput("!!! No File data Available, CRC not calculated !!!!");
+		}
 		
+		if(textAreaHexView.getText().length() != 0)
+		{
+			StringBuilder 	fileStringBuilder = new StringBuilder("");
+			String fileString = "";
+
+			try 
+			{
+				FileReader CRCInputFileReader = new FileReader((new File(textFieldHexViewFilePath.getText())));
+				int ch;
+				
+				while((ch = CRCInputFileReader.read())!=-1)
+				{	
+					fileStringBuilder.append(Character.toString(ch));
+				}
+				
+				fileString = fileStringBuilder.toString();
+				
+				CRCInputFileReader.close();
+			} 
+			catch (FileNotFoundException e1) 
+			{
+				e1.printStackTrace();
+			} 
+			catch (IOException e1) 
+			{
+				e1.printStackTrace();
+			}
+			
+			setLogOutput(generateCRC(fileString, "File \"" + textFieldHexViewFilePath.getText().split("\\\\")[textFieldHexViewFilePath.getText().split("\\\\").length - 1]));
+		}
+		
+		if(textAreaCRCInput.getText().length() == 0)
+		{
+			setLogOutput("!!! No Text Area data Available, CRC not calculated !!!!");
+		}
+		
+		if(textAreaCRCInput.getText().length() != 0)
+		{
+			String textInputStr = textAreaCRCInput.getText();
+			
+			if(checkBoxCRCInputHex.isSelected())
+			{
+				//TODO: Hex To String
+			}
+			
+			setLogOutput(generateCRC(textInputStr, "Text Area"));
+		}	
+	}
+	
+	private String generateCRC(String str, String inputSource)
+	{
+		String	outStr ="";
+		
+		crcParams.setPolynomial((new BigInteger(textFieldCRCPolynominal.getText().replaceAll("0x", ""), 16)).longValue());
+		crcParams.setFinalXor((new BigInteger(textFieldCRCXorValue.getText().replaceAll("0x", ""), 16)).longValue());
+		crcParams.setInit((new BigInteger(textFieldCRCInitValue.getText().replaceAll("0x", ""), 16)).longValue()); 
+		
+		crcParams.setReflectIn(checkBoxReflectInput.isSelected());
+		crcParams.setReflectOut(checkBoxReflectOutput.isSelected());
+		
+		crcService.init(crcParams);
+		
+		long [] crcTable = crcService.getCrcTable();
+		
+		if (str.length() != 0)
+		{
+			outStr = "CRC Result for " + inputSource + " : 0x" + Long.toHexString( crcService.calculateCRC(crcParams, str.getBytes())).toUpperCase() + "\n\n";
+		}
+		
+		outStr += "CRC Table:\n";
+		
+		for(int i = 0; i < crcTable.length; i++)
+		{
+			outStr += "0x" + Long.toHexString(crcTable[i]).toUpperCase() + " ";
+			
+			if((i + 1) % 16 == 0)
+			{
+				outStr += "\n";
+			}
+		}
+		
+		return outStr;
 	}
 	
 	@FXML
@@ -933,8 +1043,10 @@ public class MainSceneController implements Initializable
 		}
 	}
 	
-	private void browseFile(String title, TextField textField)
+	private Boolean browseFile(String title, TextField textField)
 	{
+		Boolean isFileSelected = false;
+		
 		FileChooser fileChooser = new FileChooser();
 		
 		fileChooser.setTitle(title);
@@ -948,8 +1060,11 @@ public class MainSceneController implements Initializable
         
 		if (selectedFile != null) 
         {
+			isFileSelected = true;
 			textField.setText(selectedFile.getAbsolutePath());
         }
+		
+		return isFileSelected;
 	}
 	
 	void setLogOutput(String text)
