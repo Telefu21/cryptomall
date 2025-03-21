@@ -112,6 +112,9 @@ public class MainSceneController implements Initializable
 	CheckBox checkBoxPrimeHexOutput;
 	@FXML
 	@Autowired
+	CheckBox checkBoxEncDecHashMacHexIn;
+	@FXML
+	@Autowired
 	CheckBox checkBoxReflectInput;
 	@FXML
 	@Autowired
@@ -1013,6 +1016,17 @@ public class MainSceneController implements Initializable
 	@FXML
 	void buttonEncryptDecryptTextOnMouseClick()
 	{
+		String textInputStr = "";
+		
+		if(checkBoxEncDecHashMacHexIn.isSelected())
+		{
+			textInputStr = calculatorService.hexToAscii(textAreaEncryptDecryptText.getText().replaceAll(" 0x", "").replaceAll("0x", ""));
+		}
+		
+		if(!checkBoxEncDecHashMacHexIn.isSelected())
+		{
+			textInputStr = textAreaEncryptDecryptText.getText();
+		}
 		
 	}
 	

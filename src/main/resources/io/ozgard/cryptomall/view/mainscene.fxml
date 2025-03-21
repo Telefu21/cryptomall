@@ -105,7 +105,8 @@
                             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="181.0" prefWidth="716.0">
                                  <children>
                                     <TextArea fx:id="textAreaEncryptDecryptText" layoutX="7.0" layoutY="14.0" prefHeight="66.0" prefWidth="622.0" />
-                                    <Button fx:id="buttonEncryptDecryptTextTrigger" layoutX="635.0" layoutY="15.0" mnemonicParsing="false" onMouseClicked="#buttonEncryptDecryptTextOnMouseClick" prefHeight="65.0" prefWidth="70.0" text="Encrypt&#10;   Text" />
+                                    <Button fx:id="buttonEncryptDecryptTextTrigger" layoutX="636.0" layoutY="42.0" mnemonicParsing="false" onMouseClicked="#buttonEncryptDecryptTextOnMouseClick" prefHeight="37.0" prefWidth="70.0" text="Encrypt" />
+                                    <CheckBox fx:id="checkBoxEncDecHashMacHexIn" layoutX="636.0" layoutY="14.0" mnemonicParsing="false" prefHeight="18.0" prefWidth="70.0" text="Hex In" />
                                  </children>
                               </AnchorPane>
                           </content>
