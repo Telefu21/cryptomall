@@ -721,11 +721,16 @@ public class MainSceneController implements Initializable
 		
 		if(textAreaCRCInput.getText().length() != 0)
 		{
-			String textInputStr = textAreaCRCInput.getText();
+			String textInputStr = "";
 			
 			if(checkBoxCRCInputHex.isSelected())
 			{
-				//TODO: Hex To String
+				textInputStr = calculatorService.hexToAscii(textAreaCRCInput.getText().replaceAll(" 0x", "").replaceAll("0x", ""));
+			}
+			
+			if(!checkBoxCRCInputHex.isSelected())
+			{
+				textInputStr = textAreaCRCInput.getText();
 			}
 			
 			setLogOutput(generateCRC(textInputStr, "Text Area"));
