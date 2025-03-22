@@ -1,11 +1,15 @@
 package io.ozgard.cryptomall.controller;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ResourceBundle;
@@ -368,7 +372,7 @@ public class MainSceneController implements Initializable
 		{
 			try 
 			{
-				textAreaHexView.setText(calculatorService.convertFileToHex(textFieldHexViewFilePath.getText(), false));
+				textAreaHexView.setText(calculatorService.convertFileToHex(textFieldHexViewFilePath.getText()));
 			} 
 			catch (IOException e) 
 			{
@@ -960,11 +964,17 @@ public class MainSceneController implements Initializable
 	void buttonEncryptDecryptFileOnMouseClick()
 	{
 		String outputFileName = textFieldWorkingDirectory.getText() + "\\" + textFieldEncryptDecryptBrowseFile.getText().split("\\\\")[textFieldEncryptDecryptBrowseFile.getText().split("\\\\").length - 1].split("\\.")[0];
+		String inputFileName = "\"" + textFieldEncryptDecryptBrowseFile.getText() + "\"";
 		
+		setLogOutput(encryptDecryptProcessor(outputFileName, inputFileName));
+	}
+
+	private String encryptDecryptProcessor(String outputFileName, String inputFileName)
+	{
 		encryptDecryptParams.setAddSaltEnabled(checkBoxEncryptDecryptAddSalt.isSelected());
 		encryptDecryptParams.setCipher(comboEncryptDecryptCipher.getValue());
 		encryptDecryptParams.setEnableRSAOaep(checkBoxEncryptDecyptEnableRSAOaep.isSelected());
-		encryptDecryptParams.setInputFilePath("\"" + textFieldEncryptDecryptBrowseFile.getText() + "\"");
+		encryptDecryptParams.setInputFilePath(inputFileName);
 		encryptDecryptParams.setTextInput(textAreaEncryptDecryptText.getText());
 		encryptDecryptParams.setHashFunction(comboEncryptDecyptHashFunction.getValue());
 		encryptDecryptParams.setKeyFilePath("\"" + textFieldEncryptDecryptBrowseKeyFile.getText() + "\"");
@@ -974,48 +984,46 @@ public class MainSceneController implements Initializable
 		{
 			case EncryptDecryptParams.ENCRYPT_DECRYPT_TYPE_SYM_ENCRYPTION:
 				encryptDecryptParams.setOutputFilePath("\"" + outputFileName + "_" + encryptDecryptParams.getCipher().replaceAll(" ", "") + ".enc" + "\"");
-				setLogOutput(calculatorService.symmetricEncrypt(encryptDecryptParams));
-				break;
+				return(calculatorService.symmetricEncrypt(encryptDecryptParams));
 				
 			case EncryptDecryptParams.ENCRYPT_DECRYPT_TYPE_ASYM_ENCRYPTION:
 				encryptDecryptParams.setOutputFilePath("\"" + outputFileName + ".enc" + "\"");
-				setLogOutput(calculatorService.asymmetricEncrypt(encryptDecryptParams));
-				break;
+				return(calculatorService.asymmetricEncrypt(encryptDecryptParams));
 				
 			case EncryptDecryptParams.ENCRYPT_DECRYPT_TYPE_SYM_DECRYPTION:
 				encryptDecryptParams.setOutputFilePath("\"" + outputFileName + ".dec" + "\"");
-				setLogOutput(calculatorService.symmetricDecrypt(encryptDecryptParams));
-				break;
+				return(calculatorService.symmetricDecrypt(encryptDecryptParams));
 				
 			case EncryptDecryptParams.ENCRYPT_DECRYPT_TYPE_ASYM_DECRYPTION:
 				encryptDecryptParams.setOutputFilePath("\"" + outputFileName + ".dec" + "\"");
-				setLogOutput(calculatorService.asymmetricDecrypt(encryptDecryptParams));
-				break;
+				return(calculatorService.asymmetricDecrypt(encryptDecryptParams));
 				
 			case EncryptDecryptParams.ENCRYPT_DECRYPT_TYPE_GENERATE_HASH:
 				encryptDecryptParams.setOutputFilePath("\"" + outputFileName + encryptDecryptParams.getHashFunction().replaceAll(" ", "") + ".hash" + "\"");
 				encryptDecryptParams.setBinaryOutputFileEnabled(checkBoxEncryptDecryptBinaryOutput.isSelected());
-				setLogOutput(calculatorService.generateHash(encryptDecryptParams));
-				break;
+				return(calculatorService.generateHash(encryptDecryptParams));
 				
 			case EncryptDecryptParams.ENCRYPT_DECRYPT_TYPE_GENERATE_CMAC:
 				encryptDecryptParams.setOutputFilePath("\"" + outputFileName + encryptDecryptParams.getHashFunction().replaceAll(" ", "") + encryptDecryptParams.getCipher().replaceAll(" ", "") + ".cmac" + "\"");
 				encryptDecryptParams.setCipher(comboEncryptDecryptCipher.getValue().replaceFirst("-", ""));
 				encryptDecryptParams.setBinaryOutputFileEnabled(checkBoxEncryptDecryptBinaryOutput.isSelected());
-				setLogOutput(calculatorService.generateCMac(encryptDecryptParams));
-				break;
+				return(calculatorService.generateCMac(encryptDecryptParams));
 				
 			case EncryptDecryptParams.ENCRYPT_DECRYPT_TYPE_GENERATE_HMAC:
 				encryptDecryptParams.setOutputFilePath("\"" + outputFileName + encryptDecryptParams.getHashFunction().replaceAll(" ", "") + ".hmac" + "\"");
 				encryptDecryptParams.setBinaryOutputFileEnabled(checkBoxEncryptDecryptBinaryOutput.isSelected());
-				setLogOutput(calculatorService.generateHMac(encryptDecryptParams));
-				break;
+				return(calculatorService.generateHMac(encryptDecryptParams));
 		}
+		
+		return "";
 	}
 	
 	@FXML
 	void buttonEncryptDecryptTextOnMouseClick()
 	{
+		String outputFileName = textFieldWorkingDirectory.getText() + "\\" + "tmpout";
+		String inputFileName = textFieldWorkingDirectory.getText() + "\\" + "tmpin";
+		
 		String textInputStr = "";
 		
 		if(checkBoxEncDecHashMacHexIn.isSelected())
@@ -1028,6 +1036,29 @@ public class MainSceneController implements Initializable
 			textInputStr = textAreaEncryptDecryptText.getText();
 		}
 		
+		try
+		{
+			FileWriter writer = new FileWriter(inputFileName);
+			
+            writer.write(textInputStr);
+            
+            writer.close();
+        } 
+		catch (IOException e) 
+		{
+            System.out.println("An error occurred while writing to the file: " + e.getMessage());
+        }
+		
+		encryptDecryptProcessor(outputFileName, inputFileName);
+		
+		try 
+		{
+			setLogOutput(calculatorService.convertFileToHex(encryptDecryptParams.getOutputFilePath().replaceAll("\"", "")));
+		} 
+		catch (IOException e) 
+		{
+			e.printStackTrace();
+		}
 	}
 	
 	@FXML

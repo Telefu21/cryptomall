@@ -597,7 +597,7 @@ public class CalculatorService
 		return passwdLen;
 	}
 	
-	public String convertFileToHex(String fileName, Boolean isInputIncluded) throws IOException  
+	public String convertFileToHex(String fileName) throws IOException  
 	{
         StringBuilder result = new StringBuilder();
         StringBuilder hex = new StringBuilder();
