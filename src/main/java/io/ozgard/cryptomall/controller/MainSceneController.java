@@ -1,6 +1,5 @@
 package io.ozgard.cryptomall.controller;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -8,8 +7,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ResourceBundle;
@@ -17,6 +14,7 @@ import java.util.ResourceBundle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import io.ozgard.cryptomall.params.CertificateTableParams;
 import io.ozgard.cryptomall.params.CrcParams;
 import io.ozgard.cryptomall.params.EncryptDecryptParams;
 import io.ozgard.cryptomall.params.KeyGenerateParams;
@@ -33,9 +31,13 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.Tab;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -60,6 +62,8 @@ public class MainSceneController implements Initializable
 	SignVerifyPrimeParams signVerifyPrimeParams;
 	@Autowired
 	CrcParams crcParams;
+	@Autowired
+	CertificateTableParams certificateTableParams;
 	
 	@FXML
 	@Autowired
@@ -245,6 +249,9 @@ public class MainSceneController implements Initializable
 	@FXML
 	@Autowired
 	CheckBox checkBoxSignVerifyEnableRSAPSS;
+	@FXML
+	@Autowired
+	TableView<CertificateTableParams> tableViewCertificateParams;
 	
 	static public void setStage(Stage stageT)
 	{
@@ -315,6 +322,38 @@ public class MainSceneController implements Initializable
 		textFieldSignVerifySaltLength.setDisable(true);
 		
 		radioButtonCRC8OnAction();
+		
+		tableViewCertificateParams.setEditable(true);
+		
+		TableColumn<CertificateTableParams, String> tableColumnCertificateElementsName = new TableColumn<CertificateTableParams, String>("");
+		tableColumnCertificateElementsName.setCellValueFactory(new PropertyValueFactory<CertificateTableParams, String>("elementName"));
+		
+		TableColumn<CertificateTableParams, String> tableColumnRootCertificate = new TableColumn<CertificateTableParams, String>("Root Certificate (CA)");
+		tableColumnRootCertificate.setCellValueFactory(new PropertyValueFactory<CertificateTableParams, String>("rootCertificate"));
+		tableColumnRootCertificate.setCellFactory(TextFieldTableCell.forTableColumn());
+		
+		TableColumn<CertificateTableParams, String> tableColumnIntermediateCertificate = new TableColumn<CertificateTableParams, String>("Intermediate Certificate (CA)");
+		tableColumnIntermediateCertificate.setCellValueFactory(new PropertyValueFactory<CertificateTableParams, String>("intermediateCertificate"));
+		tableColumnIntermediateCertificate.setCellFactory(TextFieldTableCell.forTableColumn());
+		
+		TableColumn<CertificateTableParams, String> tableColumnEndEntityCertificate = new TableColumn<CertificateTableParams, String>("End Entity Certificate (CA)");
+		tableColumnEndEntityCertificate.setCellValueFactory(new PropertyValueFactory<CertificateTableParams, String>("endEntitiyCertificate"));
+		tableColumnEndEntityCertificate.setCellFactory(TextFieldTableCell.forTableColumn());
+		
+		tableViewCertificateParams.getColumns().add(tableColumnCertificateElementsName);
+		tableViewCertificateParams.getColumns().add(tableColumnRootCertificate);
+		tableViewCertificateParams.getColumns().add(tableColumnIntermediateCertificate);
+		tableViewCertificateParams.getColumns().add(tableColumnEndEntityCertificate);
+	
+		ObservableList<CertificateTableParams> itemList = FXCollections.observableArrayList();
+		
+		for(int i = 0; i < CertificateTableParams.certificateTableParamsRows.length; i++)
+		{
+			itemList.add(CertificateTableParams.certificateTableParamsRows[i]);
+		}
+		
+		tableViewCertificateParams.setItems(itemList);
+		//tableViewCertificateParams.getItems().add(CertificateTableParams.certificateTableParamsRows[0]);
 	}
 	
 	@FXML

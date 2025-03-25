@@ -15,6 +15,8 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.Tab;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
@@ -43,6 +45,8 @@ public class JavaFxApp extends Application
                     context.registerBean(Tab.class);
                     context.registerBean(RadioButton.class);
                     context.registerBean(ToggleGroup.class);
+                    context.registerBean(TableView.class);
+                    context.registerBean(TableColumn.class);
                 };
                 
         this.context = new SpringApplicationBuilder()
