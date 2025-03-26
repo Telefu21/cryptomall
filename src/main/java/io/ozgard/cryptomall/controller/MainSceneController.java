@@ -32,6 +32,7 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableColumn.CellEditEvent;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
@@ -330,15 +331,18 @@ public class MainSceneController implements Initializable
 		
 		TableColumn<CertificateTableParams, String> tableColumnRootCertificate = new TableColumn<CertificateTableParams, String>("Root Certificate (CA)");
 		tableColumnRootCertificate.setCellValueFactory(new PropertyValueFactory<CertificateTableParams, String>("rootCertificate"));
-		tableColumnRootCertificate.setCellFactory(TextFieldTableCell.forTableColumn());
+		tableColumnRootCertificate.setCellFactory(TextFieldTableCell.<CertificateTableParams>forTableColumn());
+		tableColumnRootCertificate.setOnEditCommit((CellEditEvent<CertificateTableParams, String> t) -> {((CertificateTableParams)t.getTableView().getItems().get(t.getTablePosition().getRow())).setRootCertificate(t.getNewValue());});
 		
 		TableColumn<CertificateTableParams, String> tableColumnIntermediateCertificate = new TableColumn<CertificateTableParams, String>("Intermediate Certificate (CA)");
 		tableColumnIntermediateCertificate.setCellValueFactory(new PropertyValueFactory<CertificateTableParams, String>("intermediateCertificate"));
-		tableColumnIntermediateCertificate.setCellFactory(TextFieldTableCell.forTableColumn());
+		tableColumnIntermediateCertificate.setCellFactory(TextFieldTableCell.<CertificateTableParams>forTableColumn());
+		tableColumnIntermediateCertificate.setOnEditCommit((CellEditEvent<CertificateTableParams, String> t) -> {((CertificateTableParams)t.getTableView().getItems().get(t.getTablePosition().getRow())).setIntermediateCertificate(t.getNewValue());});
 		
 		TableColumn<CertificateTableParams, String> tableColumnEndEntityCertificate = new TableColumn<CertificateTableParams, String>("End Entity Certificate (CA)");
 		tableColumnEndEntityCertificate.setCellValueFactory(new PropertyValueFactory<CertificateTableParams, String>("endEntitiyCertificate"));
-		tableColumnEndEntityCertificate.setCellFactory(TextFieldTableCell.forTableColumn());
+		tableColumnEndEntityCertificate.setCellFactory(TextFieldTableCell.<CertificateTableParams>forTableColumn());
+		tableColumnEndEntityCertificate.setOnEditCommit((CellEditEvent<CertificateTableParams, String> t) -> {((CertificateTableParams)t.getTableView().getItems().get(t.getTablePosition().getRow())).setEndEntitiyCertificate(t.getNewValue());});
 		
 		tableViewCertificateParams.getColumns().add(tableColumnCertificateElementsName);
 		tableViewCertificateParams.getColumns().add(tableColumnRootCertificate);
@@ -353,7 +357,6 @@ public class MainSceneController implements Initializable
 		}
 		
 		tableViewCertificateParams.setItems(itemList);
-		//tableViewCertificateParams.getItems().add(CertificateTableParams.certificateTableParamsRows[0]);
 	}
 	
 	@FXML
