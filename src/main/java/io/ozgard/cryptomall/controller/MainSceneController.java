@@ -104,6 +104,15 @@ public class MainSceneController implements Initializable
 	ComboBox<String> comboKeygenElipticCurveName;
 	@FXML
 	@Autowired
+	ComboBox<String> comboCertRootHashFunction;
+	@FXML
+	@Autowired
+	ComboBox<String> comboCertIntermediateHashFunction;
+	@FXML
+	@Autowired
+	ComboBox<String> comboCertEndEntityHashFunction;
+	@FXML
+	@Autowired
 	TitledPane titledPaneKeygenProcessing;
 	@FXML
 	@Autowired
@@ -253,6 +262,36 @@ public class MainSceneController implements Initializable
 	@FXML
 	@Autowired
 	TableView<CertificateTableParams> tableViewCertificateParams;
+	@FXML
+	@Autowired
+	TextField textFieldCertRootBrowse;
+	@FXML
+	@Autowired
+	TextField textFieldCertIntermediateBrowse;
+	@FXML
+	@Autowired
+	TextField textFieldCertEndEntityBrowse;
+	@FXML
+	@Autowired
+	Button buttonCertRootBrowse;
+	@FXML
+	@Autowired
+	Button buttonCertIntermediateBrowse;
+	@FXML
+	@Autowired
+	Button buttonCertEndEntityBrowse;
+	@FXML
+	@Autowired
+	RadioButton radioButtonGenerateCertificate;
+	@FXML
+	@Autowired
+	RadioButton radioButtonVerifyCertificate;
+	@FXML
+	@Autowired
+	CheckBox checkBoxCertTwoTierVerify;
+	@FXML
+	@Autowired
+	Button buttonCertGenerateVerify;
 	
 	static public void setStage(Stage stageT)
 	{
@@ -271,7 +310,8 @@ public class MainSceneController implements Initializable
 		comboKeyGenKeyLength.setItems(FXCollections.observableArrayList(KeyGenerateParams.KEYGEN_KEY_LENGHT_512,KeyGenerateParams.KEYGEN_KEY_LENGHT_1024, KeyGenerateParams.KEYGEN_KEY_LENGHT_2048, KeyGenerateParams.KEYGEN_KEY_LENGHT_4096));
 		comboKeyGenKeyLength.setValue(KeyGenerateParams.KEYGEN_KEY_LENGHT_1024);
 		comboKeyFileConvertConversionOptions.setItems(FXCollections.observableArrayList(KeyGenerateParams.KEYGEN_CONVERT_PUB_FROM_PRIV, KeyGenerateParams.KEYGEN_CONVERT_PRIVKEY_TO_VIEW, KeyGenerateParams.KEYGEN_CONVERT_PUBKEY_TO_VIEW,
-				KeyGenerateParams.KEYGEN_CONVERT_PEM_TO_DER, KeyGenerateParams.KEYGEN_CONVERT_DER_TO_PEM, KeyGenerateParams.KEYGEN_CONVERT_TO_BASE64, KeyGenerateParams.KEYGEN_CONVERT_FROM_BASE64));
+				KeyGenerateParams.KEYGEN_CONVERT_PEM_TO_DER, KeyGenerateParams.KEYGEN_CONVERT_DER_TO_PEM, KeyGenerateParams.KEYGEN_CONVERT_TO_BASE64, KeyGenerateParams.KEYGEN_CONVERT_FROM_BASE64, KeyGenerateParams.KEYGEN_CONVERT_VIEW_CERTIFICATE,
+				KeyGenerateParams.KEYGEN_CONVERT_VIEW_CSR, KeyGenerateParams.KEYGEN_CONVERT_VIEW_CRL,KeyGenerateParams.KEYGEN_CONVERT_PEM_TO_ASN1));
 		comboKeyFileConvertConversionOptions.setValue(KeyGenerateParams.KEYGEN_CONVERT_PUB_FROM_PRIV);
 		comboEncryptDecryptType.setItems(FXCollections.observableArrayList(EncryptDecryptParams.ENCRYPT_DECRYPT_TYPE_SYM_ENCRYPTION, EncryptDecryptParams.ENCRYPT_DECRYPT_TYPE_SYM_DECRYPTION, EncryptDecryptParams.ENCRYPT_DECRYPT_TYPE_ASYM_ENCRYPTION, 
 				EncryptDecryptParams.ENCRYPT_DECRYPT_TYPE_ASYM_DECRYPTION, EncryptDecryptParams.ENCRYPT_DECRYPT_TYPE_GENERATE_HASH, EncryptDecryptParams.ENCRYPT_DECRYPT_TYPE_GENERATE_CMAC, EncryptDecryptParams.ENCRYPT_DECRYPT_TYPE_GENERATE_HMAC));
@@ -309,6 +349,12 @@ public class MainSceneController implements Initializable
 		comboEncryptDecyptHashFunction.setValue(hashList[0]);
 		comboSignVerifyHashFunction.setItems(FXCollections.observableArrayList(hashList));
 		comboSignVerifyHashFunction.setValue(hashList[0]);
+		comboCertEndEntityHashFunction.setItems(FXCollections.observableArrayList(hashList));
+		comboCertEndEntityHashFunction.setValue(hashList[0]);
+		comboCertIntermediateHashFunction.setItems(FXCollections.observableArrayList(hashList));
+		comboCertIntermediateHashFunction.setValue(hashList[0]);
+		comboCertRootHashFunction.setItems(FXCollections.observableArrayList(hashList));
+		comboCertRootHashFunction.setValue(hashList[0]);
 		
 		tabKeyGenerate.setDisable(true);
 		tabEncryptDecrypt.setDisable(true);
@@ -328,21 +374,25 @@ public class MainSceneController implements Initializable
 		
 		TableColumn<CertificateTableParams, String> tableColumnCertificateElementsName = new TableColumn<CertificateTableParams, String>("");
 		tableColumnCertificateElementsName.setCellValueFactory(new PropertyValueFactory<CertificateTableParams, String>("elementName"));
+		tableColumnCertificateElementsName.setSortable(false);
 		
 		TableColumn<CertificateTableParams, String> tableColumnRootCertificate = new TableColumn<CertificateTableParams, String>("Root Certificate (CA)");
 		tableColumnRootCertificate.setCellValueFactory(new PropertyValueFactory<CertificateTableParams, String>("rootCertificate"));
 		tableColumnRootCertificate.setCellFactory(TextFieldTableCell.<CertificateTableParams>forTableColumn());
 		tableColumnRootCertificate.setOnEditCommit((CellEditEvent<CertificateTableParams, String> t) -> {((CertificateTableParams)t.getTableView().getItems().get(t.getTablePosition().getRow())).setRootCertificate(t.getNewValue());});
+		tableColumnRootCertificate.setSortable(false);
 		
 		TableColumn<CertificateTableParams, String> tableColumnIntermediateCertificate = new TableColumn<CertificateTableParams, String>("Intermediate Certificate (CA)");
 		tableColumnIntermediateCertificate.setCellValueFactory(new PropertyValueFactory<CertificateTableParams, String>("intermediateCertificate"));
 		tableColumnIntermediateCertificate.setCellFactory(TextFieldTableCell.<CertificateTableParams>forTableColumn());
 		tableColumnIntermediateCertificate.setOnEditCommit((CellEditEvent<CertificateTableParams, String> t) -> {((CertificateTableParams)t.getTableView().getItems().get(t.getTablePosition().getRow())).setIntermediateCertificate(t.getNewValue());});
+		tableColumnIntermediateCertificate.setSortable(false);
 		
 		TableColumn<CertificateTableParams, String> tableColumnEndEntityCertificate = new TableColumn<CertificateTableParams, String>("End Entity Certificate (CA)");
 		tableColumnEndEntityCertificate.setCellValueFactory(new PropertyValueFactory<CertificateTableParams, String>("endEntitiyCertificate"));
 		tableColumnEndEntityCertificate.setCellFactory(TextFieldTableCell.<CertificateTableParams>forTableColumn());
 		tableColumnEndEntityCertificate.setOnEditCommit((CellEditEvent<CertificateTableParams, String> t) -> {((CertificateTableParams)t.getTableView().getItems().get(t.getTablePosition().getRow())).setEndEntitiyCertificate(t.getNewValue());});
+		tableColumnEndEntityCertificate.setSortable(false);
 		
 		tableViewCertificateParams.getColumns().add(tableColumnCertificateElementsName);
 		tableViewCertificateParams.getColumns().add(tableColumnRootCertificate);
@@ -900,6 +950,24 @@ public class MainSceneController implements Initializable
 	}
 	
 	@FXML
+	void buttonCertRootBrowseOnMouseClicked()
+	{
+		browseFile("Select Input File", textFieldCertRootBrowse);
+	}
+	
+	@FXML
+	void buttonCertIntermediateBrowseOnMouseClicked()
+	{
+		browseFile("Select Input File", textFieldCertIntermediateBrowse);
+	}
+	
+	@FXML
+	void buttonCertEndEntityBrowseOnMouseClicked()
+	{
+		browseFile("Select Input File", textFieldCertEndEntityBrowse);
+	}
+	
+	@FXML
 	void buttonSignVerifyInputFileBrowseOnMouseClicked()
 	{
 		browseFile("Select Input File", textFieldSignVerifyInputFilePath);
@@ -998,6 +1066,30 @@ public class MainSceneController implements Initializable
 				keygenParams.setOutputFilePath("\"" + outputFileName + ".b64" + "\"");
 				
 				setLogOutput(calculatorService.convertFileBase64ToAny(keygenParams));
+				break;
+				
+			case KeyGenerateParams.KEYGEN_CONVERT_VIEW_CERTIFICATE:
+				keygenParams.setInputFilePath("\"" + textFieldKeyFileConvertFilePath.getText() + "\"");
+				
+				setLogOutput(calculatorService.convertFileViewCertificate(keygenParams));
+				break;
+				
+			case KeyGenerateParams.KEYGEN_CONVERT_VIEW_CRL:
+				keygenParams.setInputFilePath("\"" + textFieldKeyFileConvertFilePath.getText() + "\"");
+				
+				setLogOutput(calculatorService.convertFileViewCrlCertificate(keygenParams));
+				break;
+				
+			case KeyGenerateParams.KEYGEN_CONVERT_VIEW_CSR:
+				keygenParams.setInputFilePath("\"" + textFieldKeyFileConvertFilePath.getText() + "\"");
+				
+				setLogOutput(calculatorService.convertFileViewCsrCertificate(keygenParams));
+				break;
+				
+			case KeyGenerateParams.KEYGEN_CONVERT_PEM_TO_ASN1:
+				keygenParams.setInputFilePath("\"" + textFieldKeyFileConvertFilePath.getText() + "\"");
+				
+				setLogOutput(calculatorService.convertFilePemToAnsi(keygenParams));
 				break;
 		}
 	}
@@ -1107,6 +1199,30 @@ public class MainSceneController implements Initializable
 	void browseKeyGenConvertFileSelect()
 	{
 		browseFile("Select Input File", textFieldKeyFileConvertFilePath);
+	}
+	
+	@FXML
+	void radioButtonGenerateCertificateOnAction()
+	{
+		
+	}
+	
+	@FXML
+	void radioButtonVerifyCertificateOnAction()
+	{
+		
+	}
+	
+	@FXML
+	void buttonCertGenerateVerifyOnMouseClicked()
+	{
+		
+	}
+	
+	@FXML
+	void checkBoxCertTwoTierVerifyOnAction()
+	{
+		
 	}
 	
 	@FXML

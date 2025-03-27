@@ -748,4 +748,66 @@ public class CalculatorService
 
 	    return hex.toString();
 	}
+
+	public String convertFileViewCertificate(KeyGenerateParams keygenParams) 
+	{
+		clProcess.addCommandLineStr("openssl"); 
+		clProcess.addCommandLineStr("x509");
+		clProcess.addCommandLineStr("-in");
+		clProcess.addCommandLineStr(keygenParams.getInputFilePath());
+		clProcess.addCommandLineStr("-text"); 
+		clProcess.addCommandLineStr("-noout");
+
+		String cmdRetStr = clProcess.runCommand();
+		
+		clProcess.clearCommandLineStr();
+		
+		return cmdRetStr;
+	}
+	
+	public String convertFileViewCsrCertificate(KeyGenerateParams keygenParams) 
+	{
+		clProcess.addCommandLineStr("openssl"); 
+		clProcess.addCommandLineStr("req");
+		clProcess.addCommandLineStr("-in");
+		clProcess.addCommandLineStr(keygenParams.getInputFilePath());
+		clProcess.addCommandLineStr("-text"); 
+		clProcess.addCommandLineStr("-noout");
+
+		String cmdRetStr = clProcess.runCommand();
+		
+		clProcess.clearCommandLineStr();
+		
+		return cmdRetStr;
+	}
+
+	public String convertFileViewCrlCertificate(KeyGenerateParams keygenParams) 
+	{
+		clProcess.addCommandLineStr("openssl"); 
+		clProcess.addCommandLineStr("crl");
+		clProcess.addCommandLineStr("-in");
+		clProcess.addCommandLineStr(keygenParams.getInputFilePath());
+		clProcess.addCommandLineStr("-text"); 
+		clProcess.addCommandLineStr("-noout");
+
+		String cmdRetStr = clProcess.runCommand();
+		
+		clProcess.clearCommandLineStr();
+		
+		return cmdRetStr;
+	}
+
+	public String convertFilePemToAnsi(KeyGenerateParams keygenParams) 
+	{
+		clProcess.addCommandLineStr("openssl"); 
+		clProcess.addCommandLineStr("asn1parse");
+		clProcess.addCommandLineStr("-in");
+		clProcess.addCommandLineStr(keygenParams.getInputFilePath());
+
+		String cmdRetStr = clProcess.runCommand();
+		
+		clProcess.clearCommandLineStr();
+		
+		return cmdRetStr;
+	}
 }

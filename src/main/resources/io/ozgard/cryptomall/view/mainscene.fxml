@@ -53,7 +53,7 @@
    <center>
       <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
         <tabs>
-          <Tab fx:id="tabKeyGenerate" text="Key &amp; File Processing">
+          <Tab fx:id="tabKeyGenerate" text="Key &amp; File Operations">
             <content>
               <AnchorPane fx:id="keyProcessingTab" minHeight="0.0" minWidth="0.0" prefHeight="348.0" prefWidth="730.0">
                      <children>
@@ -215,7 +215,57 @@
                <content>
                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <TableView fx:id="tableViewCertificateParams" layoutX="11.0" layoutY="14.0" prefHeight="170.0" prefWidth="708.0" />
+                        <TableView fx:id="tableViewCertificateParams" layoutX="17.0" layoutY="14.0" prefHeight="150.0" prefWidth="694.0" />
+                        <ComboBox fx:id="comboCertRootHashFunction" layoutX="172.0" layoutY="175.0" prefHeight="26.0" prefWidth="151.0" />
+                        <Label fx:id="labelCertHashFunction" layoutX="26.0" layoutY="179.0" prefHeight="18.0" prefWidth="135.0" text="Select Hash Function:" />
+                        <ComboBox fx:id="comboCertIntermediateHashFunction" layoutX="358.0" layoutY="175.0" prefHeight="26.0" prefWidth="151.0" />
+                        <ComboBox fx:id="comboCertEndEntityHashFunction" layoutX="545.0" layoutY="175.0" prefHeight="26.0" prefWidth="151.0" />
+                        <HBox layoutX="9.0" layoutY="209.0" prefHeight="42.0" prefWidth="714.0">
+                           <children>
+                              <TextField fx:id="textFieldCertRootBrowse" editable="false" prefHeight="26.0" prefWidth="596.0">
+                                 <HBox.margin>
+                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                 </HBox.margin>
+                              </TextField>
+                              <Button fx:id="buttonCertRootBrowse" mnemonicParsing="false" onMouseClicked="#buttonCertRootBrowseOnMouseClicked" prefHeight="26.0" prefWidth="98.0" text="Browse">
+                                 <HBox.margin>
+                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                 </HBox.margin>
+                              </Button>
+                           </children>
+                        </HBox>
+                        <HBox layoutX="8.0" layoutY="248.0" prefHeight="42.0" prefWidth="714.0">
+                           <children>
+                              <TextField fx:id="textFieldCertIntermediateBrowse" editable="false" prefHeight="26.0" prefWidth="596.0">
+                                 <HBox.margin>
+                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                 </HBox.margin>
+                              </TextField>
+                              <Button fx:id="buttonCertIntermediateBrowse" mnemonicParsing="false" onMouseClicked="#buttonCertIntermediateBrowseOnMouseClicked" prefHeight="26.0" prefWidth="98.0" text="Browse">
+                                 <HBox.margin>
+                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                 </HBox.margin>
+                              </Button>
+                           </children>
+                        </HBox>
+                        <HBox layoutX="7.0" layoutY="285.0" prefHeight="42.0" prefWidth="714.0">
+                           <children>
+                              <TextField fx:id="textFieldCertEndEntityBrowse" editable="false" prefHeight="26.0" prefWidth="596.0">
+                                 <HBox.margin>
+                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                 </HBox.margin>
+                              </TextField>
+                              <Button fx:id="buttonCertEndEntityBrowse" mnemonicParsing="false" onMouseClicked="#buttonCertEndEntityBrowseOnMouseClicked" prefHeight="26.0" prefWidth="98.0" text="Browse">
+                                 <HBox.margin>
+                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                 </HBox.margin>
+                              </Button>
+                           </children>
+                        </HBox>
+                        <RadioButton fx:id="radioButtonGenerateCertificate" layoutX="26.0" layoutY="336.0" mnemonicParsing="false" onAction="#radioButtonGenerateCertificateOnAction" prefHeight="18.0" prefWidth="114.0" selected="true" text="Generate Cert" />
+                        <RadioButton fx:id="radioButtonVerifyCertificate" layoutX="161.0" layoutY="336.0" mnemonicParsing="false" onAction="#radioButtonVerifyCertificateOnAction" prefHeight="18.0" prefWidth="102.0" text="Verify Cert " />
+                        <Button fx:id="buttonCertGenerateVerify" layoutX="315.0" layoutY="332.0" mnemonicParsing="false" onMouseClicked="#buttonCertGenerateVerifyOnMouseClicked" prefHeight="26.0" prefWidth="98.0" text="Generate" />
+                        <CheckBox fx:id="checkBoxCertTwoTierVerify" layoutX="565.0" layoutY="336.0" mnemonicParsing="false" onAction="#checkBoxCertTwoTierVerifyOnAction" prefHeight="18.0" prefWidth="146.0" text="Two Tier Verification" />
                      </children></AnchorPane>
                </content>
             </Tab>
