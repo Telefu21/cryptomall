@@ -407,6 +407,8 @@ public class MainSceneController implements Initializable
 		}
 		
 		tableViewCertificateParams.setItems(itemList);
+		
+		radioButtonGenerateCertificateOnAction();
 	}
 	
 	@FXML
@@ -1204,25 +1206,66 @@ public class MainSceneController implements Initializable
 	@FXML
 	void radioButtonGenerateCertificateOnAction()
 	{
-		
+		radioButtonVerifyCertificate.setSelected(false);
+		radioButtonGenerateCertificate.setSelected(true);
+		textFieldCertRootBrowse.setText("Select Key File For Root Certificate");
+		textFieldCertIntermediateBrowse.setText("Select Key File For Intermediate Certificate");
+		textFieldCertEndEntityBrowse.setText("Select Key File For En Entity Certificate");
+		checkBoxCertTwoTierVerify.setDisable(true);
+		checkBoxCertTwoTierVerify.setSelected(false);
+		tableViewCertificateParams.setDisable(false);
+		comboCertRootHashFunction.setDisable(false);
+		comboCertIntermediateHashFunction.setDisable(false);
+		comboCertEndEntityHashFunction.setDisable(false);
+		buttonCertGenerateVerify.setText("Generate");
+		textFieldCertRootBrowse.setDisable(true);
+		buttonCertRootBrowse.setDisable(true);
 	}
 	
 	@FXML
 	void radioButtonVerifyCertificateOnAction()
 	{
-		
+		radioButtonVerifyCertificate.setSelected(true);
+		radioButtonGenerateCertificate.setSelected(false);
+		textFieldCertRootBrowse.setText("Select Root Certificate for Verification");
+		textFieldCertIntermediateBrowse.setText("Select Intermediate Certificate for Verification");
+		textFieldCertEndEntityBrowse.setText("Select End Entity Certificate for Verification");
+		checkBoxCertTwoTierVerify.setDisable(false);
+		checkBoxCertTwoTierVerify.setSelected(false);
+		tableViewCertificateParams.setDisable(true);
+		comboCertRootHashFunction.setDisable(true);
+		comboCertIntermediateHashFunction.setDisable(true);
+		comboCertEndEntityHashFunction.setDisable(true);
+		buttonCertGenerateVerify.setText("Verify");
+		textFieldCertRootBrowse.setDisable(true);
+		buttonCertRootBrowse.setDisable(true);
 	}
 	
 	@FXML
 	void buttonCertGenerateVerifyOnMouseClicked()
 	{
-		
+		calculatorService.generateConfigFilesToWorkingDirectory(textFieldWorkingDirectory.getText(), "root1");
+		calculatorService.generateConfigFilesToWorkingDirectory(textFieldWorkingDirectory.getText(), "Intermediate1");
 	}
 	
 	@FXML
 	void checkBoxCertTwoTierVerifyOnAction()
 	{
+		if(checkBoxCertTwoTierVerify.isSelected())
+		{
+			textFieldCertRootBrowse.setText("");
+			textFieldCertIntermediateBrowse.setText("Select CA Certificate for Verification");
+			textFieldCertRootBrowse.setDisable(true);
+			buttonCertRootBrowse.setDisable(true);
+		}
 		
+		if(!checkBoxCertTwoTierVerify.isSelected())
+		{
+			textFieldCertRootBrowse.setText("Select Root Certificate for Verification");
+			textFieldCertIntermediateBrowse.setText("Select Intermediate Certificate for Verification");
+			textFieldCertRootBrowse.setDisable(false);
+			buttonCertRootBrowse.setDisable(false);
+		}
 	}
 	
 	@FXML

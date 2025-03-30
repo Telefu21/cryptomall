@@ -1,6 +1,8 @@
 package io.ozgard.cryptomall.service;
 
 
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -809,5 +811,82 @@ public class CalculatorService
 		clProcess.clearCommandLineStr();
 		
 		return cmdRetStr;
+	}
+	
+	public void generateConfigFilesToWorkingDirectory(String directoryPath, String fileName) 
+	{		
+		String[] path = directoryPath.split("\\\\");
+		
+		String workingDirectorypathWith1BackSlash = path[0];
+		String workingDirectorypathWith2BackSlash = path[0];
+		String workingDirectorypathWith4BackSlash = path[0];
+		
+		for(int i=1; i < path.length ; i++)
+		{
+			workingDirectorypathWith1BackSlash = workingDirectorypathWith1BackSlash + "\\"+ path[i];
+			workingDirectorypathWith2BackSlash = workingDirectorypathWith2BackSlash + "\\\\"+ path[i];
+			workingDirectorypathWith4BackSlash = workingDirectorypathWith4BackSlash + "\\\\\\\\"+  path[i];
+		}
+		
+		String indexFile = workingDirectorypathWith2BackSlash  + "\\\\" + fileName + "index"; 
+		String serialFile = workingDirectorypathWith2BackSlash  + "\\\\" + fileName + "serial";  
+		String configFile = workingDirectorypathWith2BackSlash  + "\\\\" + fileName +".config"; 
+		
+		File index = new File(indexFile);
+		File serial = new File(serialFile);
+		File config = new File(configFile);
+		
+		try 
+		{	
+			index.createNewFile();
+			serial.createNewFile();
+			config.createNewFile();
+			
+			FileWriter indexWriter = new FileWriter(indexFile);
+			FileWriter serialWriter = new FileWriter(serialFile);
+			FileWriter configWriter = new FileWriter(configFile);
+			
+			indexWriter.write("[empty]");
+			indexWriter.close();
+			
+			serialWriter.write("00");
+			serialWriter.close();
+			
+			String policyAndExtStr = "[ policy_any ]\r\n"
+					+ "commonName             = supplied\r\n"
+					+ "countryName            = optional\r\n"
+					+ "stateOrProvinceName    = optional\r\n"
+					+ "organizationName       = optional\r\n"
+					+ "organizationalUnitName = optional\r\n"
+					+ "localityName		   	  = optional\r\n"
+					+ "title		          = optional\r\n"
+					+ "serialNumber           = optional\r\n"
+					+ "givenName              = optional\r\n"
+					+ "surname                = optional\r\n"
+					+ "initials               = optional\r\n"
+					+ "pseudonym              = optional\r\n"
+					+ "street                 = optional\r\n"
+					+ "userId                 = optional\r\n"
+					+ "dnQualifier            = optional\r\n"
+					+ "generationQualifier    = optional\r\n"
+					+ "domainComponent        = optional\r\n"
+					+ "\r\n"
+					+ "[ v3_ext ]\r\n"
+					+ "basicConstraints = critical,CA:true\r\n"
+					+ "keyUsage         = critical,keyCertSign";
+			
+			configWriter.write("[ CA_default]\r\n"
+					+ "database        = \"" + workingDirectorypathWith4BackSlash + "\\\\rootindex\"\r\n"
+					+ "serial          = \"" + workingDirectorypathWith4BackSlash + "\\\\rootserial\"\r\n"
+					+ "\r\n"
+					+ policyAndExtStr);
+			
+			configWriter.close();
+		} 
+		
+		catch (IOException e) 
+		{
+			e.printStackTrace();
+		}
 	}
 }
