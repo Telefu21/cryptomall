@@ -14,7 +14,7 @@ import java.util.ResourceBundle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import io.ozgard.cryptomall.params.CertificateTableParams;
+import io.ozgard.cryptomall.params.CertificateParams;
 import io.ozgard.cryptomall.params.CrcParams;
 import io.ozgard.cryptomall.params.EncryptDecryptParams;
 import io.ozgard.cryptomall.params.KeyGenerateParams;
@@ -64,7 +64,7 @@ public class MainSceneController implements Initializable
 	@Autowired
 	CrcParams crcParams;
 	@Autowired
-	CertificateTableParams certificateTableParams;
+	CertificateParams certificateParams;
 	
 	@FXML
 	@Autowired
@@ -261,7 +261,7 @@ public class MainSceneController implements Initializable
 	CheckBox checkBoxSignVerifyEnableRSAPSS;
 	@FXML
 	@Autowired
-	TableView<CertificateTableParams> tableViewCertificateParams;
+	TableView<CertificateParams> tableViewCertificateParams;
 	@FXML
 	@Autowired
 	TextField textFieldCertRootBrowse;
@@ -292,6 +292,11 @@ public class MainSceneController implements Initializable
 	@FXML
 	@Autowired
 	Button buttonCertGenerateVerify;
+	
+	TableColumn<CertificateParams, String> tableColumnCertificateElementsName;
+	TableColumn<CertificateParams, String> tableColumnRootCertificate;
+	TableColumn<CertificateParams, String> tableColumnIntermediateCertificate;
+	TableColumn<CertificateParams, String> tableColumnEndEntityCertificate;
 	
 	static public void setStage(Stage stageT)
 	{
@@ -372,26 +377,26 @@ public class MainSceneController implements Initializable
 		
 		tableViewCertificateParams.setEditable(true);
 		
-		TableColumn<CertificateTableParams, String> tableColumnCertificateElementsName = new TableColumn<CertificateTableParams, String>("");
-		tableColumnCertificateElementsName.setCellValueFactory(new PropertyValueFactory<CertificateTableParams, String>("elementName"));
+		tableColumnCertificateElementsName = new TableColumn<CertificateParams, String>("");
+		tableColumnCertificateElementsName.setCellValueFactory(new PropertyValueFactory<CertificateParams, String>("elementName"));
 		tableColumnCertificateElementsName.setSortable(false);
 		
-		TableColumn<CertificateTableParams, String> tableColumnRootCertificate = new TableColumn<CertificateTableParams, String>("Root Certificate (CA)");
-		tableColumnRootCertificate.setCellValueFactory(new PropertyValueFactory<CertificateTableParams, String>("rootCertificate"));
-		tableColumnRootCertificate.setCellFactory(TextFieldTableCell.<CertificateTableParams>forTableColumn());
-		tableColumnRootCertificate.setOnEditCommit((CellEditEvent<CertificateTableParams, String> t) -> {((CertificateTableParams)t.getTableView().getItems().get(t.getTablePosition().getRow())).setRootCertificate(t.getNewValue());});
+		tableColumnRootCertificate = new TableColumn<CertificateParams, String>("Root Certificate (CA)");
+		tableColumnRootCertificate.setCellValueFactory(new PropertyValueFactory<CertificateParams, String>("rootCertificate"));
+		tableColumnRootCertificate.setCellFactory(TextFieldTableCell.<CertificateParams>forTableColumn());
+		tableColumnRootCertificate.setOnEditCommit((CellEditEvent<CertificateParams, String> t) -> {((CertificateParams)t.getTableView().getItems().get(t.getTablePosition().getRow())).setRootCertificate(t.getNewValue());});
 		tableColumnRootCertificate.setSortable(false);
 		
-		TableColumn<CertificateTableParams, String> tableColumnIntermediateCertificate = new TableColumn<CertificateTableParams, String>("Intermediate Certificate (CA)");
-		tableColumnIntermediateCertificate.setCellValueFactory(new PropertyValueFactory<CertificateTableParams, String>("intermediateCertificate"));
-		tableColumnIntermediateCertificate.setCellFactory(TextFieldTableCell.<CertificateTableParams>forTableColumn());
-		tableColumnIntermediateCertificate.setOnEditCommit((CellEditEvent<CertificateTableParams, String> t) -> {((CertificateTableParams)t.getTableView().getItems().get(t.getTablePosition().getRow())).setIntermediateCertificate(t.getNewValue());});
+		tableColumnIntermediateCertificate = new TableColumn<CertificateParams, String>("Intermediate Certificate (CA)");
+		tableColumnIntermediateCertificate.setCellValueFactory(new PropertyValueFactory<CertificateParams, String>("intermediateCertificate"));
+		tableColumnIntermediateCertificate.setCellFactory(TextFieldTableCell.<CertificateParams>forTableColumn());
+		tableColumnIntermediateCertificate.setOnEditCommit((CellEditEvent<CertificateParams, String> t) -> {((CertificateParams)t.getTableView().getItems().get(t.getTablePosition().getRow())).setIntermediateCertificate(t.getNewValue());});
 		tableColumnIntermediateCertificate.setSortable(false);
 		
-		TableColumn<CertificateTableParams, String> tableColumnEndEntityCertificate = new TableColumn<CertificateTableParams, String>("End Entity Certificate (CA)");
-		tableColumnEndEntityCertificate.setCellValueFactory(new PropertyValueFactory<CertificateTableParams, String>("endEntitiyCertificate"));
-		tableColumnEndEntityCertificate.setCellFactory(TextFieldTableCell.<CertificateTableParams>forTableColumn());
-		tableColumnEndEntityCertificate.setOnEditCommit((CellEditEvent<CertificateTableParams, String> t) -> {((CertificateTableParams)t.getTableView().getItems().get(t.getTablePosition().getRow())).setEndEntitiyCertificate(t.getNewValue());});
+		tableColumnEndEntityCertificate = new TableColumn<CertificateParams, String>("End Entity Certificate (CA)");
+		tableColumnEndEntityCertificate.setCellValueFactory(new PropertyValueFactory<CertificateParams, String>("endEntitiyCertificate"));
+		tableColumnEndEntityCertificate.setCellFactory(TextFieldTableCell.<CertificateParams>forTableColumn());
+		tableColumnEndEntityCertificate.setOnEditCommit((CellEditEvent<CertificateParams, String> t) -> {((CertificateParams)t.getTableView().getItems().get(t.getTablePosition().getRow())).setEndEntitiyCertificate(t.getNewValue());});
 		tableColumnEndEntityCertificate.setSortable(false);
 		
 		tableViewCertificateParams.getColumns().add(tableColumnCertificateElementsName);
@@ -399,16 +404,37 @@ public class MainSceneController implements Initializable
 		tableViewCertificateParams.getColumns().add(tableColumnIntermediateCertificate);
 		tableViewCertificateParams.getColumns().add(tableColumnEndEntityCertificate);
 	
-		ObservableList<CertificateTableParams> itemList = FXCollections.observableArrayList();
+		ObservableList<CertificateParams> itemList = FXCollections.observableArrayList();
 		
-		for(int i = 0; i < CertificateTableParams.certificateTableParamsRows.length; i++)
+		for(int i = 0; i < certificateParams.getCertificateParamsRows().length; i++)
 		{
-			itemList.add(CertificateTableParams.certificateTableParamsRows[i]);
+			itemList.add(certificateParams.getCertificateParamsRows()[i]);
 		}
 		
 		tableViewCertificateParams.setItems(itemList);
 		
 		radioButtonGenerateCertificateOnAction();
+	}
+	
+	private void setCertificatesParams()
+	{
+		certificateParams.setRootKeyVerifyFilePath(textFieldCertRootBrowse.getText());
+		certificateParams.setIntermediateKeyVerifyFilePath(textFieldCertIntermediateBrowse.getText());
+		certificateParams.setEndEntityKeyVerifyFilePath(textFieldCertEndEntityBrowse.getText());
+		certificateParams.setIsGenerateCertificateSelected(radioButtonGenerateCertificate.isSelected());
+		certificateParams.setIsVerifyCertificateSelected(radioButtonVerifyCertificate.isSelected());
+		certificateParams.setIsTwoChainVerifySelected(checkBoxCertTwoTierVerify.isSelected());
+		certificateParams.setRootHashFunction(comboCertRootHashFunction.getValue());
+		certificateParams.setIntermediateHashFunction(comboCertIntermediateHashFunction.getValue());
+		certificateParams.setEndEntityHashFunction(comboCertEndEntityHashFunction.getValue());
+		certificateParams.setWorkingDirectory(textFieldWorkingDirectory.getText());
+		
+		for(int i = 0; i < certificateParams.getCertificateParamsRows().length; i++) 
+		{
+			certificateParams.getCertificateParamsRows()[i].setRootCertificate(tableColumnRootCertificate.getCellData(i));
+			certificateParams.getCertificateParamsRows()[i].setIntermediateCertificate(tableColumnIntermediateCertificate.getCellData(i));
+			certificateParams.getCertificateParamsRows()[i].setEndEntitiyCertificate(tableColumnEndEntityCertificate.getCellData(i));
+		}
 	}
 	
 	@FXML
@@ -1218,8 +1244,8 @@ public class MainSceneController implements Initializable
 		comboCertIntermediateHashFunction.setDisable(false);
 		comboCertEndEntityHashFunction.setDisable(false);
 		buttonCertGenerateVerify.setText("Generate");
-		textFieldCertRootBrowse.setDisable(true);
-		buttonCertRootBrowse.setDisable(true);
+		textFieldCertRootBrowse.setDisable(false);
+		buttonCertRootBrowse.setDisable(false);
 	}
 	
 	@FXML
@@ -1237,15 +1263,16 @@ public class MainSceneController implements Initializable
 		comboCertIntermediateHashFunction.setDisable(true);
 		comboCertEndEntityHashFunction.setDisable(true);
 		buttonCertGenerateVerify.setText("Verify");
-		textFieldCertRootBrowse.setDisable(true);
-		buttonCertRootBrowse.setDisable(true);
+		textFieldCertRootBrowse.setDisable(false);
+		buttonCertRootBrowse.setDisable(false);
 	}
 	
 	@FXML
 	void buttonCertGenerateVerifyOnMouseClicked()
 	{
-		calculatorService.generateConfigFilesToWorkingDirectory(textFieldWorkingDirectory.getText(), "root1");
-		calculatorService.generateConfigFilesToWorkingDirectory(textFieldWorkingDirectory.getText(), "Intermediate1");
+		setCertificatesParams();
+		
+		setLogOutput(calculatorService.generateCertificates(certificateParams));
 	}
 	
 	@FXML

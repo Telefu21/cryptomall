@@ -1,6 +1,5 @@
 package io.ozgard.cryptomall.service;
 
-
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -12,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import io.ozgard.cryptomall.model.CommandLineProcess;
+import io.ozgard.cryptomall.params.CertificateParams;
 import io.ozgard.cryptomall.params.EncryptDecryptParams;
 import io.ozgard.cryptomall.params.KeyGenerateParams;
 import io.ozgard.cryptomall.params.SignVerifyPrimeParams;
@@ -888,5 +888,61 @@ public class CalculatorService
 		{
 			e.printStackTrace();
 		}
+	}
+	
+	private String createSubjectAttribsInStr(String [] subjAttribsCertStr, String [] subjAttribsTableInput) 
+	{
+		String subjCertAttributes = "-subj \"";
+	
+		int minLength = subjCertAttributes.length() + 1;
+				
+		for(int i = 0; i < subjAttribsCertStr.length; i++)
+		{
+			if(subjAttribsTableInput[i].compareTo("") != 0)
+			{
+				subjCertAttributes += "/" + subjAttribsCertStr[i] + "=" + subjAttribsTableInput[i];
+			}
+		}
+			
+		subjCertAttributes += "\"";
+		
+		if(subjCertAttributes.length() <= minLength)
+		{
+			subjCertAttributes = "";
+		}
+		
+		return  subjCertAttributes;
+	}
+
+	public String generateCertificates(CertificateParams certificateParams) 
+	{
+		String [] tmp = new String[certificateParams.getCertificateParamsRows().length - 1];
+		
+		for(int i = 0; i < certificateParams.getCertificateParamsRows().length - 1; i++)
+		{
+			tmp[i] = certificateParams.getCertificateParamsRows()[i + 1].getRootCertificate();
+		}
+		
+		String rootSubjAttribsCertStr  = createSubjectAttribsInStr(certificateParams.getSubjAttribsCertStr(), tmp);
+		
+		for(int i = 0; i < certificateParams.getCertificateParamsRows().length - 1; i++)
+		{
+			tmp[i] = certificateParams.getCertificateParamsRows()[i + 1].getIntermediateCertificate();
+		}
+		
+		String intermediateSubjAttribsCertStr  = createSubjectAttribsInStr(certificateParams.getSubjAttribsCertStr(), tmp);
+		
+		for(int i = 0; i < certificateParams.getCertificateParamsRows().length - 1; i++)
+		{
+			tmp[i] = certificateParams.getCertificateParamsRows()[i + 1].getEndEntitiyCertificate();
+		}
+		
+		String endEntitySubjAttribsCertStr  = createSubjectAttribsInStr(certificateParams.getSubjAttribsCertStr(), tmp);
+		
+		generateConfigFilesToWorkingDirectory(certificateParams.getWorkingDirectory(), "Root");
+		
+		generateConfigFilesToWorkingDirectory(certificateParams.getWorkingDirectory(), "Intermediate");
+		
+		return (rootSubjAttribsCertStr + "\n" + intermediateSubjAttribsCertStr + "\n" + endEntitySubjAttribsCertStr + "\n");
 	}
 }
