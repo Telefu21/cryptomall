@@ -916,6 +916,13 @@ public class CalculatorService
 
 	public String generateCertificates(CertificateParams certificateParams) 
 	{
+		String rootCsrFile = "\"" + certificateParams.getWorkingDirectory() + "\\root_csr.pem" + "\"";
+		String rootCertFile = "\"" + certificateParams.getWorkingDirectory() + "\\root_cert.pem" + "\"";
+		String intermediateCsrFile = "\"" + certificateParams.getWorkingDirectory() + "\\intermediate_csr.pem" + "\"";
+		String intermediateCertFile = "\"" + certificateParams.getWorkingDirectory() + "\\intermediate_cert.pem" + "\"";
+		String endEntityCsrFile = "\"" + certificateParams.getWorkingDirectory() + "\\endEntity_csr.pem" + "\"";
+		String endEntityCertFile = "\"" + certificateParams.getWorkingDirectory() + "\\endEntity_cert.pem" + "\"";
+		
 		String [] tmp = new String[certificateParams.getCertificateParamsRows().length - 1];
 		
 		for(int i = 0; i < certificateParams.getCertificateParamsRows().length - 1; i++)
@@ -925,12 +932,20 @@ public class CalculatorService
 		
 		String rootSubjAttribsCertStr  = createSubjectAttribsInStr(certificateParams.getSubjAttribsCertStr(), tmp);
 		
+		generateConfigFilesToWorkingDirectory(certificateParams.getWorkingDirectory(), "Root");
+		
+		generateCsr(certificateParams.getRootKeyVerifyFilePath(), rootCsrFile, rootSubjAttribsCertStr);
+		
 		for(int i = 0; i < certificateParams.getCertificateParamsRows().length - 1; i++)
 		{
 			tmp[i] = certificateParams.getCertificateParamsRows()[i + 1].getIntermediateCertificate();
 		}
 		
 		String intermediateSubjAttribsCertStr  = createSubjectAttribsInStr(certificateParams.getSubjAttribsCertStr(), tmp);
+		
+		generateConfigFilesToWorkingDirectory(certificateParams.getWorkingDirectory(), "Intermediate");
+		
+		generateCsr(certificateParams.getIntermediateKeyVerifyFilePath(), intermediateCsrFile, intermediateSubjAttribsCertStr);
 		
 		for(int i = 0; i < certificateParams.getCertificateParamsRows().length - 1; i++)
 		{
@@ -939,10 +954,66 @@ public class CalculatorService
 		
 		String endEntitySubjAttribsCertStr  = createSubjectAttribsInStr(certificateParams.getSubjAttribsCertStr(), tmp);
 		
-		generateConfigFilesToWorkingDirectory(certificateParams.getWorkingDirectory(), "Root");
-		
-		generateConfigFilesToWorkingDirectory(certificateParams.getWorkingDirectory(), "Intermediate");
+		generateCsr(certificateParams.getEndEntityKeyVerifyFilePath(), endEntityCsrFile, endEntitySubjAttribsCertStr);
 		
 		return (rootSubjAttribsCertStr + "\n" + intermediateSubjAttribsCertStr + "\n" + endEntitySubjAttribsCertStr + "\n");
+	}
+	
+	private String generateCsr(String keyFileName, String csrFileName, String subjectAttribute) 
+	{
+			clProcess.addCommandLineStr("openssl"); 
+			clProcess.addCommandLineStr("req");
+			clProcess.addCommandLineStr("-new");
+			clProcess.addCommandLineStr("-key");
+			clProcess.addCommandLineStr(keyFileName);
+			clProcess.addCommandLineStr("-out");
+			clProcess.addCommandLineStr(csrFileName);
+			
+			clProcess.addCommandLineStr(subjectAttribute); 
+			
+			String cmdRetStr = clProcess.runCommand();
+			
+			clProcess.clearCommandLineStr();
+			
+			return cmdRetStr;
+	}
+	
+	protected String generateCertificate(boolean isSelfSigned, String csrFileName, String certFileName, String CACertFile, String CAKeyFile, String daysToExpire, String subjectAttribute, String configFileName, String hashMethod) 
+	{
+		clProcess.addCommandLineStr("openssl"); 
+		clProcess.addCommandLineStr("ca");
+		clProcess.addCommandLineStr("-in"); 
+		clProcess.addCommandLineStr(csrFileName);
+		clProcess.addCommandLineStr("-out"); 
+		clProcess.addCommandLineStr(certFileName);
+		clProcess.addCommandLineStr("-extensions"); 
+		clProcess.addCommandLineStr("v3_ext");
+		clProcess.addCommandLineStr("-days"); 
+		clProcess.addCommandLineStr(daysToExpire);
+		clProcess.addCommandLineStr("-cert"); 
+		clProcess.addCommandLineStr(CACertFile);
+		clProcess.addCommandLineStr("-keyfile"); 
+		clProcess.addCommandLineStr(CAKeyFile);
+		clProcess.addCommandLineStr("-name"); 
+		clProcess.addCommandLineStr("CA_default");
+		clProcess.addCommandLineStr("-policy"); 
+		clProcess.addCommandLineStr("policy_any");
+		clProcess.addCommandLineStr("-outdir"); 
+		clProcess.addCommandLineStr("\"" + certificateFilesPath + "\"");
+		clProcess.addCommandLineStr("-config");
+		clProcess.addCommandLineStr(configFileName);
+		clProcess.addCommandLineStr("-md");
+		clProcess.addCommandLineStr(hashMethod);
+			
+		if(isSelfSigned)
+		{
+			clProcess.addCommandLineStr("-selfsign");
+		}
+			
+		String cmdRetStr = clProcess.runCommand();
+		
+		clProcess.clearCommandLineStr();
+		
+		return cmdRetStr;
 	}
 }
