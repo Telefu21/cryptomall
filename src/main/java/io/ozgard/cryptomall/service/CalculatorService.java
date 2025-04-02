@@ -918,8 +918,10 @@ public class CalculatorService
 	{
 		String rootCsrFile = "\"" + certificateParams.getWorkingDirectory() + "\\root_csr.pem" + "\"";
 		String rootCertFile = "\"" + certificateParams.getWorkingDirectory() + "\\root_cert.pem" + "\"";
+		String rootConfigFile = "\"" + certificateParams.getWorkingDirectory() + "\\root.config" + "\"";
 		String intermediateCsrFile = "\"" + certificateParams.getWorkingDirectory() + "\\intermediate_csr.pem" + "\"";
 		String intermediateCertFile = "\"" + certificateParams.getWorkingDirectory() + "\\intermediate_cert.pem" + "\"";
+		String intermediateConfigFile = "\"" + certificateParams.getWorkingDirectory() + "\\intermediate.config" + "\"";
 		String endEntityCsrFile = "\"" + certificateParams.getWorkingDirectory() + "\\endEntity_csr.pem" + "\"";
 		String endEntityCertFile = "\"" + certificateParams.getWorkingDirectory() + "\\endEntity_cert.pem" + "\"";
 		
@@ -932,9 +934,11 @@ public class CalculatorService
 		
 		String rootSubjAttribsCertStr  = createSubjectAttribsInStr(certificateParams.getSubjAttribsCertStr(), tmp);
 		
-		generateConfigFilesToWorkingDirectory(certificateParams.getWorkingDirectory(), "Root");
+		generateConfigFilesToWorkingDirectory(certificateParams.getWorkingDirectory(), "root");
 		
-		generateCsr(certificateParams.getRootKeyVerifyFilePath(), rootCsrFile, rootSubjAttribsCertStr);
+		String rootCertLogStr = generateCsr(certificateParams.getRootKeyVerifyFilePath(), rootCsrFile, rootSubjAttribsCertStr);
+		
+		rootCertLogStr += generateCertificate(true, "\"" + certificateParams.getWorkingDirectory() + "\"", rootCsrFile, rootCertFile, rootCertFile, "\"" + certificateParams.getRootKeyVerifyFilePath() + "\"", certificateParams.getCertificateParamsRows()[0].getRootCertificate() , rootConfigFile,  certificateParams.getRootHashFunction().replaceAll("-", ""));
 		
 		for(int i = 0; i < certificateParams.getCertificateParamsRows().length - 1; i++)
 		{
@@ -943,9 +947,11 @@ public class CalculatorService
 		
 		String intermediateSubjAttribsCertStr  = createSubjectAttribsInStr(certificateParams.getSubjAttribsCertStr(), tmp);
 		
-		generateConfigFilesToWorkingDirectory(certificateParams.getWorkingDirectory(), "Intermediate");
+		generateConfigFilesToWorkingDirectory(certificateParams.getWorkingDirectory(), "intermediate");
 		
-		generateCsr(certificateParams.getIntermediateKeyVerifyFilePath(), intermediateCsrFile, intermediateSubjAttribsCertStr);
+		String intermediateCertLogStr = generateCsr(certificateParams.getIntermediateKeyVerifyFilePath(), intermediateCsrFile, intermediateSubjAttribsCertStr);
+		
+		intermediateCertLogStr += generateCertificate(false, "\"" + certificateParams.getWorkingDirectory() + "\"", intermediateCsrFile, intermediateCertFile, rootCertFile, "\"" + certificateParams.getRootKeyVerifyFilePath() + "\"", certificateParams.getCertificateParamsRows()[0].getIntermediateCertificate(), rootConfigFile,  certificateParams.getIntermediateHashFunction().replaceAll("-", ""));
 		
 		for(int i = 0; i < certificateParams.getCertificateParamsRows().length - 1; i++)
 		{
@@ -954,9 +960,11 @@ public class CalculatorService
 		
 		String endEntitySubjAttribsCertStr  = createSubjectAttribsInStr(certificateParams.getSubjAttribsCertStr(), tmp);
 		
-		generateCsr(certificateParams.getEndEntityKeyVerifyFilePath(), endEntityCsrFile, endEntitySubjAttribsCertStr);
+		String endEntityCertLogStr = generateCsr(certificateParams.getEndEntityKeyVerifyFilePath(), endEntityCsrFile, endEntitySubjAttribsCertStr);
 		
-		return (rootSubjAttribsCertStr + "\n" + intermediateSubjAttribsCertStr + "\n" + endEntitySubjAttribsCertStr + "\n");
+		endEntityCertLogStr += generateCertificate(false, "\"" + certificateParams.getWorkingDirectory() + "\"", endEntityCsrFile, endEntityCertFile, intermediateCertFile, "\"" + certificateParams.getIntermediateKeyVerifyFilePath() + "\"", certificateParams.getCertificateParamsRows()[0].getIntermediateCertificate(), intermediateConfigFile,  certificateParams.getEndEntityHashFunction().replaceAll("-", ""));
+		
+		return (rootCertLogStr + "\n" + intermediateCertLogStr + "\n" + endEntityCertLogStr + "\n");
 	}
 	
 	private String generateCsr(String keyFileName, String csrFileName, String subjectAttribute) 
@@ -978,7 +986,7 @@ public class CalculatorService
 			return cmdRetStr;
 	}
 	
-	protected String generateCertificate(boolean isSelfSigned, String csrFileName, String certFileName, String CACertFile, String CAKeyFile, String daysToExpire, String subjectAttribute, String configFileName, String hashMethod) 
+	protected String generateCertificate(boolean isSelfSigned, String workingDirectory, String csrFileName, String certFileName, String CACertFile, String CAKeyFile, String daysToExpire, String configFileName, String hashMethod) 
 	{
 		clProcess.addCommandLineStr("openssl"); 
 		clProcess.addCommandLineStr("ca");
@@ -999,7 +1007,7 @@ public class CalculatorService
 		clProcess.addCommandLineStr("-policy"); 
 		clProcess.addCommandLineStr("policy_any");
 		clProcess.addCommandLineStr("-outdir"); 
-		clProcess.addCommandLineStr("\"" + certificateFilesPath + "\"");
+		clProcess.addCommandLineStr(workingDirectory);
 		clProcess.addCommandLineStr("-config");
 		clProcess.addCommandLineStr(configFileName);
 		clProcess.addCommandLineStr("-md");
@@ -1009,8 +1017,10 @@ public class CalculatorService
 		{
 			clProcess.addCommandLineStr("-selfsign");
 		}
+		
+		clProcess.addCommandLineStr("-notext");
 			
-		String cmdRetStr = clProcess.runCommand();
+		String cmdRetStr = clProcess.runAndConfirmCommand();
 		
 		clProcess.clearCommandLineStr();
 		
