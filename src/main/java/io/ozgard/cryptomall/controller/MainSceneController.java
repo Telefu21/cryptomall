@@ -1272,7 +1272,15 @@ public class MainSceneController implements Initializable
 	{
 		setCertificatesParams();
 		
-		setLogOutput(calculatorService.generateCertificates(certificateParams));
+		if(certificateParams.getIsGenerateCertificateSelected())
+		{
+			setLogOutput(calculatorService.generateCertificates(certificateParams));
+		}
+		
+		if(certificateParams.getIsVerifyCertificateSelected())
+		{
+			setLogOutput(calculatorService.verifyChainOfCertificates(certificateParams));
+		}
 	}
 	
 	@FXML
@@ -1282,6 +1290,7 @@ public class MainSceneController implements Initializable
 		{
 			textFieldCertRootBrowse.setText("");
 			textFieldCertIntermediateBrowse.setText("Select CA Certificate for Verification");
+			textFieldCertEndEntityBrowse.setText("Select Certificate to Verify");
 			textFieldCertRootBrowse.setDisable(true);
 			buttonCertRootBrowse.setDisable(true);
 		}
@@ -1290,6 +1299,7 @@ public class MainSceneController implements Initializable
 		{
 			textFieldCertRootBrowse.setText("Select Root Certificate for Verification");
 			textFieldCertIntermediateBrowse.setText("Select Intermediate Certificate for Verification");
+			textFieldCertEndEntityBrowse.setText("Select End Entity Certificate for Verification");
 			textFieldCertRootBrowse.setDisable(false);
 			buttonCertRootBrowse.setDisable(false);
 		}

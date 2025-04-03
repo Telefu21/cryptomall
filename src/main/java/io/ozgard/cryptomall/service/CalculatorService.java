@@ -1064,4 +1064,35 @@ public class CalculatorService
 		
 		clProcess.clearCommandLineStr();
 	}
+	
+	public String verifyChainOfCertificates(CertificateParams certificateParams) 
+	{				
+		String rootCertFile = "\"" + certificateParams.getRootKeyVerifyFilePath() + "\"";
+		String intermediateCertFile = "\"" + certificateParams.getIntermediateKeyVerifyFilePath() + "\"";
+		String endEntityCertFile = "\"" + certificateParams.getEndEntityKeyVerifyFilePath() + "\"";
+
+		clProcess.addCommandLineStr("openssl"); 
+		clProcess.addCommandLineStr("verify");
+		clProcess.addCommandLineStr("-CAfile");
+		
+		if(certificateParams.getIsTwoChainVerifySelected() == false)
+		{
+			clProcess.addCommandLineStr(rootCertFile);
+			clProcess.addCommandLineStr("-untrusted");
+			clProcess.addCommandLineStr(intermediateCertFile);
+		}
+		
+		if(certificateParams.getIsTwoChainVerifySelected() == true)
+		{
+			clProcess.addCommandLineStr(intermediateCertFile);
+		}
+		
+		clProcess.addCommandLineStr(endEntityCertFile);
+		
+		String cmdRetStr = clProcess.runCommand();
+		
+		clProcess.clearCommandLineStr();
+		
+		return cmdRetStr;
+	}
 }
