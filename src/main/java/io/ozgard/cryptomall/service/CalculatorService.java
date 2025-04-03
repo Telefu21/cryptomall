@@ -963,27 +963,38 @@ public class CalculatorService
 		String endEntityCertLogStr = generateCsr(certificateParams.getEndEntityKeyVerifyFilePath(), endEntityCsrFile, endEntitySubjAttribsCertStr);
 		
 		endEntityCertLogStr += generateCertificate(false, "\"" + certificateParams.getWorkingDirectory() + "\"", endEntityCsrFile, endEntityCertFile, intermediateCertFile, "\"" + certificateParams.getIntermediateKeyVerifyFilePath() + "\"", certificateParams.getCertificateParamsRows()[0].getIntermediateCertificate(), intermediateConfigFile,  certificateParams.getEndEntityHashFunction().replaceAll("-", ""));
+
+		try 
+		{
+			Thread.sleep(400);
+
+			deleteJunkFilesAtWs(certificateParams);
+		} 
+		catch (InterruptedException e) 
+		{
+			e.printStackTrace();
+		}
 		
 		return (rootCertLogStr + "\n" + intermediateCertLogStr + "\n" + endEntityCertLogStr + "\n");
 	}
 	
 	private String generateCsr(String keyFileName, String csrFileName, String subjectAttribute) 
 	{
-			clProcess.addCommandLineStr("openssl"); 
-			clProcess.addCommandLineStr("req");
-			clProcess.addCommandLineStr("-new");
-			clProcess.addCommandLineStr("-key");
-			clProcess.addCommandLineStr(keyFileName);
-			clProcess.addCommandLineStr("-out");
-			clProcess.addCommandLineStr(csrFileName);
-			
-			clProcess.addCommandLineStr(subjectAttribute); 
-			
-			String cmdRetStr = clProcess.runCommand();
-			
-			clProcess.clearCommandLineStr();
-			
-			return cmdRetStr;
+		clProcess.addCommandLineStr("openssl"); 
+		clProcess.addCommandLineStr("req");
+		clProcess.addCommandLineStr("-new");
+		clProcess.addCommandLineStr("-key");
+		clProcess.addCommandLineStr(keyFileName);
+		clProcess.addCommandLineStr("-out");
+		clProcess.addCommandLineStr(csrFileName);
+		
+		clProcess.addCommandLineStr(subjectAttribute); 
+		
+		String cmdRetStr = clProcess.runCommand();
+		
+		clProcess.clearCommandLineStr();
+		
+		return cmdRetStr;
 	}
 	
 	protected String generateCertificate(boolean isSelfSigned, String workingDirectory, String csrFileName, String certFileName, String CACertFile, String CAKeyFile, String daysToExpire, String configFileName, String hashMethod) 
@@ -1025,5 +1036,32 @@ public class CalculatorService
 		clProcess.clearCommandLineStr();
 		
 		return cmdRetStr;
+	}
+	
+	private void deleteJunkFilesAtWs(CertificateParams certificateParams) 
+	{
+		String os = System.getProperty("os.name").toLowerCase();
+		
+		if(os.contains("win"))
+		{
+			clProcess.addCommandLineStr("del"); 
+		}
+		
+		if(os.contains("nix") || os.contains("nux") || os.contains("aix"))
+		{
+			clProcess.addCommandLineStr("rm"); 
+		}
+		
+		clProcess.addCommandLineStr("\"" + certificateParams.getWorkingDirectory()  + "\\*serial*\"");
+		clProcess.addCommandLineStr("\"" + certificateParams.getWorkingDirectory()  + "\\*index*\"");
+		clProcess.addCommandLineStr("\"" + certificateParams.getWorkingDirectory()  + "\\*old*\"");
+		clProcess.addCommandLineStr("\"" + certificateParams.getWorkingDirectory()  + "\\*attr*\"");
+		clProcess.addCommandLineStr("\"" + certificateParams.getWorkingDirectory()  + "\\*config*\"");
+		clProcess.addCommandLineStr("\"" + certificateParams.getWorkingDirectory()  + "\\*0*\"");
+		clProcess.runCommand();
+		
+		clProcess.runAndConfirmCommand();
+		
+		clProcess.clearCommandLineStr();
 	}
 }

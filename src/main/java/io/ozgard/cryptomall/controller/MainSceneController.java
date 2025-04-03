@@ -355,11 +355,11 @@ public class MainSceneController implements Initializable
 		comboSignVerifyHashFunction.setItems(FXCollections.observableArrayList(hashList));
 		comboSignVerifyHashFunction.setValue(hashList[0]);
 		comboCertEndEntityHashFunction.setItems(FXCollections.observableArrayList(hashList));
-		comboCertEndEntityHashFunction.setValue(hashList[0]);
+		comboCertEndEntityHashFunction.setValue(hashList[11]);
 		comboCertIntermediateHashFunction.setItems(FXCollections.observableArrayList(hashList));
-		comboCertIntermediateHashFunction.setValue(hashList[0]);
+		comboCertIntermediateHashFunction.setValue(hashList[11]);
 		comboCertRootHashFunction.setItems(FXCollections.observableArrayList(hashList));
-		comboCertRootHashFunction.setValue(hashList[0]);
+		comboCertRootHashFunction.setValue(hashList[11]);
 		
 		tabKeyGenerate.setDisable(true);
 		tabEncryptDecrypt.setDisable(true);
