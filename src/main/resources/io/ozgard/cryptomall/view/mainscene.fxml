@@ -211,7 +211,7 @@
                      </padding></AnchorPane>
                </content>
             </Tab>
-            <Tab fx:id="tabCertificateProcessing" text="Certificate Processing">
+            <Tab fx:id="tabCertificateProcessing" text="Certificates">
                <content>
                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
@@ -269,7 +269,7 @@
                      </children></AnchorPane>
                </content>
             </Tab>
-            <Tab fx:id="tabHexViewCrc" text="CRC &amp; Hex View ">
+            <Tab fx:id="tabHexViewCrc" text="CRC &amp; HexView ">
                <content>
                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
@@ -305,6 +305,45 @@
                         <Button fx:id="buttonCRCGenerate" layoutX="404.0" layoutY="331.0" mnemonicParsing="false" onMouseClicked="#buttonCRCGenerateOnMouseClicked" prefHeight="26.0" prefWidth="245.0" text="Generate CRC for Text Input and File" />
                         <CheckBox fx:id="checkBoxCRCInputHex" layoutX="279.0" layoutY="335.0" mnemonicParsing="false" text="Hex In Text Area" />
                      </children></AnchorPane>
+               </content>
+            </Tab>
+            <Tab fx:id="tabHexViewCrc1" text="Post Quantum">
+               <content>
+                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <HBox layoutX="8.0" layoutY="6.0" prefHeight="42.0" prefWidth="714.0">
+                           <children>
+                              <TextField fx:id="textFieldHexViewFilePath1" editable="false" prefHeight="26.0" prefWidth="596.0" text="Select file to Hex View and CRC Generate">
+                                 <HBox.margin>
+                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                 </HBox.margin>
+                              </TextField>
+                              <Button fx:id="buttonHexViewFileBrowse1" mnemonicParsing="false" onMouseClicked="#buttonHexViewFileBrowseOnMouseClicked" prefHeight="26.0" prefWidth="109.0" text="Browse">
+                                 <HBox.margin>
+                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                 </HBox.margin>
+                              </Button>
+                           </children>
+                        </HBox>
+                        <RadioButton fx:id="radioButtonCRC81" layoutX="19.0" layoutY="223.0" mnemonicParsing="false" onAction="#radioButtonCRC8OnAction" text="CRC 8" />
+                        <RadioButton fx:id="radioButtonCRC321" layoutX="184.0" layoutY="224.0" mnemonicParsing="false" onAction="#radioButtonCRC32OnAction" text="CRC 32" />
+                        <RadioButton fx:id="radioButtonCRC161" layoutX="95.0" layoutY="224.0" mnemonicParsing="false" onAction="#radioButtonCRC16OnAction" text="CRC 16" />
+                        <RadioButton fx:id="radioButtonCRC641" layoutX="270.0" layoutY="224.0" mnemonicParsing="false" onAction="#radioButtonCRC64OnAction" text="CRC 64" />
+                        <CheckBox fx:id="checkBoxReflectInput1" layoutX="349.0" layoutY="224.0" mnemonicParsing="false" text="Reflect Input" />
+                        <CheckBox fx:id="checkBoxReflectOutput1" layoutX="463.0" layoutY="224.0" mnemonicParsing="false" text="Reflect Output" />
+                        <ComboBox fx:id="comboBoxPredifinedCRC1" layoutX="574.0" layoutY="220.0" onAction="#comboBoxPredifinedCRCOnAction" prefHeight="26.0" prefWidth="136.0" />
+                        <TextArea fx:id="textAreaHexView1" editable="false" layoutX="19.0" layoutY="52.0" prefHeight="150.0" prefWidth="692.0" />
+                        <Label layoutX="19.0" layoutY="261.0" text="Polynominal (Hex):" />
+                        <TextField fx:id="textFieldCRCPolynominal1" layoutX="140.0" layoutY="257.0" prefHeight="26.0" prefWidth="132.0" />
+                        <Label layoutX="20.0" layoutY="299.0" text="Init Value (Hex):" />
+                        <TextField fx:id="textFieldCRCInitValue1" layoutX="141.0" layoutY="295.0" prefHeight="26.0" prefWidth="129.0" />
+                        <Label layoutX="20.0" layoutY="335.0" text="XOR Value (Hex):" />
+                        <TextField fx:id="textFieldCRCXorValue1" layoutX="141.0" layoutY="331.0" prefHeight="26.0" prefWidth="130.0" />
+                        <TextArea fx:id="textAreaCRCInput1" layoutX="279.0" layoutY="255.0" prefHeight="67.0" prefWidth="430.0" />
+                        <Button fx:id="buttonCRCGenerate1" layoutX="404.0" layoutY="331.0" mnemonicParsing="false" onMouseClicked="#buttonCRCGenerateOnMouseClicked" prefHeight="26.0" prefWidth="245.0" text="Generate CRC for Text Input and File" />
+                        <CheckBox fx:id="checkBoxCRCInputHex1" layoutX="279.0" layoutY="335.0" mnemonicParsing="false" text="Hex In Text Area" />
+                     </children>
+                  </AnchorPane>
                </content>
             </Tab>
         </tabs>

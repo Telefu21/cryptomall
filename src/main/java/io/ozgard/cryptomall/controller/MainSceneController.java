@@ -20,7 +20,7 @@ import io.ozgard.cryptomall.params.EncryptDecryptParams;
 import io.ozgard.cryptomall.params.KeyGenerateParams;
 import io.ozgard.cryptomall.params.SignVerifyPrimeParams;
 import io.ozgard.cryptomall.service.CRCService;
-import io.ozgard.cryptomall.service.CalculatorService;
+import io.ozgard.cryptomall.service.OpenSslService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -51,7 +51,7 @@ public class MainSceneController implements Initializable
 	private static Stage stage = null;
 	
 	@Autowired
-	private CalculatorService calculatorService;
+	private OpenSslService openSslService;
 	@Autowired
 	private CRCService crcService;
 	
@@ -339,17 +339,17 @@ public class MainSceneController implements Initializable
 		checkBoxKeyGenEncryptKeyFile.setSelected(false);
 		checkBoxEncryptDecryptBinaryOutput.setVisible(false);
 		
-		String [] ecList = calculatorService.getListElipticCurveName();
+		String [] ecList = openSslService.getListElipticCurveName();
 		comboKeygenElipticCurveName.setItems(FXCollections.observableArrayList(ecList));
 		comboKeygenElipticCurveName.setValue(ecList[0]);
 		
-		String [] cipherList = calculatorService.getListCiphers();
+		String [] cipherList = openSslService.getListCiphers();
 		comboKeyGenFileEncyptCipher.setItems(FXCollections.observableArrayList(cipherList));
 		comboKeyGenFileEncyptCipher.setValue(cipherList[0]);
 		comboEncryptDecryptCipher.setItems(FXCollections.observableArrayList(cipherList));
 		comboEncryptDecryptCipher.setValue(cipherList[0]);
 		
-		String [] hashList = calculatorService.getListHashFuncs();
+		String [] hashList = openSslService.getListHashFuncs();
 		comboEncryptDecyptHashFunction.setItems(FXCollections.observableArrayList(hashList));
 		comboEncryptDecyptHashFunction.setValue(hashList[0]);
 		comboSignVerifyHashFunction.setItems(FXCollections.observableArrayList(hashList));
@@ -492,7 +492,7 @@ public class MainSceneController implements Initializable
 		{
 			try 
 			{
-				textAreaHexView.setText(calculatorService.convertFileToHex(textFieldHexViewFilePath.getText()));
+				textAreaHexView.setText(openSslService.convertFileToHex(textFieldHexViewFilePath.getText()));
 			} 
 			catch (IOException e) 
 			{
@@ -852,7 +852,7 @@ public class MainSceneController implements Initializable
 			
 			if(checkBoxCRCInputHex.isSelected())
 			{
-				textInputStr = calculatorService.hexToAscii(textAreaCRCInput.getText().replaceAll(" 0x", "").replaceAll("0x", ""));
+				textInputStr = openSslService.hexToAscii(textAreaCRCInput.getText().replaceAll(" 0x", "").replaceAll("0x", ""));
 			}
 			
 			if(!checkBoxCRCInputHex.isSelected())
@@ -914,7 +914,7 @@ public class MainSceneController implements Initializable
 		keygenParams.setInputFilePath("\"" + textFieldWorkingDirectory.getText() + "\\" + comboKeyGenAlgSelect.getValue().toLowerCase() + "_privkey" + "." + comboKeyGenKeyFileFormat.getValue().toLowerCase() + "\"");
 		keygenParams.setOutputFilePath(keygenParams.getInputFilePath());
 		
-		setLogOutput(calculatorService.keyGenerate(keygenParams));
+		setLogOutput(openSslService.keyGenerate(keygenParams));
 	}
 	
 	@FXML
@@ -958,12 +958,12 @@ public class MainSceneController implements Initializable
 		if(radioButtonGenerateSignature.isSelected() == true)
 		{
 			signVerifyPrimeParams.setOutputFilePath("\"" + outputFileName + signVerifyPrimeParams.getHashFunction() +  ".signature" + "\"");
-			setLogOutput(calculatorService.generateSignature(signVerifyPrimeParams));
+			setLogOutput(openSslService.generateSignature(signVerifyPrimeParams));
 		}
 		
 		if(radioButtonVerifySignature.isSelected() == true)
 		{
-			setLogOutput(calculatorService.verifySignature(signVerifyPrimeParams));
+			setLogOutput(openSslService.verifySignature(signVerifyPrimeParams));
 		}
 	}
 	
@@ -974,7 +974,7 @@ public class MainSceneController implements Initializable
 		signVerifyPrimeParams.setHexOutPrime(checkBoxPrimeHexOutput.isSelected());
 		signVerifyPrimeParams.setSafePrime(checkBoxGenerateSafePrime.isSelected());
 		
-		setLogOutput(calculatorService.generatePrime(signVerifyPrimeParams));
+		setLogOutput(openSslService.generatePrime(signVerifyPrimeParams));
 	}
 	
 	@FXML
@@ -1026,7 +1026,7 @@ public class MainSceneController implements Initializable
 				keygenParams.setInKeyFileFormat(KeyGenerateParams.KEYGEN_FILE_FORMAT_SELECT_DER);
 				keygenParams.setOutKeyFileFormat(KeyGenerateParams.KEYGEN_FILE_FORMAT_SELECT_PEM);
 				
-				setLogOutput(calculatorService.convertFilePemDer(keygenParams));
+				setLogOutput(openSslService.convertFilePemDer(keygenParams));
 				break;
 				
 			case KeyGenerateParams.KEYGEN_CONVERT_PEM_TO_DER:
@@ -1035,7 +1035,7 @@ public class MainSceneController implements Initializable
 				keygenParams.setInKeyFileFormat(KeyGenerateParams.KEYGEN_FILE_FORMAT_SELECT_PEM);
 				keygenParams.setOutKeyFileFormat(KeyGenerateParams.KEYGEN_FILE_FORMAT_SELECT_DER);
 				
-				setLogOutput(calculatorService.convertFilePemDer(keygenParams));
+				setLogOutput(openSslService.convertFilePemDer(keygenParams));
 				break;
 				
 			case KeyGenerateParams.KEYGEN_CONVERT_PRIVKEY_TO_VIEW:
@@ -1053,14 +1053,14 @@ public class MainSceneController implements Initializable
 					keygenParams.setEncryptKeyFile(false);
 				}
 				
-				setLogOutput(calculatorService.privKeyView(keygenParams));
+				setLogOutput(openSslService.privKeyView(keygenParams));
 				break;
 				
 			case KeyGenerateParams.KEYGEN_CONVERT_PUBKEY_TO_VIEW:
 				keygenParams.setInputFilePath("\"" + textFieldKeyFileConvertFilePath.getText() + "\"");
 				keygenParams.setInKeyFileFormat(KeyGenerateParams.KEYGEN_FILE_FORMAT_SELECT_PEM);
 				keygenParams.setOutKeyFileFormat(KeyGenerateParams.KEYGEN_FILE_FORMAT_SELECT_PEM);
-				setLogOutput(calculatorService.pubKeyView(keygenParams));
+				setLogOutput(openSslService.pubKeyView(keygenParams));
 				break;
 				
 			case KeyGenerateParams.KEYGEN_CONVERT_PUB_FROM_PRIV:
@@ -1079,45 +1079,45 @@ public class MainSceneController implements Initializable
 					keygenParams.setEncryptKeyFile(false);
 				}
 				
-				setLogOutput(calculatorService.pubKeyGenerate(keygenParams));
+				setLogOutput(openSslService.pubKeyGenerate(keygenParams));
 				break;
 				
 			case KeyGenerateParams.KEYGEN_CONVERT_FROM_BASE64:
 				keygenParams.setInputFilePath("\"" + textFieldKeyFileConvertFilePath.getText() + "\"");
 				keygenParams.setOutputFilePath("\"" + outputFileName + ".file" + "\"");
 				
-				setLogOutput(calculatorService.convertFileBase64ToAny(keygenParams));
+				setLogOutput(openSslService.convertFileBase64ToAny(keygenParams));
 				break;
 				
 			case KeyGenerateParams.KEYGEN_CONVERT_TO_BASE64:
 				keygenParams.setInputFilePath("\"" + textFieldKeyFileConvertFilePath.getText() + "\"");
 				keygenParams.setOutputFilePath("\"" + outputFileName + ".b64" + "\"");
 				
-				setLogOutput(calculatorService.convertFileBase64ToAny(keygenParams));
+				setLogOutput(openSslService.convertFileBase64ToAny(keygenParams));
 				break;
 				
 			case KeyGenerateParams.KEYGEN_CONVERT_VIEW_CERTIFICATE:
 				keygenParams.setInputFilePath("\"" + textFieldKeyFileConvertFilePath.getText() + "\"");
 				
-				setLogOutput(calculatorService.convertFileViewCertificate(keygenParams));
+				setLogOutput(openSslService.convertFileViewCertificate(keygenParams));
 				break;
 				
 			case KeyGenerateParams.KEYGEN_CONVERT_VIEW_CRL:
 				keygenParams.setInputFilePath("\"" + textFieldKeyFileConvertFilePath.getText() + "\"");
 				
-				setLogOutput(calculatorService.convertFileViewCrlCertificate(keygenParams));
+				setLogOutput(openSslService.convertFileViewCrlCertificate(keygenParams));
 				break;
 				
 			case KeyGenerateParams.KEYGEN_CONVERT_VIEW_CSR:
 				keygenParams.setInputFilePath("\"" + textFieldKeyFileConvertFilePath.getText() + "\"");
 				
-				setLogOutput(calculatorService.convertFileViewCsrCertificate(keygenParams));
+				setLogOutput(openSslService.convertFileViewCsrCertificate(keygenParams));
 				break;
 				
 			case KeyGenerateParams.KEYGEN_CONVERT_PEM_TO_ASN1:
 				keygenParams.setInputFilePath("\"" + textFieldKeyFileConvertFilePath.getText() + "\"");
 				
-				setLogOutput(calculatorService.convertFilePemToAnsi(keygenParams));
+				setLogOutput(openSslService.convertFilePemToAnsi(keygenParams));
 				break;
 		}
 	}
@@ -1146,35 +1146,35 @@ public class MainSceneController implements Initializable
 		{
 			case EncryptDecryptParams.ENCRYPT_DECRYPT_TYPE_SYM_ENCRYPTION:
 				encryptDecryptParams.setOutputFilePath("\"" + outputFileName + "_" + encryptDecryptParams.getCipher().replaceAll(" ", "") + ".enc" + "\"");
-				return(calculatorService.symmetricEncrypt(encryptDecryptParams));
+				return(openSslService.symmetricEncrypt(encryptDecryptParams));
 				
 			case EncryptDecryptParams.ENCRYPT_DECRYPT_TYPE_ASYM_ENCRYPTION:
 				encryptDecryptParams.setOutputFilePath("\"" + outputFileName + ".enc" + "\"");
-				return(calculatorService.asymmetricEncrypt(encryptDecryptParams));
+				return(openSslService.asymmetricEncrypt(encryptDecryptParams));
 				
 			case EncryptDecryptParams.ENCRYPT_DECRYPT_TYPE_SYM_DECRYPTION:
 				encryptDecryptParams.setOutputFilePath("\"" + outputFileName + ".dec" + "\"");
-				return(calculatorService.symmetricDecrypt(encryptDecryptParams));
+				return(openSslService.symmetricDecrypt(encryptDecryptParams));
 				
 			case EncryptDecryptParams.ENCRYPT_DECRYPT_TYPE_ASYM_DECRYPTION:
 				encryptDecryptParams.setOutputFilePath("\"" + outputFileName + ".dec" + "\"");
-				return(calculatorService.asymmetricDecrypt(encryptDecryptParams));
+				return(openSslService.asymmetricDecrypt(encryptDecryptParams));
 				
 			case EncryptDecryptParams.ENCRYPT_DECRYPT_TYPE_GENERATE_HASH:
 				encryptDecryptParams.setOutputFilePath("\"" + outputFileName + encryptDecryptParams.getHashFunction().replaceAll(" ", "") + ".hash" + "\"");
 				encryptDecryptParams.setBinaryOutputFileEnabled(checkBoxEncryptDecryptBinaryOutput.isSelected());
-				return(calculatorService.generateHash(encryptDecryptParams));
+				return(openSslService.generateHash(encryptDecryptParams));
 				
 			case EncryptDecryptParams.ENCRYPT_DECRYPT_TYPE_GENERATE_CMAC:
 				encryptDecryptParams.setOutputFilePath("\"" + outputFileName + encryptDecryptParams.getHashFunction().replaceAll(" ", "") + encryptDecryptParams.getCipher().replaceAll(" ", "") + ".cmac" + "\"");
 				encryptDecryptParams.setCipher(comboEncryptDecryptCipher.getValue().replaceFirst("-", ""));
 				encryptDecryptParams.setBinaryOutputFileEnabled(checkBoxEncryptDecryptBinaryOutput.isSelected());
-				return(calculatorService.generateCMac(encryptDecryptParams));
+				return(openSslService.generateCMac(encryptDecryptParams));
 				
 			case EncryptDecryptParams.ENCRYPT_DECRYPT_TYPE_GENERATE_HMAC:
 				encryptDecryptParams.setOutputFilePath("\"" + outputFileName + encryptDecryptParams.getHashFunction().replaceAll(" ", "") + ".hmac" + "\"");
 				encryptDecryptParams.setBinaryOutputFileEnabled(checkBoxEncryptDecryptBinaryOutput.isSelected());
-				return(calculatorService.generateHMac(encryptDecryptParams));
+				return(openSslService.generateHMac(encryptDecryptParams));
 		}
 		
 		return "";
@@ -1190,7 +1190,7 @@ public class MainSceneController implements Initializable
 		
 		if(checkBoxEncDecHashMacHexIn.isSelected())
 		{
-			textInputStr = calculatorService.hexToAscii(textAreaEncryptDecryptText.getText().replaceAll(" 0x", "").replaceAll("0x", ""));
+			textInputStr = openSslService.hexToAscii(textAreaEncryptDecryptText.getText().replaceAll(" 0x", "").replaceAll("0x", ""));
 		}
 		
 		if(!checkBoxEncDecHashMacHexIn.isSelected())
@@ -1215,7 +1215,7 @@ public class MainSceneController implements Initializable
 		
 		try 
 		{
-			setLogOutput(calculatorService.convertFileToHex(encryptDecryptParams.getOutputFilePath().replaceAll("\"", "")));
+			setLogOutput(openSslService.convertFileToHex(encryptDecryptParams.getOutputFilePath().replaceAll("\"", "")));
 		} 
 		catch (IOException e) 
 		{
@@ -1274,12 +1274,12 @@ public class MainSceneController implements Initializable
 		
 		if(certificateParams.getIsGenerateCertificateSelected())
 		{
-			setLogOutput(calculatorService.generateCertificates(certificateParams));
+			setLogOutput(openSslService.generateCertificates(certificateParams));
 		}
 		
 		if(certificateParams.getIsVerifyCertificateSelected())
 		{
-			setLogOutput(calculatorService.verifyChainOfCertificates(certificateParams));
+			setLogOutput(openSslService.verifyChainOfCertificates(certificateParams));
 		}
 	}
 	

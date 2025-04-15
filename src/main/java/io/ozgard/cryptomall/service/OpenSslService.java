@@ -17,7 +17,7 @@ import io.ozgard.cryptomall.params.KeyGenerateParams;
 import io.ozgard.cryptomall.params.SignVerifyPrimeParams;
 
 @Service
-public class CalculatorService 
+public class OpenSslService 
 {
     private static final String UNKNOWN_CHARACTER = ".";
     
