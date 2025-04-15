@@ -18,9 +18,11 @@ import io.ozgard.cryptomall.params.CertificateParams;
 import io.ozgard.cryptomall.params.CrcParams;
 import io.ozgard.cryptomall.params.EncryptDecryptParams;
 import io.ozgard.cryptomall.params.KeyGenerateParams;
+import io.ozgard.cryptomall.params.PostQuantumCryptoParams;
 import io.ozgard.cryptomall.params.SignVerifyPrimeParams;
 import io.ozgard.cryptomall.service.CRCService;
 import io.ozgard.cryptomall.service.OpenSslService;
+import io.ozgard.cryptomall.service.PostQuantumCryptoService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -54,6 +56,8 @@ public class MainSceneController implements Initializable
 	private OpenSslService openSslService;
 	@Autowired
 	private CRCService crcService;
+	@Autowired
+	private PostQuantumCryptoService postQuantumCryptoService;
 	
 	@Autowired
 	KeyGenerateParams keygenParams;
@@ -65,6 +69,8 @@ public class MainSceneController implements Initializable
 	CrcParams crcParams;
 	@Autowired
 	CertificateParams certificateParams;
+	@Autowired
+	PostQuantumCryptoParams postQuantumCryptoParams;
 	
 	@FXML
 	@Autowired

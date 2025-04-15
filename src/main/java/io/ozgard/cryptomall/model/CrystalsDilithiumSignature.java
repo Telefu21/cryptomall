@@ -26,12 +26,7 @@ import org.springframework.stereotype.Component;
 public class CrystalsDilithiumSignature 
 {
 	CrystalsDilithiumSignature()
-	{
-		if (Security.getProvider("BCPQC") == null) 
-		{
-	        Security.addProvider(new BouncyCastlePQCProvider());
-	    }
-		
+	{	
         String dataToSignString = "The quick brown fox jumps over the lazy dog";
         byte[] dataToSign = dataToSignString.getBytes(StandardCharsets.UTF_8);
 
