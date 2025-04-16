@@ -23,6 +23,7 @@ import io.ozgard.cryptomall.params.SignVerifyPrimeParams;
 import io.ozgard.cryptomall.service.CRCService;
 import io.ozgard.cryptomall.service.OpenSslService;
 import io.ozgard.cryptomall.service.PostQuantumCryptoService;
+import io.ozgard.cryptomall.service.UtilityService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -58,6 +59,8 @@ public class MainSceneController implements Initializable
 	private CRCService crcService;
 	@Autowired
 	private PostQuantumCryptoService postQuantumCryptoService;
+	@Autowired
+	private UtilityService utilityService;
 	
 	@Autowired
 	KeyGenerateParams keygenParams;
@@ -498,7 +501,7 @@ public class MainSceneController implements Initializable
 		{
 			try 
 			{
-				textAreaHexView.setText(openSslService.convertFileToHex(textFieldHexViewFilePath.getText()));
+				textAreaHexView.setText(utilityService.convertFileToHex(textFieldHexViewFilePath.getText()));
 			} 
 			catch (IOException e) 
 			{
@@ -858,7 +861,7 @@ public class MainSceneController implements Initializable
 			
 			if(checkBoxCRCInputHex.isSelected())
 			{
-				textInputStr = openSslService.hexToAscii(textAreaCRCInput.getText().replaceAll(" 0x", "").replaceAll("0x", ""));
+				textInputStr = utilityService.hexToAscii(textAreaCRCInput.getText().replaceAll(" 0x", "").replaceAll("0x", ""));
 			}
 			
 			if(!checkBoxCRCInputHex.isSelected())
@@ -1196,7 +1199,7 @@ public class MainSceneController implements Initializable
 		
 		if(checkBoxEncDecHashMacHexIn.isSelected())
 		{
-			textInputStr = openSslService.hexToAscii(textAreaEncryptDecryptText.getText().replaceAll(" 0x", "").replaceAll("0x", ""));
+			textInputStr = utilityService.hexToAscii(textAreaEncryptDecryptText.getText().replaceAll(" 0x", "").replaceAll("0x", ""));
 		}
 		
 		if(!checkBoxEncDecHashMacHexIn.isSelected())
@@ -1221,7 +1224,7 @@ public class MainSceneController implements Initializable
 		
 		try 
 		{
-			setLogOutput(openSslService.convertFileToHex(encryptDecryptParams.getOutputFilePath().replaceAll("\"", "")));
+			setLogOutput(utilityService.convertFileToHex(encryptDecryptParams.getOutputFilePath().replaceAll("\"", "")));
 		} 
 		catch (IOException e) 
 		{

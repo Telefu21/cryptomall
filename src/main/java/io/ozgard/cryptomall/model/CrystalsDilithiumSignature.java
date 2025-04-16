@@ -25,82 +25,67 @@ import org.springframework.stereotype.Component;
 @Component
 public class CrystalsDilithiumSignature 
 {
+	private byte[] privateKeyByte;
+	private byte[] publicKeyByte;
+	
 	CrystalsDilithiumSignature()
 	{	
-        String dataToSignString = "The quick brown fox jumps over the lazy dog";
-        byte[] dataToSign = dataToSignString.getBytes(StandardCharsets.UTF_8);
-
-        // as there are 3 parameter sets available the program runs all of them
-        DilithiumParameterSpec[] dilithiumParameterSpecs = {
-                DilithiumParameterSpec.dilithium2,
-                DilithiumParameterSpec.dilithium3,
-                DilithiumParameterSpec.dilithium5
-        };
-
-        // statistics
-        int nrOfSpecs = dilithiumParameterSpecs.length;
-        String[] parameterSpecName = new String[nrOfSpecs];
-        int[] privateKeyLength = new int[nrOfSpecs];
-        int[] publicKeyLength = new int[nrOfSpecs];
-        int[] signatureLength = new int[nrOfSpecs];
-        boolean[] signaturesVerified = new boolean[nrOfSpecs];
-
-        String out = "\n\n****************************************\n";
-        for (int i = 0; i < nrOfSpecs; i++) {
-            // generation of the Chrystals Dilithium key pair
-            DilithiumParameterSpec dilithiumParameterSpec = dilithiumParameterSpecs[i];
-            String dilithiumParameterSpecName = dilithiumParameterSpec.getName();
-            parameterSpecName[i] = dilithiumParameterSpecName;
-            out += "\n" + "Chrystals Dilithium signature with parameterset " + dilithiumParameterSpecName;
-            KeyPair keyPair = generateChrystalsDilithiumKeyPair(dilithiumParameterSpec);
-
-            // get private and public key
-            PrivateKey privateKey = keyPair.getPrivate();
-            PublicKey publicKey = keyPair.getPublic();
-
-            // storing the key as byte array
-            byte[] privateKeyByte = privateKey.getEncoded();
-            byte[] publicKeyByte = publicKey.getEncoded();
-            out += "\n" + "\ngenerated private key length: " + privateKeyByte.length;
-            out += "\n" + "generated public key length:  " + publicKeyByte.length;
-            privateKeyLength[i] = privateKeyByte.length;
-            publicKeyLength[i] = publicKeyByte.length;
-
-            // generate the keys from a byte array
-            PrivateKey privateKeyLoad = getChrystalsDilithiumPrivateKeyFromEncoded(privateKeyByte);
-            PublicKey publicKeyLoad = null;
-			try 
-			{
-				publicKeyLoad = getChrystalsDilithiumPublicKeyFromEncoded(publicKeyByte);
-			} 
-			catch (InvalidKeyException | SignatureException e) 
-			{
-				e.printStackTrace();
-			}
-
-            out += "\n" + "\n* * * sign the dataToSign with the private key * * *";
-            byte[] signature = pqcChrystalsDilithiumSignature(privateKeyLoad, dataToSign);
-            out += "\n" + "signature length: " + signature.length + " data: " + bytesToHex(signature);
-            signatureLength[i] = signature.length;
-
-            out += "\n" + "\n* * * verify the signature with the public key * * *";
-            boolean signatureVerified = pqcChrystalsDilithiumVerification(publicKeyLoad, dataToSign, signature);
-            out += "\n" + "the signature is verified: " + signatureVerified;
-            signaturesVerified[i] = signatureVerified;
-            out += "\n\n****************************************\n";
-        }
-
-        out += "\n" + "Test results";
-        out += "\n" + "parameter spec name  priKL   pubKL    sigL  sigV" + "\n";
-        for (int i = 0; i < nrOfSpecs; i++) {
-            String out1 = String.format("%-20s%6d%8d%8d%6b%n", parameterSpecName[i], privateKeyLength[i], publicKeyLength[i], signatureLength[i], signaturesVerified[i]);
-            out += out1;
-        }
-        out += "\n" + "Legend: priKL privateKey length, pubKL publicKey length, sigL signature length, sigV signature verified\n";
-        out += "\n****************************************\n";
+        
 	}
 
-    private KeyPair generateChrystalsDilithiumKeyPair(DilithiumParameterSpec dilithiumParameterSpec) 
+    public byte[] getPrivateKeyByte() 
+    {
+		return privateKeyByte;
+	}
+
+	public void setPrivateKeyByte(byte[] privateKeyByte) 
+	{
+		this.privateKeyByte = privateKeyByte;
+	}
+
+	public byte[] getPublicKeyByte() 
+	{
+		return publicKeyByte;
+	}
+
+	public void setPublicKeyByte(byte[] publicKeyByte) 
+	{
+		this.publicKeyByte = publicKeyByte;
+	}
+
+	public void generatePublicPrivateKeys(DilithiumParameterSpec dilithiumParameterSpec)
+    {
+        KeyPair keyPair = generateKeyPair(dilithiumParameterSpec);
+        
+        setPrivateKeyByte(keyPair.getPrivate().getEncoded());
+        setPublicKeyByte(keyPair.getPublic().getEncoded());
+    }
+    
+    public byte[] generateSignature(byte[] dataToSign, byte[] privateKeyBytes)
+    {
+
+        PrivateKey privateKeyLoad = getPrivateKeyFromEncoded(privateKeyBytes);
+
+        return pqcSignature(privateKeyLoad, dataToSign);
+    }
+
+    public boolean verifySignature(byte[] data, byte[] signature, byte[] publicKeyBytes)
+    {
+        PublicKey publicKeyLoad = null;
+
+        try 
+        {
+            publicKeyLoad = getPublicKeyFromEncoded(publicKeyBytes);
+        } 
+        catch (InvalidKeyException | SignatureException e) 
+        {
+            e.printStackTrace();
+        }
+
+        return pqcVerification(publicKeyLoad, data, signature);
+    }
+
+    private KeyPair generateKeyPair(DilithiumParameterSpec dilithiumParameterSpec) 
     {
         try 
         {
@@ -117,7 +102,7 @@ public class CrystalsDilithiumSignature
         }  
     }
 
-    private PrivateKey getChrystalsDilithiumPrivateKeyFromEncoded(byte[] encodedKey) 
+    private PrivateKey getPrivateKeyFromEncoded(byte[] encodedKey) 
     {
         PKCS8EncodedKeySpec pkcs8EncodedKeySpec = new PKCS8EncodedKeySpec(encodedKey);
         KeyFactory keyFactory = null;
@@ -134,13 +119,14 @@ public class CrystalsDilithiumSignature
         }
     }
 
-    private PublicKey getChrystalsDilithiumPublicKeyFromEncoded(byte[] encodedKey) throws InvalidKeyException, SignatureException 
+    private PublicKey getPublicKeyFromEncoded(byte[] encodedKey) throws InvalidKeyException, SignatureException 
     {   
         try 
         {
         	X509EncodedKeySpec x509EncodedKeySpec = new X509EncodedKeySpec(encodedKey);
         	
             KeyFactory keyFactory = KeyFactory.getInstance("Dilithium", "BCPQC");
+            
             return keyFactory.generatePublic(x509EncodedKeySpec);
         } 
         catch (NoSuchAlgorithmException | NoSuchProviderException | InvalidKeySpecException e) 
@@ -150,7 +136,7 @@ public class CrystalsDilithiumSignature
         }
     }
 
-    private byte[] pqcChrystalsDilithiumSignature(PrivateKey privateKey, byte[] dataToSign) 
+    private byte[] pqcSignature(PrivateKey privateKey, byte[] dataToSign) 
     {
         try 
         {
@@ -167,7 +153,7 @@ public class CrystalsDilithiumSignature
         }
     }
 
-    private boolean pqcChrystalsDilithiumVerification(PublicKey publicKey, byte[] dataToSign, byte[] signature) 
+    private boolean pqcVerification(PublicKey publicKey, byte[] dataToSign, byte[] signature) 
     {
         try 
         {
@@ -182,12 +168,5 @@ public class CrystalsDilithiumSignature
             e.printStackTrace();
             return false;
         }
-    }
-
-    private String bytesToHex(byte[] bytes) 
-    {
-        StringBuffer result = new StringBuffer();
-        for (byte b : bytes) result.append(Integer.toString((b & 0xff) + 0x100, 16).substring(1));
-        return result.toString();
     }
 }
