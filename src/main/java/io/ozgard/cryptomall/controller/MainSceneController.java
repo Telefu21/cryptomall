@@ -216,6 +216,9 @@ public class MainSceneController implements Initializable
 	Tab tabCertificateProcessing;
 	@FXML
 	@Autowired
+	Tab tabHexViewPQC;
+	@FXML
+	@Autowired
 	ComboBox<String> comboEncryptDecryptCipher;
 	@FXML
 	@Autowired
@@ -301,6 +304,81 @@ public class MainSceneController implements Initializable
 	@FXML
 	@Autowired
 	Button buttonCertGenerateVerify;
+	@FXML
+	@Autowired
+	TextField textFieldPQCDataFilePath;
+	@FXML
+	@Autowired
+	TextField textFieldPQCPublicKeyFilePath;
+	@FXML
+	@Autowired
+	TextField textFieldPQCSignatureFilePath;
+	@FXML
+	@Autowired
+	Button buttonPQCDataFileBrowse;
+	@FXML
+	@Autowired
+	Button buttonPQCPublicKeyFileBrowse;
+	@FXML
+	@Autowired
+	Button buttonPQCGenerateVerifyExchange;
+	@FXML
+	@Autowired
+	Button buttonPQCSignatureFileBrowse;
+	@FXML
+	@Autowired
+	RadioButton radioButtonPQCDilithium;
+	@FXML
+	@Autowired
+	RadioButton radioButtonPQCFalcon;
+	@FXML
+	@Autowired
+	RadioButton radioButtonPQCSphincs;
+	@FXML
+	@Autowired
+	RadioButton radioButtonPQCKyber;
+	@FXML
+	@Autowired
+	RadioButton radioButtonPQCHQC;
+	@FXML
+	@Autowired
+	RadioButton radioButtonPQCBike;
+	@FXML
+	@Autowired
+	RadioButton radioButtonPQCClassicMceliece;
+	@FXML
+	@Autowired
+	ComboBox<String> comboBoxPQCDilithiumParams;
+	@FXML
+	@Autowired
+	ComboBox<String> comboBoxPQCFalconParams;
+	@FXML
+	@Autowired
+	ComboBox<String> comboBoxPQCSphincsParams;
+	@FXML
+	@Autowired
+	ComboBox<String> comboBoxPQCKyberParams;
+	@FXML
+	@Autowired
+	ComboBox<String> comboBoxPQCHQCParams;
+	@FXML
+	@Autowired
+	ComboBox<String> comboBoxPQCBikeParams;
+	@FXML
+	@Autowired
+	ComboBox<String> comboBoxPQCClassicMcElieceParams;
+	@FXML
+	@Autowired
+	TextArea textAreaPQCInput;
+	@FXML
+	@Autowired
+	CheckBox checkBoxPQCInputHex;
+	@FXML
+	@Autowired
+	CheckBox checkBoxPQCSignatureVerify;
+	@FXML
+	@Autowired
+	CheckBox checkBoxPQCSignatureGenerate;
 	
 	TableColumn<CertificateParams, String> tableColumnCertificateElementsName;
 	TableColumn<CertificateParams, String> tableColumnRootCertificate;
@@ -374,6 +452,7 @@ public class MainSceneController implements Initializable
 		tabEncryptDecrypt.setDisable(true);
 		tabSignVerify.setDisable(true);
 		tabCertificateProcessing.setDisable(true);
+		tabHexViewPQC.setDisable(true);
 		
 		textFieldSignVerifyInputFilePath.setText("Select Input File");
 		textFieldSignVerifyKeyFilePath.setText("Select Private Key File");
@@ -423,6 +502,8 @@ public class MainSceneController implements Initializable
 		tableViewCertificateParams.setItems(itemList);
 		
 		radioButtonGenerateCertificateOnAction();
+		
+		checkBoxPQCSignatureGenerateOnAction();
 	}
 	
 	private void setCertificatesParams()
@@ -462,6 +543,7 @@ public class MainSceneController implements Initializable
 			tabEncryptDecrypt.setDisable(false);
 			tabSignVerify.setDisable(false);
 			tabCertificateProcessing.setDisable(false);
+			tabHexViewPQC.setDisable(false);
         }
 	}
 	
@@ -1325,6 +1407,173 @@ public class MainSceneController implements Initializable
 		{
 			comboEncryptDecyptHashFunction.setDisable(true);
 		}
+	}
+	
+	@FXML
+	void buttonPQCDataFileBrowseOnMouseClicked()
+	{
+		browseFile("Select Data Input File", textFieldPQCDataFilePath);
+	}
+	
+	@FXML
+	void buttonPQCPublicKeyFileBrowseOnMouseClicked()
+	{
+		browseFile("Select Public Key File", textFieldPQCPublicKeyFilePath);
+	}
+	
+	@FXML
+	void buttonPQCSignatureFileBrowseOnMouseClicked()
+	{
+		browseFile("Select Signature File", textFieldPQCSignatureFilePath);
+	}
+	
+	@FXML
+	void checkBoxPQCSignatureGenerateOnAction()
+	{
+		buttonPQCGenerateVerifyExchange.setText("Generate Signature");
+		textAreaPQCInput.setDisable(false);
+		checkBoxPQCInputHex.setDisable(false);
+		checkBoxPQCInputHex.setSelected(false);
+		checkBoxPQCSignatureGenerate.setSelected(true);
+		checkBoxPQCSignatureGenerate.setDisable(false);
+		checkBoxPQCSignatureVerify.setSelected(false);
+		checkBoxPQCSignatureVerify.setDisable(false);
+		textFieldPQCDataFilePath.setDisable(false);
+		textFieldPQCDataFilePath.setText("Select Input File for Signature Verification");
+		buttonPQCDataFileBrowse.setDisable(false);
+		textFieldPQCPublicKeyFilePath.setDisable(true);
+		textFieldPQCPublicKeyFilePath.setText("Not Used for Signature Generation");
+		buttonPQCPublicKeyFileBrowse.setDisable(true);
+		textFieldPQCSignatureFilePath.setDisable(true);
+		textFieldPQCSignatureFilePath.setText("Not Used for Signature Generation");
+		buttonPQCSignatureFileBrowse.setDisable(true);
+	}
+	
+	@FXML
+	void checkBoxPQCSignatureVerifyOnAction()
+	{
+		buttonPQCGenerateVerifyExchange.setText("Verify Signature");
+		textAreaPQCInput.setDisable(true);
+		textAreaPQCInput.clear();
+		checkBoxPQCInputHex.setDisable(true);
+		checkBoxPQCInputHex.setSelected(false);
+		checkBoxPQCSignatureGenerate.setSelected(false);
+		checkBoxPQCSignatureGenerate.setDisable(false);
+		checkBoxPQCSignatureVerify.setSelected(true);
+		checkBoxPQCSignatureVerify.setDisable(false);
+		textFieldPQCDataFilePath.setDisable(false);
+		textFieldPQCDataFilePath.setText("Select Input File for Signature Verification");
+		buttonPQCDataFileBrowse.setDisable(false);
+		textFieldPQCPublicKeyFilePath.setDisable(false);
+		textFieldPQCPublicKeyFilePath.setText("Select Public Key File for Signature Verification");
+		buttonPQCPublicKeyFileBrowse.setDisable(false);
+		textFieldPQCSignatureFilePath.setDisable(false);
+		textFieldPQCSignatureFilePath.setText("Select Signature File for Signature Verification");
+		buttonPQCSignatureFileBrowse.setDisable(false);
+	}
+	
+	@FXML
+	void buttonPQCGenerateVerifyExchangeOnMouseClicked()
+	{
+		
+	}
+	
+	@FXML
+	void radioButtonPQCDilithiumOnAction()
+	{
+		radioButtonPQCToggle(radioButtonPQCDilithium);
+		
+		checkBoxPQCSignatureGenerateOnAction();
+	}
+	
+	@FXML
+	void radioButtonPQCSphincsOnAction()
+	{
+		radioButtonPQCToggle(radioButtonPQCSphincs);
+		
+		checkBoxPQCSignatureGenerateOnAction();
+	}
+	
+	@FXML
+	void radioButtonPQCFalconOnAction()
+	{
+		radioButtonPQCToggle(radioButtonPQCFalcon);
+		
+		checkBoxPQCSignatureGenerateOnAction();
+	}
+	
+	@FXML
+	void radioButtonPQCKyberOnAction()
+	{
+		disableAllWidgetsPQCKeyEn();
+		
+		buttonPQCGenerateVerifyExchange.setText("Start Key Encapsulation Mechanism");
+
+		radioButtonPQCToggle(radioButtonPQCKyber);
+	}
+	
+	@FXML
+	void radioButtonPQCHQCOnAction()
+	{
+		disableAllWidgetsPQCKeyEn();
+		
+		buttonPQCGenerateVerifyExchange.setText("Start Key Encapsulation Mechanism");
+
+		radioButtonPQCToggle(radioButtonPQCHQC);
+	}
+	
+	@FXML
+	void radioButtonPQCBikeOnAction()
+	{
+		disableAllWidgetsPQCKeyEn();
+		
+		buttonPQCGenerateVerifyExchange.setText("Start Key Encapsulation Mechanism");
+		
+		radioButtonPQCToggle(radioButtonPQCBike);
+	}
+	
+	@FXML
+	void radioButtonPQCClassicMcelieceOnAction()
+	{
+		disableAllWidgetsPQCKeyEn();
+		
+		buttonPQCGenerateVerifyExchange.setText("Start Key Encapsulation Mechanism");
+		
+		radioButtonPQCToggle(radioButtonPQCClassicMceliece);
+	}
+	
+	void radioButtonPQCToggle(RadioButton radioButtonToSelect)
+	{
+		radioButtonPQCFalcon.setSelected(false);
+		radioButtonPQCSphincs.setSelected(false);
+		radioButtonPQCBike.setSelected(false);
+		radioButtonPQCClassicMceliece.setSelected(false);
+		radioButtonPQCHQC.setSelected(false);
+		radioButtonPQCKyber.setSelected(false);
+		radioButtonPQCDilithium.setSelected(false);
+		
+		radioButtonToSelect.setSelected(true);
+	}
+	
+	void disableAllWidgetsPQCKeyEn()
+	{
+		textFieldPQCDataFilePath.setDisable(true);
+		textFieldPQCDataFilePath.clear();
+		textFieldPQCPublicKeyFilePath.setDisable(true);
+		textFieldPQCPublicKeyFilePath.clear();
+		textFieldPQCSignatureFilePath.setDisable(true);
+		textFieldPQCSignatureFilePath.clear();
+		buttonPQCDataFileBrowse.setDisable(true);
+		buttonPQCPublicKeyFileBrowse.setDisable(true);
+		buttonPQCSignatureFileBrowse.setDisable(true);
+		checkBoxPQCSignatureGenerate.setDisable(true);
+		checkBoxPQCSignatureGenerate.setSelected(false);
+		checkBoxPQCSignatureVerify.setDisable(true);
+		checkBoxPQCSignatureVerify.setSelected(false);
+		textAreaPQCInput.setDisable(true);
+		textAreaPQCInput.setText("All Key Encapsulation Files will be stored to Working Directory");
+		checkBoxPQCInputHex.setDisable(true);
+		checkBoxPQCInputHex.setSelected(false);
 	}
 	
 	@FXML

@@ -269,6 +269,75 @@
                      </children></AnchorPane>
                </content>
             </Tab>
+            <Tab fx:id="tabHexViewPQC" text="Post Quantum">
+               <content>
+                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <HBox layoutX="8.0" prefHeight="42.0" prefWidth="714.0">
+                           <children>
+                              <TextField fx:id="textFieldPQCDataFilePath" editable="false" prefHeight="26.0" prefWidth="596.0" text="Select file to Signature Generate">
+                                 <HBox.margin>
+                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                 </HBox.margin>
+                              </TextField>
+                              <Button fx:id="buttonPQCDataFileBrowse" mnemonicParsing="false" onMouseClicked="#buttonPQCDataFileBrowseOnMouseClicked" prefHeight="26.0" prefWidth="109.0" text="Browse">
+                                 <HBox.margin>
+                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                 </HBox.margin>
+                              </Button>
+                           </children>
+                        </HBox>
+                        <RadioButton fx:id="radioButtonPQCDilithium" layoutX="22.0" layoutY="121.0" mnemonicParsing="false" onAction="#radioButtonPQCDilithiumOnAction" prefHeight="18.0" prefWidth="127.0" text=" Crystals Dilithium:" />
+                        <ComboBox fx:id="comboBoxPQCDilithiumParams" layoutX="157.0" layoutY="117.0" prefHeight="26.0" prefWidth="136.0" />
+                        <TextArea fx:id="textAreaPQCInput" layoutX="19.0" layoutY="267.0" prefHeight="55.0" prefWidth="690.0" />
+                        <Button fx:id="buttonPQCGenerateVerifyExchange" layoutX="241.0" layoutY="333.0" mnemonicParsing="false" onMouseClicked="#buttonPQCGenerateVerifyExchangeOnMouseClicked" prefHeight="26.0" prefWidth="245.0" text="Generate Signature" />
+                        <CheckBox fx:id="checkBoxPQCInputHex" layoutX="19.0" layoutY="335.0" mnemonicParsing="false" text="Hex In Text Area" />
+                        <HBox layoutX="8.0" layoutY="35.0" prefHeight="42.0" prefWidth="714.0">
+                           <children>
+                              <TextField fx:id="textFieldPQCPublicKeyFilePath" editable="false" prefHeight="26.0" prefWidth="596.0">
+                                 <HBox.margin>
+                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                 </HBox.margin>
+                              </TextField>
+                              <Button fx:id="buttonPQCPublicKeyFileBrowse" mnemonicParsing="false" onMouseClicked="#buttonPQCPublicKeyFileBrowseOnMouseClicked" prefHeight="26.0" prefWidth="109.0" text="Browse">
+                                 <HBox.margin>
+                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                 </HBox.margin>
+                              </Button>
+                           </children>
+                        </HBox>
+                        <HBox layoutX="8.0" layoutY="71.0" prefHeight="42.0" prefWidth="714.0">
+                           <children>
+                              <TextField fx:id="textFieldPQCSignatureFilePath" editable="false" prefHeight="26.0" prefWidth="596.0">
+                                 <HBox.margin>
+                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                 </HBox.margin>
+                              </TextField>
+                              <Button fx:id="buttonPQCSignatureFileBrowse" mnemonicParsing="false" onMouseClicked="#buttonPQCSignatureFileBrowseOnMouseClicked" prefHeight="26.0" prefWidth="109.0" text="Browse">
+                                 <HBox.margin>
+                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                 </HBox.margin>
+                              </Button>
+                           </children>
+                        </HBox>
+                        <RadioButton fx:id="radioButtonPQCFalcon" layoutX="22.0" layoutY="160.0" mnemonicParsing="false" onAction="#radioButtonPQCFalconOnAction" prefHeight="18.0" prefWidth="127.0" text="FALCON:" />
+                        <ComboBox fx:id="comboBoxPQCFalconParams" layoutX="157.0" layoutY="156.0" prefHeight="26.0" prefWidth="136.0" />
+                        <RadioButton fx:id="radioButtonPQCSphincs" layoutX="22.0" layoutY="198.0" mnemonicParsing="false" onAction="#radioButtonPQCSphincsOnAction" prefHeight="18.0" prefWidth="127.0" text="SPHINCS+:" />
+                        <ComboBox fx:id="comboBoxPQCSphincsParams" layoutX="157.0" layoutY="194.0" prefHeight="26.0" prefWidth="136.0" />
+                        <CheckBox fx:id="checkBoxPQCSignatureGenerate" layoutX="22.0" layoutY="230.0" mnemonicParsing="false" onAction="#checkBoxPQCSignatureGenerateOnAction" prefHeight="18.0" prefWidth="132.0" text="Signature Generate" />
+                        <CheckBox fx:id="checkBoxPQCSignatureVerify" layoutX="159.0" layoutY="230.0" mnemonicParsing="false" onAction="#checkBoxPQCSignatureVerifyOnAction" prefHeight="18.0" prefWidth="132.0" text="Signature Verify" />
+                        <RadioButton fx:id="radioButtonPQCKyber" layoutX="326.0" layoutY="120.0" mnemonicParsing="false" onAction="#radioButtonPQCKyberOnAction" prefHeight="18.0" prefWidth="127.0" text=" Crystals Kyber:" />
+                        <ComboBox fx:id="comboBoxPQCKyberParams" layoutX="461.0" layoutY="116.0" prefHeight="26.0" prefWidth="136.0" />
+                        <RadioButton fx:id="radioButtonPQCHQC" layoutX="326.0" layoutY="159.0" mnemonicParsing="false" onAction="#radioButtonPQCHQCOnAction" prefHeight="18.0" prefWidth="127.0" text="HQC:" />
+                        <ComboBox fx:id="comboBoxPQCHQCParams" layoutX="461.0" layoutY="155.0" prefHeight="26.0" prefWidth="136.0" />
+                        <RadioButton fx:id="radioButtonPQCBike" layoutX="326.0" layoutY="197.0" mnemonicParsing="false" onAction="#radioButtonPQCBikeOnAction" prefHeight="18.0" prefWidth="127.0" text="BIKE:" />
+                        <ComboBox fx:id="comboBoxPQCBikeParams" layoutX="461.0" layoutY="193.0" prefHeight="26.0" prefWidth="136.0" />
+                        <RadioButton fx:id="radioButtonPQCClassicMceliece" layoutX="326.0" layoutY="234.0" mnemonicParsing="false" onAction="#radioButtonPQCClassicMcelieceOnAction" prefHeight="18.0" prefWidth="127.0" text="Classic McEliece:" />
+                        <ComboBox fx:id="comboBoxPQCClassicMcElieceParams" layoutX="461.0" layoutY="230.0" prefHeight="26.0" prefWidth="136.0" />
+                     </children>
+                  </AnchorPane>
+               </content>
+            </Tab>
             <Tab fx:id="tabHexViewCrc" text="CRC &amp; HexView ">
                <content>
                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
@@ -305,75 +374,6 @@
                         <Button fx:id="buttonCRCGenerate" layoutX="404.0" layoutY="331.0" mnemonicParsing="false" onMouseClicked="#buttonCRCGenerateOnMouseClicked" prefHeight="26.0" prefWidth="245.0" text="Generate CRC for Text Input and File" />
                         <CheckBox fx:id="checkBoxCRCInputHex" layoutX="279.0" layoutY="335.0" mnemonicParsing="false" text="Hex In Text Area" />
                      </children></AnchorPane>
-               </content>
-            </Tab>
-            <Tab fx:id="tabHexViewCrc1" text="Post Quantum">
-               <content>
-                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                     <children>
-                        <HBox layoutX="8.0" prefHeight="42.0" prefWidth="714.0">
-                           <children>
-                              <TextField fx:id="textFieldPQCDataFilePath" editable="false" prefHeight="26.0" prefWidth="596.0" text="Select file to Signature Generate">
-                                 <HBox.margin>
-                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                                 </HBox.margin>
-                              </TextField>
-                              <Button fx:id="buttonPQCDataFileBrowse" mnemonicParsing="false" onMouseClicked="#buttonHexViewFileBrowseOnMouseClicked" prefHeight="26.0" prefWidth="109.0" text="Browse">
-                                 <HBox.margin>
-                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                                 </HBox.margin>
-                              </Button>
-                           </children>
-                        </HBox>
-                        <RadioButton fx:id="radioButtonPQCDilithium" layoutX="22.0" layoutY="121.0" mnemonicParsing="false" onAction="#radioButtonCRC8OnAction" prefHeight="18.0" prefWidth="127.0" text=" Crystals Dilithium:" />
-                        <ComboBox fx:id="comboBoxPQCDilithiumParams" layoutX="157.0" layoutY="117.0" onAction="#comboBoxPredifinedCRCOnAction" prefHeight="26.0" prefWidth="136.0" />
-                        <TextArea fx:id="textAreaPQCInput" layoutX="19.0" layoutY="267.0" prefHeight="55.0" prefWidth="690.0" />
-                        <Button fx:id="buttonPQCGenerateVerifyExchange" layoutX="241.0" layoutY="333.0" mnemonicParsing="false" onMouseClicked="#buttonCRCGenerateOnMouseClicked" prefHeight="26.0" prefWidth="245.0" text="Generate Signature" />
-                        <CheckBox fx:id="checkBoxPQCInputHex" layoutX="19.0" layoutY="335.0" mnemonicParsing="false" text="Hex In Text Area" />
-                        <HBox layoutX="8.0" layoutY="35.0" prefHeight="42.0" prefWidth="714.0">
-                           <children>
-                              <TextField fx:id="textFieldPQCPublicKeyFilePath" editable="false" prefHeight="26.0" prefWidth="596.0">
-                                 <HBox.margin>
-                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                                 </HBox.margin>
-                              </TextField>
-                              <Button fx:id="buttonPQCPublicKeyFileBrowse" mnemonicParsing="false" onMouseClicked="#buttonHexViewFileBrowseOnMouseClicked" prefHeight="26.0" prefWidth="109.0" text="Browse">
-                                 <HBox.margin>
-                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                                 </HBox.margin>
-                              </Button>
-                           </children>
-                        </HBox>
-                        <HBox layoutX="8.0" layoutY="71.0" prefHeight="42.0" prefWidth="714.0">
-                           <children>
-                              <TextField fx:id="textFieldPQCSignatureFilePath" editable="false" prefHeight="26.0" prefWidth="596.0">
-                                 <HBox.margin>
-                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                                 </HBox.margin>
-                              </TextField>
-                              <Button fx:id="buttonPQCSignatureFileBrowse" mnemonicParsing="false" onMouseClicked="#buttonHexViewFileBrowseOnMouseClicked" prefHeight="26.0" prefWidth="109.0" text="Browse">
-                                 <HBox.margin>
-                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                                 </HBox.margin>
-                              </Button>
-                           </children>
-                        </HBox>
-                        <RadioButton fx:id="radioButtonPQCFalcon" layoutX="22.0" layoutY="160.0" mnemonicParsing="false" onAction="#radioButtonCRC8OnAction" prefHeight="18.0" prefWidth="127.0" text="FALCON:" />
-                        <ComboBox fx:id="comboBoxPQCFalconParams" layoutX="157.0" layoutY="156.0" onAction="#comboBoxPredifinedCRCOnAction" prefHeight="26.0" prefWidth="136.0" />
-                        <RadioButton fx:id="radioButtonPQCSphincs" layoutX="22.0" layoutY="198.0" mnemonicParsing="false" onAction="#radioButtonCRC8OnAction" prefHeight="18.0" prefWidth="127.0" text="SPHINCS+:" />
-                        <ComboBox fx:id="comboBoxPQCSphincsParams" layoutX="157.0" layoutY="194.0" onAction="#comboBoxPredifinedCRCOnAction" prefHeight="26.0" prefWidth="136.0" />
-                        <CheckBox fx:id="checkBoxPQCSignatureGenerate" layoutX="22.0" layoutY="230.0" mnemonicParsing="false" prefHeight="18.0" prefWidth="132.0" text="Signature Generate" />
-                        <CheckBox fx:id="checkBoxPQCSignatureVerify" layoutX="159.0" layoutY="230.0" mnemonicParsing="false" prefHeight="18.0" prefWidth="132.0" text="Signature Verify" />
-                        <RadioButton fx:id="radioButtonPQCKyber" layoutX="326.0" layoutY="120.0" mnemonicParsing="false" onAction="#radioButtonCRC8OnAction" prefHeight="18.0" prefWidth="127.0" text=" Crystals Kyber:" />
-                        <ComboBox fx:id="comboBoxPQCKyberParams" layoutX="461.0" layoutY="116.0" onAction="#comboBoxPredifinedCRCOnAction" prefHeight="26.0" prefWidth="136.0" />
-                        <RadioButton fx:id="radioButtonPQCHQC" layoutX="326.0" layoutY="159.0" mnemonicParsing="false" onAction="#radioButtonCRC8OnAction" prefHeight="18.0" prefWidth="127.0" text="HQC:" />
-                        <ComboBox fx:id="comboBoxPQCHQCParams" layoutX="461.0" layoutY="155.0" onAction="#comboBoxPredifinedCRCOnAction" prefHeight="26.0" prefWidth="136.0" />
-                        <RadioButton fx:id="radioButtonPQCBike" layoutX="326.0" layoutY="197.0" mnemonicParsing="false" onAction="#radioButtonCRC8OnAction" prefHeight="18.0" prefWidth="127.0" text="BIKE:" />
-                        <ComboBox fx:id="comboBoxPQCBikeParams" layoutX="461.0" layoutY="193.0" onAction="#comboBoxPredifinedCRCOnAction" prefHeight="26.0" prefWidth="136.0" />
-                        <RadioButton fx:id="radioButtonPQCClassicMceliece" layoutX="326.0" layoutY="234.0" mnemonicParsing="false" onAction="#radioButtonCRC8OnAction" prefHeight="18.0" prefWidth="127.0" text="Classic McEliece:" />
-                        <ComboBox fx:id="comboBoxPQCClassicMcElieceParams" layoutX="461.0" layoutY="230.0" onAction="#comboBoxPredifinedCRCOnAction" prefHeight="26.0" prefWidth="136.0" />
-                     </children>
-                  </AnchorPane>
                </content>
             </Tab>
         </tabs>
