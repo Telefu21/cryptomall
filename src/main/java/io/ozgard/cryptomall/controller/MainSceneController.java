@@ -1,8 +1,6 @@
 package io.ozgard.cryptomall.controller;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.math.BigInteger;
@@ -408,6 +406,19 @@ public class MainSceneController implements Initializable
 		comboEncryptDecryptType.setItems(FXCollections.observableArrayList(EncryptDecryptParams.ENCRYPT_DECRYPT_TYPE_SYM_ENCRYPTION, EncryptDecryptParams.ENCRYPT_DECRYPT_TYPE_SYM_DECRYPTION, EncryptDecryptParams.ENCRYPT_DECRYPT_TYPE_ASYM_ENCRYPTION, 
 				EncryptDecryptParams.ENCRYPT_DECRYPT_TYPE_ASYM_DECRYPTION, EncryptDecryptParams.ENCRYPT_DECRYPT_TYPE_GENERATE_HASH, EncryptDecryptParams.ENCRYPT_DECRYPT_TYPE_GENERATE_CMAC, EncryptDecryptParams.ENCRYPT_DECRYPT_TYPE_GENERATE_HMAC));
 		comboEncryptDecryptType.setValue(EncryptDecryptParams.ENCRYPT_DECRYPT_TYPE_SYM_ENCRYPTION);
+		comboBoxPQCDilithiumParams.setItems(FXCollections.observableArrayList(PostQuantumCryptoParams.PQC_DILITHIUM2, PostQuantumCryptoParams.PQC_DILITHIUM3, PostQuantumCryptoParams.PQC_DILITHIUM5));
+		comboBoxPQCDilithiumParams.setValue(PostQuantumCryptoParams.PQC_DILITHIUM2);
+		comboBoxPQCKyberParams.setItems(FXCollections.observableArrayList(PostQuantumCryptoParams.PQC_KYBER512, PostQuantumCryptoParams.PQC_KYBER768, PostQuantumCryptoParams.PQC_KYBER1024));
+		comboBoxPQCKyberParams.setValue(PostQuantumCryptoParams.PQC_KYBER512);
+		comboBoxPQCFalconParams.setItems(FXCollections.observableArrayList(PostQuantumCryptoParams.PQC_FALCON512, PostQuantumCryptoParams.PQC_FALCON1024));
+		comboBoxPQCFalconParams.setValue(PostQuantumCryptoParams.PQC_FALCON512);
+		comboBoxPQCBikeParams.setItems(FXCollections.observableArrayList(PostQuantumCryptoParams.PQC_BIKE128, PostQuantumCryptoParams.PQC_BIKE192, PostQuantumCryptoParams.PQC_BIKE256));
+		comboBoxPQCBikeParams.setValue(PostQuantumCryptoParams.PQC_BIKE128);
+		comboBoxPQCHQCParams.setItems(FXCollections.observableArrayList(PostQuantumCryptoParams.PQC_HQC128, PostQuantumCryptoParams.PQC_HQC192, PostQuantumCryptoParams.PQC_HQC256));
+		comboBoxPQCHQCParams.setValue(PostQuantumCryptoParams.PQC_HQC128);
+		comboBoxPQCClassicMcElieceParams.setItems(FXCollections.observableArrayList(PostQuantumCryptoParams.PQC_MCELIECE348864, PostQuantumCryptoParams.PQC_MCELIECE348864f, PostQuantumCryptoParams.PQC_MCELIECE460896,
+				PostQuantumCryptoParams.PQC_MCELIECE6688128, PostQuantumCryptoParams.PQC_MCELIECE6960119, PostQuantumCryptoParams.PQC_MCELIECE8192128));
+		comboBoxPQCClassicMcElieceParams.setValue(PostQuantumCryptoParams.PQC_MCELIECE348864);
 		
 		titledPaneKeygenSettings.setCollapsible(false);
 		titledPaneKeygenProcessing.setCollapsible(false);
@@ -503,7 +514,7 @@ public class MainSceneController implements Initializable
 		
 		radioButtonGenerateCertificateOnAction();
 		
-		checkBoxPQCSignatureGenerateOnAction();
+		radioButtonPQCDilithiumOnAction();
 	}
 	
 	private void setCertificatesParams()
@@ -903,32 +914,8 @@ public class MainSceneController implements Initializable
 		
 		if(textAreaHexView.getText().length() != 0)
 		{
-			StringBuilder 	fileStringBuilder = new StringBuilder("");
-			String fileString = "";
+			String fileString = utilityService.readFileContentToString(textFieldHexViewFilePath.getText());
 
-			try 
-			{
-				FileReader CRCInputFileReader = new FileReader((new File(textFieldHexViewFilePath.getText())));
-				int ch;
-				
-				while((ch = CRCInputFileReader.read())!=-1)
-				{	
-					fileStringBuilder.append(Character.toString(ch));
-				}
-				
-				fileString = fileStringBuilder.toString();
-				
-				CRCInputFileReader.close();
-			} 
-			catch (FileNotFoundException e1) 
-			{
-				e1.printStackTrace();
-			} 
-			catch (IOException e1) 
-			{
-				e1.printStackTrace();
-			}
-			
 			setLogOutput(generateCRC(fileString, "File \"" + textFieldHexViewFilePath.getText().split("\\\\")[textFieldHexViewFilePath.getText().split("\\\\").length - 1]));
 		}
 		
@@ -1439,7 +1426,7 @@ public class MainSceneController implements Initializable
 		checkBoxPQCSignatureVerify.setSelected(false);
 		checkBoxPQCSignatureVerify.setDisable(false);
 		textFieldPQCDataFilePath.setDisable(false);
-		textFieldPQCDataFilePath.setText("Select Input File for Signature Verification");
+		textFieldPQCDataFilePath.setText("Select Input File for Signature Generation");
 		buttonPQCDataFileBrowse.setDisable(false);
 		textFieldPQCPublicKeyFilePath.setDisable(true);
 		textFieldPQCPublicKeyFilePath.setText("Not Used for Signature Generation");
