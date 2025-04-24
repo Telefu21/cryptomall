@@ -419,6 +419,9 @@ public class MainSceneController implements Initializable
 		comboBoxPQCClassicMcElieceParams.setItems(FXCollections.observableArrayList(PostQuantumCryptoParams.PQC_MCELIECE348864, PostQuantumCryptoParams.PQC_MCELIECE348864f, PostQuantumCryptoParams.PQC_MCELIECE460896,
 				PostQuantumCryptoParams.PQC_MCELIECE6688128, PostQuantumCryptoParams.PQC_MCELIECE6960119, PostQuantumCryptoParams.PQC_MCELIECE8192128));
 		comboBoxPQCClassicMcElieceParams.setValue(PostQuantumCryptoParams.PQC_MCELIECE348864);
+		comboBoxPQCSphincsParams.setItems(FXCollections.observableArrayList(PostQuantumCryptoParams.PQC_MCELIECE348864, PostQuantumCryptoParams.PQC_MCELIECE348864f, PostQuantumCryptoParams.PQC_MCELIECE460896,
+				PostQuantumCryptoParams.PQC_MCELIECE6688128, PostQuantumCryptoParams.PQC_MCELIECE6960119, PostQuantumCryptoParams.PQC_MCELIECE8192128));
+		comboBoxPQCSphincsParams.setValue(PostQuantumCryptoParams.PQC_SPHINCSSHA2_128F);
 		
 		titledPaneKeygenSettings.setCollapsible(false);
 		titledPaneKeygenProcessing.setCollapsible(false);
