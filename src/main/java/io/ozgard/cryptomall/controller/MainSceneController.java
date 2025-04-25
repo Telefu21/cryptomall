@@ -8,6 +8,7 @@ import java.net.URL;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ResourceBundle;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -406,23 +407,15 @@ public class MainSceneController implements Initializable
 		comboEncryptDecryptType.setItems(FXCollections.observableArrayList(EncryptDecryptParams.ENCRYPT_DECRYPT_TYPE_SYM_ENCRYPTION, EncryptDecryptParams.ENCRYPT_DECRYPT_TYPE_SYM_DECRYPTION, EncryptDecryptParams.ENCRYPT_DECRYPT_TYPE_ASYM_ENCRYPTION, 
 				EncryptDecryptParams.ENCRYPT_DECRYPT_TYPE_ASYM_DECRYPTION, EncryptDecryptParams.ENCRYPT_DECRYPT_TYPE_GENERATE_HASH, EncryptDecryptParams.ENCRYPT_DECRYPT_TYPE_GENERATE_CMAC, EncryptDecryptParams.ENCRYPT_DECRYPT_TYPE_GENERATE_HMAC));
 		comboEncryptDecryptType.setValue(EncryptDecryptParams.ENCRYPT_DECRYPT_TYPE_SYM_ENCRYPTION);
-		comboBoxPQCDilithiumParams.setItems(FXCollections.observableArrayList(PostQuantumCryptoParams.PQC_DILITHIUM2, PostQuantumCryptoParams.PQC_DILITHIUM3, PostQuantumCryptoParams.PQC_DILITHIUM5));
-		comboBoxPQCDilithiumParams.setValue(PostQuantumCryptoParams.PQC_DILITHIUM2);
-		comboBoxPQCKyberParams.setItems(FXCollections.observableArrayList(PostQuantumCryptoParams.PQC_KYBER512, PostQuantumCryptoParams.PQC_KYBER768, PostQuantumCryptoParams.PQC_KYBER1024));
-		comboBoxPQCKyberParams.setValue(PostQuantumCryptoParams.PQC_KYBER512);
-		comboBoxPQCFalconParams.setItems(FXCollections.observableArrayList(PostQuantumCryptoParams.PQC_FALCON512, PostQuantumCryptoParams.PQC_FALCON1024));
-		comboBoxPQCFalconParams.setValue(PostQuantumCryptoParams.PQC_FALCON512);
-		comboBoxPQCBikeParams.setItems(FXCollections.observableArrayList(PostQuantumCryptoParams.PQC_BIKE128, PostQuantumCryptoParams.PQC_BIKE192, PostQuantumCryptoParams.PQC_BIKE256));
-		comboBoxPQCBikeParams.setValue(PostQuantumCryptoParams.PQC_BIKE128);
-		comboBoxPQCHQCParams.setItems(FXCollections.observableArrayList(PostQuantumCryptoParams.PQC_HQC128, PostQuantumCryptoParams.PQC_HQC192, PostQuantumCryptoParams.PQC_HQC256));
-		comboBoxPQCHQCParams.setValue(PostQuantumCryptoParams.PQC_HQC128);
-		comboBoxPQCClassicMcElieceParams.setItems(FXCollections.observableArrayList(PostQuantumCryptoParams.PQC_MCELIECE348864, PostQuantumCryptoParams.PQC_MCELIECE348864f, PostQuantumCryptoParams.PQC_MCELIECE460896,
-				PostQuantumCryptoParams.PQC_MCELIECE6688128, PostQuantumCryptoParams.PQC_MCELIECE6960119, PostQuantumCryptoParams.PQC_MCELIECE8192128));
-		comboBoxPQCClassicMcElieceParams.setValue(PostQuantumCryptoParams.PQC_MCELIECE348864);
-		comboBoxPQCSphincsParams.setItems(FXCollections.observableArrayList(PostQuantumCryptoParams.PQC_MCELIECE348864, PostQuantumCryptoParams.PQC_MCELIECE348864f, PostQuantumCryptoParams.PQC_MCELIECE460896,
-				PostQuantumCryptoParams.PQC_MCELIECE6688128, PostQuantumCryptoParams.PQC_MCELIECE6960119, PostQuantumCryptoParams.PQC_MCELIECE8192128));
-		comboBoxPQCSphincsParams.setValue(PostQuantumCryptoParams.PQC_SPHINCSSHA2_128F);
 		
+		pqcComboItemSet(postQuantumCryptoParams.getDilithiumStrToParams().keySet(), comboBoxPQCDilithiumParams);
+		pqcComboItemSet(postQuantumCryptoParams.getKyberStrToParams().keySet(), comboBoxPQCKyberParams);
+		pqcComboItemSet(postQuantumCryptoParams.getFalconStrToParams().keySet(), comboBoxPQCFalconParams);
+		pqcComboItemSet(postQuantumCryptoParams.getBikeStrToParams().keySet(), comboBoxPQCBikeParams);
+		pqcComboItemSet(postQuantumCryptoParams.getHqcStrToParams().keySet(), comboBoxPQCHQCParams);
+		pqcComboItemSet(postQuantumCryptoParams.getMecelieceStrToParams().keySet(), comboBoxPQCClassicMcElieceParams);
+		pqcComboItemSet(postQuantumCryptoParams.getSphincsStrToParams().keySet(), comboBoxPQCSphincsParams);
+				
 		titledPaneKeygenSettings.setCollapsible(false);
 		titledPaneKeygenProcessing.setCollapsible(false);
 		titledPaneEncryptDecryptFile.setCollapsible(false);
@@ -1601,6 +1594,20 @@ public class MainSceneController implements Initializable
         }
 		
 		return isFileSelected;
+	}
+	
+	private void pqcComboItemSet(Set<String> keyset, ComboBox<String> comboBox)
+	{
+		ObservableList<String> itemListPqc = FXCollections.observableArrayList();
+		
+		for (String key : keyset) 
+		{
+			itemListPqc.add(key);
+		}
+		
+		
+		comboBox.setItems(itemListPqc.sorted());	
+		comboBox.setValue(itemListPqc.sorted().get(0));
 	}
 	
 	void setLogOutput(String text)
