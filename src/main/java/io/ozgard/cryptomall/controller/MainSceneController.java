@@ -1458,9 +1458,108 @@ public class MainSceneController implements Initializable
 	@FXML
 	void buttonPQCGenerateVerifyExchangeOnMouseClicked()
 	{
+		String retStr = "";
 		
+		postQuantumCryptoParams.setWorkingDirectoryPath(textFieldWorkingDirectory.getText());
+		
+		if(radioButtonPQCDilithium.isSelected() && checkBoxPQCSignatureGenerate.isSelected())
+		{
+			setPqcSignatureGenerateParams();
+			postQuantumCryptoParams.setParameterSet(comboBoxPQCDilithiumParams.getValue());
+			retStr = postQuantumCryptoService.signatureGenerateDilithium(postQuantumCryptoParams);
+		}
+		
+		if(radioButtonPQCFalcon.isSelected() && checkBoxPQCSignatureGenerate.isSelected())
+		{
+			setPqcSignatureGenerateParams();
+			postQuantumCryptoParams.setParameterSet(comboBoxPQCFalconParams.getValue());
+			retStr = postQuantumCryptoService.signatureGenerateFalcon(postQuantumCryptoParams);
+		}
+		
+		if(radioButtonPQCSphincs.isSelected() && checkBoxPQCSignatureGenerate.isSelected())
+		{
+			setPqcSignatureGenerateParams();
+			postQuantumCryptoParams.setParameterSet(comboBoxPQCSphincsParams.getValue());
+			retStr = postQuantumCryptoService.signatureGenerateSphincs(postQuantumCryptoParams);
+		}
+		
+		if(radioButtonPQCDilithium.isSelected() && checkBoxPQCSignatureVerify.isSelected())
+		{
+			setPqcSignatureVerifyParams();
+			postQuantumCryptoParams.setParameterSet(comboBoxPQCDilithiumParams.getValue());
+			retStr = postQuantumCryptoService.signatureVerifyDilithium(postQuantumCryptoParams);
+		}
+		
+		if(radioButtonPQCFalcon.isSelected() && checkBoxPQCSignatureVerify.isSelected())
+		{
+			setPqcSignatureVerifyParams();
+			postQuantumCryptoParams.setParameterSet(comboBoxPQCFalconParams.getValue());
+			retStr = postQuantumCryptoService.signatureVerifyFalcon(postQuantumCryptoParams);
+		}
+		
+		if(radioButtonPQCSphincs.isSelected() && checkBoxPQCSignatureVerify.isSelected())
+		{
+			setPqcSignatureVerifyParams();
+			postQuantumCryptoParams.setParameterSet(comboBoxPQCSphincsParams.getValue());
+			retStr = postQuantumCryptoService.signatureVerifySphincs(postQuantumCryptoParams);
+		}
+		
+		if(radioButtonPQCKyber.isSelected())
+		{
+			postQuantumCryptoParams.setParameterSet(comboBoxPQCKyberParams.getValue());
+			retStr = postQuantumCryptoService.keyEncapsulateKyber(postQuantumCryptoParams);
+		}
+		
+		if(radioButtonPQCHQC.isSelected())
+		{
+			postQuantumCryptoParams.setParameterSet(comboBoxPQCHQCParams.getValue());
+			retStr = postQuantumCryptoService.keyEncapsulateHQC(postQuantumCryptoParams);
+		}
+		
+		if(radioButtonPQCBike.isSelected())
+		{
+			postQuantumCryptoParams.setParameterSet(comboBoxPQCBikeParams.getValue());
+			retStr = postQuantumCryptoService.keyEncapsulateBike(postQuantumCryptoParams);
+		}
+		
+		if(radioButtonPQCClassicMceliece.isSelected())
+		{
+			postQuantumCryptoParams.setParameterSet(comboBoxPQCClassicMcElieceParams.getValue());
+			retStr = postQuantumCryptoService.keyEncapsulateClassicMcEliece(postQuantumCryptoParams);
+		}
+		
+		setLogOutput(retStr);
 	}
 	
+	private void setPqcSignatureGenerateParams() 
+	{
+		postQuantumCryptoParams.setInputFileBytes(utilityService.readFileContentToString(textFieldPQCDataFilePath.getText()).getBytes());
+		
+		if(textAreaPQCInput.getText().length() != 0)
+		{
+			String textInputStr = "";
+			
+			if(checkBoxPQCInputHex.isSelected())
+			{
+				textInputStr = utilityService.hexToAscii(textAreaPQCInput.getText().replaceAll(" 0x", "").replaceAll("0x", ""));
+			}
+			
+			if(!checkBoxPQCInputHex.isSelected())
+			{
+				textInputStr = textAreaPQCInput.getText();
+			}
+			
+			postQuantumCryptoParams.setTextAreaBytes(textInputStr.getBytes());
+		}	
+	}
+	
+	private void setPqcSignatureVerifyParams() 
+	{
+		postQuantumCryptoParams.setInputFileBytes(utilityService.readFileContentToString(textFieldPQCDataFilePath.getText()).getBytes());
+		postQuantumCryptoParams.setPublicKeyFileBytes(utilityService.readFileContentToString(textFieldPQCPublicKeyFilePath.getText()).getBytes());
+		postQuantumCryptoParams.setSignatureFileBytes(utilityService.readFileContentToString(textFieldPQCSignatureFilePath.getText()).getBytes());
+	}
+
 	@FXML
 	void radioButtonPQCDilithiumOnAction()
 	{

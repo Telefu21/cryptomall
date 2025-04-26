@@ -72,6 +72,7 @@ public class PostQuantumCryptoParams
 	byte [] textAreaBytes;
 	
 	String parameterSet;
+	String workingDirectoryPath;
 	
 	Map<String, DilithiumParameterSpec> dilithiumStrToParams;
 	Map<String, KyberParameterSpec> kyberStrToParams;
@@ -158,13 +159,21 @@ public class PostQuantumCryptoParams
 		sphincsStrToParams.put("shake_256s", SPHINCSPlusParameterSpec.shake_256s);
 		sphincsStrToParams.put("shake_256s_robust", SPHINCSPlusParameterSpec.shake_256s_robust);
 	}
-	
-	
+
+	public String getWorkingDirectoryPath() 
+	{
+		return workingDirectoryPath;
+	}
+
+	public void setWorkingDirectoryPath(String workingDirectoryPath) 
+	{
+		this.workingDirectoryPath = workingDirectoryPath;
+	}
+
 	public String getParameterSet() 
 	{
 		return parameterSet;
 	}
-
 
 	public void setParameterSet(String parameterSet) 
 	{
