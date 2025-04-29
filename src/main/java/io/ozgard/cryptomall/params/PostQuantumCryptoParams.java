@@ -15,57 +15,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class PostQuantumCryptoParams 
 {
-	public static final String PQC_DILITHIUM2 = "Dilithium2";
-	public static final String PQC_DILITHIUM3 = "Dilithium3";
-	public static final String PQC_DILITHIUM5 = "Dilithium5";
-	
-	public static final String PQC_KYBER512 = "Kyber512";
-	public static final String PQC_KYBER768 = "Kyber768";
-	public static final String PQC_KYBER1024 = "Kyber1024";
-	
-	public static final String PQC_FALCON512 = "Falcon512";
-	public static final String PQC_FALCON1024 = "Falcon1024";
-	
-	public static final String PQC_BIKE128 = "Bike128";
-	public static final String PQC_BIKE192 = "Bike192";
-	public static final String PQC_BIKE256 = "Bike256";
-	
-	public static final String PQC_HQC128 = "Hqc128";
-	public static final String PQC_HQC192 = "Hqc192";
-	public static final String PQC_HQC256 = "Hqc256";
-	
-	public static final String PQC_MCELIECE348864 = "Mceliece348864";
-	public static final String PQC_MCELIECE348864f = "Mceliece348864f";
-	public static final String PQC_MCELIECE460896 = "Mceliece460896";
-	public static final String PQC_MCELIECE6688128 = "Mceliece6688128";
-	public static final String PQC_MCELIECE6960119 = "Mceliece6960119";
-	public static final String PQC_MCELIECE8192128 = "Mceliece8192128";
-
-	public static final String PQC_SPHINCSSHA2_128F = "sha2_128f";
-	public static final String PQC_SPHINCSSHA2_128F_SIMPLE = "sha2_128f_simple";
-	public static final String PQC_SPHINCSSHA2_128S = "sha2_128s";
-	public static final String PQC_SPHINCSSHA2_128S_SIMPLE = "sha2_128s_simple";
-	public static final String PQC_SPHINCSSHA2_192F = "sha2_192f";
-	public static final String PQC_SPHINCSSHA2_192F_SIMPLE = "sha2_192f_simple";
-	public static final String PQC_SPHINCSSHA2_192S = "sha2_192s";
-	public static final String PQC_SPHINCSSHA2_192S_SIMPLE = "sha2_192s_simple";
-	public static final String PQC_SPHINCSSHA2_256F = "sha2_256f";
-	public static final String PQC_SPHINCSSHA2_256F_SIMPLE = "sha2_256f_simple";
-	public static final String PQC_SPHINCSSHA2_256S = "sha2_256s";
-	public static final String PQC_SPHINCSSHA2_256S_SIMPLE = "sha2_256s_simple";
-	public static final String PQC_SPHINCSSHAKE_128F = "shake_128f";
-	public static final String PQC_SPHINCSSHAKE_128F_SIMPLE = "shake_128f_simple";
-	public static final String PQC_SPHINCSSHAKE_128S = "shake_128s";
-	public static final String PQC_SPHINCSSHAKE_128S_SIMPLE = "shake_128s_simple";
-	public static final String PQC_SPHINCSSHAKE_192F = "shake_192f";
-	public static final String PQC_SPHINCSSHAKE_192F_SIMPLE = "shake_192f_simple";
-	public static final String PQC_SPHINCSSHAKE_192S = "shake_192s";
-	public static final String PQC_SPHINCSSHAKE_192S_SIMPLE = "shake_192s_simple";
-	public static final String PQC_SPHINCSSHAKE_256F = "shake_256f";
-	public static final String PQC_SPHINCSSHAKE_256F_SIMPLE = "shake_256f_simple";
-	public static final String PQC_SPHINCSSHAKE_256S = "shake_256s";
-	public static final String PQC_SPHINCSSHAKE_256S_SIMPLE = "shake_256s_simple";
-
 	byte [] inputFileBytes;
 	byte [] publicKeyFileBytes;
 	byte [] signatureFileBytes;

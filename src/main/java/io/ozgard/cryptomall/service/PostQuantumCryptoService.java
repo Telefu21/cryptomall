@@ -3,8 +3,10 @@ package io.ozgard.cryptomall.service;
 import java.security.Security;
 
 import org.bouncycastle.pqc.jcajce.provider.BouncyCastlePQCProvider;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import io.ozgard.cryptomall.model.CrystalsDilithiumSignature;
 import io.ozgard.cryptomall.params.PostQuantumCryptoParams;
 
 
@@ -24,6 +26,9 @@ import io.ozgard.cryptomall.params.PostQuantumCryptoParams;
 @Service
 public class PostQuantumCryptoService 
 {
+	@Autowired
+	CrystalsDilithiumSignature crystalsDilithiumSignature;
+	
 	public PostQuantumCryptoService() 
 	{
 		if (Security.getProvider("BCPQC") == null) 
@@ -34,7 +39,7 @@ public class PostQuantumCryptoService
 
 	public String signatureGenerateDilithium(PostQuantumCryptoParams postQuantumCryptoParams) 
 	{
-		// TODO Auto-generated method stub
+		crystalsDilithiumSignature.generatePublicPrivateKeys(postQuantumCryptoParams.getDilithiumStrToParams().get(postQuantumCryptoParams.getParameterSet()));
 		return "signatureGenerateDilithium";
 	}
 

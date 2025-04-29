@@ -1,6 +1,5 @@
 package io.ozgard.cryptomall.model;
 
-import java.nio.charset.StandardCharsets;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.KeyFactory;
@@ -11,54 +10,52 @@ import java.security.NoSuchProviderException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.SecureRandom;
-import java.security.Security;
 import java.security.Signature;
 import java.security.SignatureException;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 
-import org.bouncycastle.pqc.jcajce.provider.BouncyCastlePQCProvider;
 import org.bouncycastle.pqc.jcajce.spec.DilithiumParameterSpec;
 import org.springframework.stereotype.Component;
 
 @Component
 public class CrystalsDilithiumSignature 
 {
-	private byte[] privateKeyByte;
-	private byte[] publicKeyByte;
+	private byte[] privateKeyBytes;
+	private byte[] publicKeyBytes;
 	
 	CrystalsDilithiumSignature()
 	{	
         
 	}
 
-    public byte[] getPrivateKeyByte() 
+    public byte[] getPrivateKeyBytes() 
     {
-		return privateKeyByte;
+		return privateKeyBytes;
 	}
 
-	public void setPrivateKeyByte(byte[] privateKeyByte) 
+	public void setPrivateKeyBytes(byte[] privateKeyBytes) 
 	{
-		this.privateKeyByte = privateKeyByte;
+		this.privateKeyBytes = privateKeyBytes;
 	}
 
-	public byte[] getPublicKeyByte() 
+	public byte[] getPublicKeyBytes() 
 	{
-		return publicKeyByte;
+		return publicKeyBytes;
 	}
 
-	public void setPublicKeyByte(byte[] publicKeyByte) 
+	public void setPublicKeyBytes(byte[] publicKeyBytes) 
 	{
-		this.publicKeyByte = publicKeyByte;
+		this.publicKeyBytes = publicKeyBytes;
 	}
 
 	public void generatePublicPrivateKeys(DilithiumParameterSpec dilithiumParameterSpec)
     {
         KeyPair keyPair = generateKeyPair(dilithiumParameterSpec);
         
-        setPrivateKeyByte(keyPair.getPrivate().getEncoded());
-        setPublicKeyByte(keyPair.getPublic().getEncoded());
+        setPrivateKeyBytes(keyPair.getPrivate().getEncoded());
+        setPublicKeyBytes(keyPair.getPublic().getEncoded());
     }
     
     public byte[] generateSignature(byte[] dataToSign, byte[] privateKeyBytes)
