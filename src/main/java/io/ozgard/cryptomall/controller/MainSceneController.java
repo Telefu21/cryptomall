@@ -1535,6 +1535,8 @@ public class MainSceneController implements Initializable
 	{
 		postQuantumCryptoParams.setInputFileBytes(utilityService.readFileContentToString(textFieldPQCDataFilePath.getText()).getBytes());
 		
+		postQuantumCryptoParams.setTextAreaBytes(null);
+		
 		if(textAreaPQCInput.getText().length() != 0)
 		{
 			String textInputStr = "";

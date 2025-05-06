@@ -1,6 +1,9 @@
 package io.ozgard.cryptomall.service;
 
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.security.Security;
+import java.util.regex.Matcher;
 
 import org.bouncycastle.pqc.jcajce.provider.BouncyCastlePQCProvider;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,8 +42,38 @@ public class PostQuantumCryptoService
 
 	public String signatureGenerateDilithium(PostQuantumCryptoParams postQuantumCryptoParams) 
 	{
+		String retStr = "";
+		String signatureBytesTextAreafileName = "\"" + postQuantumCryptoParams.getWorkingDirectoryPath() + "\\" + postQuantumCryptoParams.getParameterSet() + "_text_area_dilithium_sign.bin\"";
+		String privKeyBytesfileName = "\"" + postQuantumCryptoParams.getWorkingDirectoryPath() + "\\" + postQuantumCryptoParams.getParameterSet() + "_dilithium_private_key.bin\"";
+		String pubKeyBytesfileName = "\"" + postQuantumCryptoParams.getWorkingDirectoryPath() + "\\" + postQuantumCryptoParams.getParameterSet() + "_dilithium_public_key.bin\"";
+		String signatureBytesFilefileName = "\"" + postQuantumCryptoParams.getWorkingDirectoryPath() + "\\" + postQuantumCryptoParams.getParameterSet() + "_file_dilithium_sign.bin\"";
+		
 		crystalsDilithiumSignature.generatePublicPrivateKeys(postQuantumCryptoParams.getDilithiumStrToParams().get(postQuantumCryptoParams.getParameterSet()));
-		return "signatureGenerateDilithium";
+		
+		byte [] privKeyBytes = crystalsDilithiumSignature.getPrivateKeyBytes();
+		writeBytesToFile(privKeyBytes, privKeyBytesfileName);
+		 
+		retStr += privKeyBytes.length + " bytes of Private Key generated and written to " + privKeyBytesfileName + "\n";
+		
+		byte [] pubKeyBytes = crystalsDilithiumSignature.getPublicKeyBytes();
+		writeBytesToFile(pubKeyBytes, pubKeyBytesfileName);
+		
+		retStr += pubKeyBytes.length + " bytes of Public Key generated and written to " + pubKeyBytesfileName + "\n";
+		
+		byte [] signatureBytesFile = crystalsDilithiumSignature.generateSignature(postQuantumCryptoParams.getInputFileBytes(), privKeyBytes);
+		writeBytesToFile(signatureBytesFile, signatureBytesFilefileName);
+		
+		retStr += signatureBytesFile.length + " bytes of Signature for Selected File generated and written to " + signatureBytesFilefileName + "\n";
+		
+		if(postQuantumCryptoParams.getTextAreaBytes() !=  null)
+		{
+			byte [] signatureBytesTextArea = crystalsDilithiumSignature.generateSignature(postQuantumCryptoParams.getTextAreaBytes(), privKeyBytes);
+			writeBytesToFile(signatureBytesTextArea, signatureBytesTextAreafileName);
+			
+			retStr += signatureBytesTextArea.length + " bytes of Signature for Text Area generated and written to " + signatureBytesTextAreafileName + "\n";
+		}
+		
+		return retStr;
 	}
 
 	public String signatureGenerateFalcon(PostQuantumCryptoParams postQuantumCryptoParams) 
@@ -95,5 +128,18 @@ public class PostQuantumCryptoService
 	{
 		// TODO Auto-generated method stub
 		return "keyEncapsulateClassicMcEliece";
+	}
+	
+	private void writeBytesToFile(byte [] data, String fileName)
+	{
+		try (FileOutputStream fos = new FileOutputStream(fileName)) 
+		{
+            fos.write(data);
+            fos.close();
+        } 
+		catch (IOException e) 
+		{
+            System.err.println("Error writing to file: " + e.getMessage());
+        }
 	}
 }
