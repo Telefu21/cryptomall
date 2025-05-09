@@ -16,16 +16,16 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 
-import org.bouncycastle.pqc.jcajce.spec.DilithiumParameterSpec;
+import org.bouncycastle.pqc.jcajce.spec.FalconParameterSpec;
 import org.springframework.stereotype.Component;
 
 @Component
-public class CrystalsDilithiumSignature 
+public class FalconSignature 
 {
 	private byte[] privateKeyBytes;
 	private byte[] publicKeyBytes;
 	
-	CrystalsDilithiumSignature()
+	FalconSignature()
 	{	
         
 	}
@@ -50,9 +50,9 @@ public class CrystalsDilithiumSignature
 		this.publicKeyBytes = publicKeyBytes;
 	}
 
-	public void generatePublicPrivateKeys(DilithiumParameterSpec dilithiumParameterSpec)
+	public void generatePublicPrivateKeys(FalconParameterSpec falconParameterSpec)
     {
-        KeyPair keyPair = generateKeyPair(dilithiumParameterSpec);
+        KeyPair keyPair = generateKeyPair(falconParameterSpec);
         
         setPrivateKeyBytes(keyPair.getPrivate().getEncoded());
         setPublicKeyBytes(keyPair.getPublic().getEncoded());
@@ -82,17 +82,17 @@ public class CrystalsDilithiumSignature
         return pqcVerification(publicKeyLoad, data, signature);
     }
 
-    private KeyPair generateKeyPair(DilithiumParameterSpec dilithiumParameterSpec) 
+    private KeyPair generateKeyPair(FalconParameterSpec falconParameterSpec) 
     {
         try 
         {
             SecureRandom sr = new SecureRandom();
-            KeyPairGenerator kpg = KeyPairGenerator.getInstance("Dilithium", "BCPQC");
-            kpg.initialize(dilithiumParameterSpec, sr);
+            KeyPairGenerator kpg = KeyPairGenerator.getInstance("Falcon", "BCPQC");
+            kpg.initialize(falconParameterSpec, sr);
             
             return kpg.generateKeyPair();
         } 
-        catch (NoSuchAlgorithmException | InvalidAlgorithmParameterException | NoSuchProviderException e) 
+        catch (NoSuchAlgorithmException | NoSuchProviderException | InvalidAlgorithmParameterException e) 
         {
             e.printStackTrace();
             return null;
@@ -106,7 +106,7 @@ public class CrystalsDilithiumSignature
         
         try 
         {
-            keyFactory = KeyFactory.getInstance("Dilithium", "BCPQC");
+            keyFactory = KeyFactory.getInstance("Falcon", "BCPQC");
             return keyFactory.generatePrivate(pkcs8EncodedKeySpec);
         } 
         catch (NoSuchAlgorithmException | NoSuchProviderException | InvalidKeySpecException e) 
@@ -122,7 +122,7 @@ public class CrystalsDilithiumSignature
         {
         	X509EncodedKeySpec x509EncodedKeySpec = new X509EncodedKeySpec(encodedKey);
         	
-            KeyFactory keyFactory = KeyFactory.getInstance("Dilithium", "BCPQC");
+            KeyFactory keyFactory = KeyFactory.getInstance("Falcon", "BCPQC");
             
             return keyFactory.generatePublic(x509EncodedKeySpec);
         } 
@@ -137,7 +137,7 @@ public class CrystalsDilithiumSignature
     {
         try 
         {
-            Signature sig = Signature.getInstance("Dilithium", "BCPQC");
+            Signature sig = Signature.getInstance("Falcon", "BCPQC");
             sig.initSign((PrivateKey) privateKey, new SecureRandom());
             sig.update(dataToSign, 0, dataToSign.length);
             byte[] signature = sig.sign();
@@ -154,7 +154,7 @@ public class CrystalsDilithiumSignature
     {
         try 
         {
-            Signature sig = Signature.getInstance("Dilithium", "BCPQC");
+            Signature sig = Signature.getInstance("Falcon", "BCPQC");
             sig.initVerify((PublicKey) publicKey);
             sig.update(dataToSign, 0, dataToSign.length);
             boolean result = sig.verify(signature);
