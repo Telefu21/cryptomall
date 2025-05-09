@@ -1533,7 +1533,12 @@ public class MainSceneController implements Initializable
 	
 	private void setPqcSignatureGenerateParams() 
 	{
-		postQuantumCryptoParams.setInputFileBytes(utilityService.readFileContentToString(textFieldPQCDataFilePath.getText()).getBytes());
+		postQuantumCryptoParams.setInputFileBytes(null);
+		
+		if(textFieldPQCDataFilePath.getText().contains("\\") == true)
+		{
+			postQuantumCryptoParams.setInputFileBytes(utilityService.readFileContentToString(textFieldPQCDataFilePath.getText()).getBytes());
+		}
 		
 		postQuantumCryptoParams.setTextAreaBytes(null);
 		

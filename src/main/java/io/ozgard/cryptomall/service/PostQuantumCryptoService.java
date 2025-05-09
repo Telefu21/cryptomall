@@ -54,7 +54,12 @@ public class PostQuantumCryptoService
 		
 		byte [] pubKeyBytes = crystalsDilithiumSignature.getPublicKeyBytes();
 		
-		byte [] signatureBytesFile = crystalsDilithiumSignature.generateSignature(postQuantumCryptoParams.getInputFileBytes(), privKeyBytes);
+		byte [] signatureBytesFile = null;
+		
+		if(postQuantumCryptoParams.getInputFileBytes() !=  null)
+		{
+			signatureBytesFile = crystalsDilithiumSignature.generateSignature(postQuantumCryptoParams.getInputFileBytes(), privKeyBytes);
+		}
 
 		byte [] signatureBytesTextArea = null;
 		
@@ -74,7 +79,12 @@ public class PostQuantumCryptoService
 		
 		byte [] pubKeyBytes = falconSignature.getPublicKeyBytes();
 		
-		byte [] signatureBytesFile = falconSignature.generateSignature(postQuantumCryptoParams.getInputFileBytes(), privKeyBytes);
+		byte [] signatureBytesFile = null;
+		
+		if(postQuantumCryptoParams.getInputFileBytes() !=  null)
+		{
+			signatureBytesFile = falconSignature.generateSignature(postQuantumCryptoParams.getInputFileBytes(), privKeyBytes);
+		}
 
 		byte [] signatureBytesTextArea = null;
 		
@@ -94,8 +104,13 @@ public class PostQuantumCryptoService
 		
 		byte [] pubKeyBytes = sphincsSignature.getPublicKeyBytes();
 		
-		byte [] signatureBytesFile = sphincsSignature.generateSignature(postQuantumCryptoParams.getInputFileBytes(), privKeyBytes);
-
+		byte [] signatureBytesFile = null;
+		
+		if(postQuantumCryptoParams.getInputFileBytes() !=  null)
+		{
+			signatureBytesFile = sphincsSignature.generateSignature(postQuantumCryptoParams.getInputFileBytes(), privKeyBytes);
+		}
+		
 		byte [] signatureBytesTextArea = null;
 		
 		if(postQuantumCryptoParams.getTextAreaBytes() !=  null)
@@ -162,9 +177,12 @@ public class PostQuantumCryptoService
 		writeBytesToFile(pubKeyBytes, pubKeyBytesfileName);
 		retStr += pubKeyBytes.length + " bytes of Public Key generated and written to --> " + pubKeyBytesfileName + "\n";
 		
-		writeBytesToFile(signatureBytesFile, signatureBytesFilefileName);
-		retStr += signatureBytesFile.length + " bytes of Signature for Selected File generated and written to --> " + signatureBytesFilefileName + "\n";
-
+		if(postQuantumCryptoParams.getInputFileBytes() !=  null)
+		{
+			writeBytesToFile(signatureBytesFile, signatureBytesFilefileName);
+			retStr += signatureBytesFile.length + " bytes of Signature for Selected File generated and written to --> " + signatureBytesFilefileName + "\n";
+		}
+		
 		if(postQuantumCryptoParams.getTextAreaBytes() !=  null)
 		{
 			writeBytesToFile(signatureBytesTextArea, signatureBytesTextAreafileName);
