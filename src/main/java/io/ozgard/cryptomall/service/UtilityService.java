@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 import org.springframework.stereotype.Service;
 
@@ -20,6 +22,34 @@ public class UtilityService
 		
 	}
 	
+	public void stringHexToFile(String filePath, String hexString) 
+	{
+        byte[] byteArray = hexStringToByteArray(hexString);
+
+        try (FileOutputStream fos = new FileOutputStream(filePath)) 
+		{
+            fos.write(byteArray);
+        } 
+		catch (IOException e) 
+		{
+            e.printStackTrace();
+        }
+	}
+
+	public byte[] hexStringToByteArray(String hexString) 
+	{
+		String pureHexStr = hexString.replaceAll(" 0x", "").replaceAll("0x", "").replaceAll(" 0X", "").replaceAll("0X", "");
+		int len = pureHexStr.length();
+		byte[] data = new byte[len / 2];
+		
+		for (int i = 0; i < len; i += 2) 
+		{
+			data[i / 2] = (byte) ((Character.digit(pureHexStr.charAt(i), 16) << 4) + Character.digit(pureHexStr.charAt(i+1), 16));
+		}
+
+		return data;
+	}
+
 	public String readFileContentToString(String filePathName)
 	{
 		StringBuilder 	fileStringBuilder = new StringBuilder("");

@@ -1260,30 +1260,28 @@ public class MainSceneController implements Initializable
 		String outputFileName = textFieldWorkingDirectory.getText() + "\\" + "tmpout";
 		String inputFileName = textFieldWorkingDirectory.getText() + "\\" + "tmpin";
 		
-		String textInputStr = "";
+		String textInputStr = textAreaEncryptDecryptText.getText();
 		
 		if(checkBoxEncDecHashMacHexIn.isSelected())
 		{
-			textInputStr = utilityService.hexToAscii(textAreaEncryptDecryptText.getText().replaceAll(" 0x", "").replaceAll("0x", ""));
+			utilityService.stringHexToFile(inputFileName, textInputStr);
 		}
 		
 		if(!checkBoxEncDecHashMacHexIn.isSelected())
-		{
-			textInputStr = textAreaEncryptDecryptText.getText();
+		{	
+			try
+			{
+				FileWriter writer = new FileWriter(inputFileName);
+				
+	            writer.write(textInputStr);
+	            
+	            writer.close();
+	        } 
+			catch (IOException e) 
+			{
+	            System.out.println("An error occurred while writing to the file: " + e.getMessage());
+	        }
 		}
-		
-		try
-		{
-			FileWriter writer = new FileWriter(inputFileName);
-			
-            writer.write(textInputStr);
-            
-            writer.close();
-        } 
-		catch (IOException e) 
-		{
-            System.out.println("An error occurred while writing to the file: " + e.getMessage());
-        }
 		
 		encryptDecryptProcessor(outputFileName, inputFileName);
 		
