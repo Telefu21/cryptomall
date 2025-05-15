@@ -1202,7 +1202,7 @@ public class MainSceneController implements Initializable
 		String outputFileName = textFieldWorkingDirectory.getText() + "\\" + textFieldEncryptDecryptBrowseFile.getText().split("\\\\")[textFieldEncryptDecryptBrowseFile.getText().split("\\\\").length - 1].split("\\.")[0];
 		String inputFileName = "\"" + textFieldEncryptDecryptBrowseFile.getText() + "\"";
 		
-		setLogOutput(encryptDecryptProcessor(outputFileName, inputFileName));
+		encryptDecryptProcessorWithRetStr(outputFileName, inputFileName);
 	}
 
 	private String encryptDecryptProcessor(String outputFileName, String inputFileName)
@@ -1235,18 +1235,15 @@ public class MainSceneController implements Initializable
 				return(openSslService.asymmetricDecrypt(encryptDecryptParams));
 				
 			case EncryptDecryptParams.ENCRYPT_DECRYPT_TYPE_GENERATE_HASH:
-				encryptDecryptParams.setOutputFilePath("\"" + outputFileName + encryptDecryptParams.getHashFunction().replaceAll(" ", "") + ".hash" + "\"");
 				encryptDecryptParams.setBinaryOutputFileEnabled(checkBoxEncryptDecryptBinaryOutput.isSelected());
 				return(openSslService.generateHash(encryptDecryptParams));
 				
 			case EncryptDecryptParams.ENCRYPT_DECRYPT_TYPE_GENERATE_CMAC:
-				encryptDecryptParams.setOutputFilePath("\"" + outputFileName + encryptDecryptParams.getHashFunction().replaceAll(" ", "") + encryptDecryptParams.getCipher().replaceAll(" ", "") + ".cmac" + "\"");
 				encryptDecryptParams.setCipher(comboEncryptDecryptCipher.getValue().replaceFirst("-", ""));
 				encryptDecryptParams.setBinaryOutputFileEnabled(checkBoxEncryptDecryptBinaryOutput.isSelected());
 				return(openSslService.generateCMac(encryptDecryptParams));
 				
 			case EncryptDecryptParams.ENCRYPT_DECRYPT_TYPE_GENERATE_HMAC:
-				encryptDecryptParams.setOutputFilePath("\"" + outputFileName + encryptDecryptParams.getHashFunction().replaceAll(" ", "") + ".hmac" + "\"");
 				encryptDecryptParams.setBinaryOutputFileEnabled(checkBoxEncryptDecryptBinaryOutput.isSelected());
 				return(openSslService.generateHMac(encryptDecryptParams));
 		}
@@ -1257,8 +1254,8 @@ public class MainSceneController implements Initializable
 	@FXML
 	void buttonEncryptDecryptTextOnMouseClick()
 	{
-		String outputFileName = textFieldWorkingDirectory.getText() + "\\" + "tmpout";
-		String inputFileName = textFieldWorkingDirectory.getText() + "\\" + "tmpin";
+		String outputFileName = textFieldWorkingDirectory.getText() + "\\" + "Text_Area";
+		String inputFileName = outputFileName;
 		
 		String textInputStr = textAreaEncryptDecryptText.getText();
 		
@@ -1282,17 +1279,49 @@ public class MainSceneController implements Initializable
 	            System.out.println("An error occurred while writing to the file: " + e.getMessage());
 	        }
 		}
+
+		encryptDecryptProcessorWithRetStr(outputFileName, inputFileName);
+	}
+	
+	private void encryptDecryptProcessorWithRetStr(String outputFileName, String inputFileName)
+	{
+		String outputStr = encryptDecryptProcessor(outputFileName, inputFileName);
 		
-		encryptDecryptProcessor(outputFileName, inputFileName);
-		
-		try 
+		switch(comboEncryptDecryptType.getValue())
 		{
-			setLogOutput(utilityService.convertFileToHex(encryptDecryptParams.getOutputFilePath().replaceAll("\"", "")));
-		} 
-		catch (IOException e) 
-		{
-			e.printStackTrace();
+			case EncryptDecryptParams.ENCRYPT_DECRYPT_TYPE_SYM_ENCRYPTION:
+				outputStr = "Encrypted Data has been written to file: " + encryptDecryptParams.getOutputFilePath();
+				break;
+				
+			case EncryptDecryptParams.ENCRYPT_DECRYPT_TYPE_ASYM_ENCRYPTION:
+				outputStr = "Encrypted Data has been written to file: " + encryptDecryptParams.getOutputFilePath();
+				break;
+				
+			case EncryptDecryptParams.ENCRYPT_DECRYPT_TYPE_SYM_DECRYPTION:
+				outputStr = "Decrypted Data has been written to file: " + encryptDecryptParams.getOutputFilePath();
+				break;
+				
+			case EncryptDecryptParams.ENCRYPT_DECRYPT_TYPE_ASYM_DECRYPTION:
+				outputStr = "Decrypted Data has been written to file: " + encryptDecryptParams.getOutputFilePath();
+				break;
+				
+			case EncryptDecryptParams.ENCRYPT_DECRYPT_TYPE_GENERATE_HASH:
+				outputStr = "Hash of Iput Data: (" + encryptDecryptParams.getHashFunction().replaceAll(" ", "") + ") " + outputStr.split("=")[1];
+				break;
+				
+			case EncryptDecryptParams.ENCRYPT_DECRYPT_TYPE_GENERATE_CMAC:
+				if(outputStr.contains("="))
+				{
+					outputStr = "CMAC of Iput Data: (" + encryptDecryptParams.getHashFunction().replaceAll(" ", "") + "&" + encryptDecryptParams.getCipher().replaceAll(" ", "") + ") " + outputStr.split("=")[1];
+				}
+				break;
+				
+			case EncryptDecryptParams.ENCRYPT_DECRYPT_TYPE_GENERATE_HMAC:
+				outputStr = "HMAC of Iput Data: (" + encryptDecryptParams.getHashFunction().replaceAll(" ", "") + ") " + outputStr.split("=")[1];
+				break;
 		}
+		
+		setLogOutput(outputStr);
 	}
 	
 	@FXML

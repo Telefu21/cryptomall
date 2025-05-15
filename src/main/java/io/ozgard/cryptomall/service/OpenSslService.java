@@ -491,8 +491,7 @@ public class OpenSslService
 			clProcess.addCommandLineStr("-binary"); 
 		}
 		
-		clProcess.addCommandLineStr("-out");
-		clProcess.addCommandLineStr(encryptDecryptParams.getOutputFilePath());
+		clProcess.addCommandLineStr("-hex");
 		clProcess.addCommandLineStr(encryptDecryptParams.getInputFilePath());
 		
 		String cmdRetStr = clProcess.runCommand();
@@ -528,8 +527,7 @@ public class OpenSslService
 		clProcess.addCommandLineStr("-macopt");
 		clProcess.addCommandLineStr("key:"  + encryptDecryptParams.getPassPhrase());
 		
-		clProcess.addCommandLineStr("-out");
-		clProcess.addCommandLineStr(encryptDecryptParams.getOutputFilePath());
+		clProcess.addCommandLineStr("-hex");
 		clProcess.addCommandLineStr(encryptDecryptParams.getInputFilePath());
 		
 		String cmdRetStr = clProcess.runCommand();
@@ -555,8 +553,7 @@ public class OpenSslService
 		clProcess.addCommandLineStr("-macopt");
 		clProcess.addCommandLineStr("key:"  + encryptDecryptParams.getPassPhrase());
 		
-		clProcess.addCommandLineStr("-out");
-		clProcess.addCommandLineStr(encryptDecryptParams.getOutputFilePath());
+		clProcess.addCommandLineStr("-hex");
 		clProcess.addCommandLineStr(encryptDecryptParams.getInputFilePath());
 		
 		String cmdRetStr = clProcess.runCommand();
