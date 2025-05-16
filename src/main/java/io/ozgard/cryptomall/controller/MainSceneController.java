@@ -910,9 +910,9 @@ public class MainSceneController implements Initializable
 		
 		if(textAreaHexView.getText().length() != 0)
 		{
-			String fileString = utilityService.readFileContentToString(textFieldHexViewFilePath.getText());
+			byte [] fileData = utilityService.readFileContentToBytes(textFieldHexViewFilePath.getText());
 
-			setLogOutput(generateCRC(fileString, "File \"" + textFieldHexViewFilePath.getText().split("\\\\")[textFieldHexViewFilePath.getText().split("\\\\").length - 1]));
+			setLogOutput(generateCRC(fileData, "File \"" + textFieldHexViewFilePath.getText().split("\\\\")[textFieldHexViewFilePath.getText().split("\\\\").length - 1]));
 		}
 		
 		if(textAreaCRCInput.getText().length() == 0)
@@ -922,23 +922,23 @@ public class MainSceneController implements Initializable
 		
 		if(textAreaCRCInput.getText().length() != 0)
 		{
-			String textInputStr = "";
+			byte [] inputData = null;
 			
 			if(checkBoxCRCInputHex.isSelected())
 			{
-				textInputStr = utilityService.hexToAscii(textAreaCRCInput.getText().replaceAll(" 0x", "").replaceAll("0x", ""));
+				inputData = utilityService.hexStringToByteArray(textAreaCRCInput.getText());
 			}
 			
 			if(!checkBoxCRCInputHex.isSelected())
 			{
-				textInputStr = textAreaCRCInput.getText();
+				inputData = textAreaCRCInput.getText().getBytes();
 			}
 			
-			setLogOutput(generateCRC(textInputStr, "Text Area"));
+			setLogOutput(generateCRC(inputData, "Text Area"));
 		}	
 	}
 	
-	private String generateCRC(String str, String inputSource)
+	private String generateCRC(byte [] data, String inputSource)
 	{
 		String	outStr ="";
 		
@@ -953,9 +953,9 @@ public class MainSceneController implements Initializable
 		
 		long [] crcTable = crcService.getCrcTable();
 		
-		if (str.length() != 0)
+		if (data.length != 0)
 		{
-			outStr = "CRC Result for " + inputSource + " : 0x" + Long.toHexString( crcService.calculateCRC(crcParams, str.getBytes())).toUpperCase() + "\n\n";
+			outStr = "CRC Result for " + inputSource + " : 0x" + Long.toHexString( crcService.calculateCRC(crcParams, data)).toUpperCase() + "\n\n";
 		}
 		
 		outStr += "CRC Table:\n";
@@ -1564,7 +1564,7 @@ public class MainSceneController implements Initializable
 		
 		if(textFieldPQCDataFilePath.getText().contains("\\") == true)
 		{
-			postQuantumCryptoParams.setInputFileBytes(utilityService.readFileContentToString(textFieldPQCDataFilePath.getText()).getBytes());
+			postQuantumCryptoParams.setInputFileBytes(utilityService.readFileContentToBytes(textFieldPQCDataFilePath.getText()));
 		}
 		
 		postQuantumCryptoParams.setTextAreaBytes(null);
@@ -1589,9 +1589,9 @@ public class MainSceneController implements Initializable
 	
 	private void setPqcSignatureVerifyParams() 
 	{
-		postQuantumCryptoParams.setInputFileBytes(utilityService.readFileContentToString(textFieldPQCDataFilePath.getText()).getBytes());
-		postQuantumCryptoParams.setPublicKeyFileBytes(utilityService.readFileContentToString(textFieldPQCPublicKeyFilePath.getText()).getBytes());
-		postQuantumCryptoParams.setSignatureFileBytes(utilityService.readFileContentToString(textFieldPQCSignatureFilePath.getText()).getBytes());
+		postQuantumCryptoParams.setInputFileBytes(utilityService.readFileContentToBytes(textFieldPQCDataFilePath.getText()));
+		postQuantumCryptoParams.setPublicKeyFileBytes(utilityService.readFileContentToBytes(textFieldPQCPublicKeyFilePath.getText()));
+		postQuantumCryptoParams.setSignatureFileBytes(utilityService.readFileContentToBytes(textFieldPQCSignatureFilePath.getText()));
 	}
 
 	@FXML

@@ -344,12 +344,12 @@
                      <children>
                         <HBox layoutX="8.0" layoutY="6.0" prefHeight="42.0" prefWidth="714.0">
                            <children>
-                              <TextField fx:id="textFieldHexViewFilePath" editable="false" prefHeight="26.0" prefWidth="596.0" text="Select file to Hex View and CRC Generate">
+                              <TextField fx:id="textFieldHexViewFilePath" editable="false" prefHeight="26.0" prefWidth="545.0" text="Select file to Hex View and CRC Generate">
                                  <HBox.margin>
                                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                                  </HBox.margin>
                               </TextField>
-                              <Button fx:id="buttonHexViewFileBrowse" mnemonicParsing="false" onMouseClicked="#buttonHexViewFileBrowseOnMouseClicked" prefHeight="26.0" prefWidth="109.0" text="Browse">
+                              <Button fx:id="buttonHexViewFileBrowse" mnemonicParsing="false" onMouseClicked="#buttonHexViewFileBrowseOnMouseClicked" prefHeight="26.0" prefWidth="149.0" text="Browse &amp; HexView">
                                  <HBox.margin>
                                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                                  </HBox.margin>

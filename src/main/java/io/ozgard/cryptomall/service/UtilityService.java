@@ -1,14 +1,10 @@
 package io.ozgard.cryptomall.service;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.io.FileOutputStream;
-import java.io.IOException;
 
 import org.springframework.stereotype.Service;
 
@@ -50,32 +46,18 @@ public class UtilityService
 		return data;
 	}
 
-	public String readFileContentToString(String filePathName)
+	public byte [] readFileContentToBytes(String filePathName)
 	{
-		StringBuilder 	fileStringBuilder = new StringBuilder("");
-		
 		try 
-		{
-			FileReader fileReader = new FileReader(new File(filePathName));
-			int ch;
-			
-			while((ch = fileReader.read())!=-1)
-			{	
-				fileStringBuilder.append(Character.toString(ch));
-			}
-			
-			fileReader.close();
-		} 
-		catch (FileNotFoundException e1) 
-		{
-			e1.printStackTrace();
-		} 
-		catch (IOException e1) 
-		{
-			e1.printStackTrace();
-		}
+        {
+            return Files.readAllBytes(Paths.get(filePathName));
+        } 
+        catch (IOException e) 
+        {
+            e.printStackTrace();
+        }
 		
-		return(fileStringBuilder.toString());
+		return null;
 	}
     
     public String bytesToHex(byte[] bytes) 
