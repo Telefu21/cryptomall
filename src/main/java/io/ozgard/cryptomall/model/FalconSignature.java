@@ -20,7 +20,7 @@ import org.bouncycastle.pqc.jcajce.spec.FalconParameterSpec;
 import org.springframework.stereotype.Component;
 
 @Component
-public class FalconSignature 
+public class FalconSignature implements ISignature
 {
 	private byte[] privateKeyBytes;
 	private byte[] publicKeyBytes;

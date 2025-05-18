@@ -20,7 +20,7 @@ import org.bouncycastle.pqc.jcajce.spec.DilithiumParameterSpec;
 import org.springframework.stereotype.Component;
 
 @Component
-public class CrystalsDilithiumSignature 
+public class CrystalsDilithiumSignature implements ISignature
 {
 	private byte[] privateKeyBytes;
 	private byte[] publicKeyBytes;

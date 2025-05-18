@@ -20,7 +20,7 @@ import org.bouncycastle.pqc.jcajce.spec.SPHINCSPlusParameterSpec;
 import org.springframework.stereotype.Component;
 
 @Component
-public class SphincsSignature 
+public class SphincsSignature  implements ISignature
 {
 	private byte[] privateKeyBytes;
 	private byte[] publicKeyBytes;

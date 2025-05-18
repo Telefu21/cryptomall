@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import io.ozgard.cryptomall.model.CrystalsDilithiumSignature;
 import io.ozgard.cryptomall.model.FalconSignature;
+import io.ozgard.cryptomall.model.ISignature;
 import io.ozgard.cryptomall.model.SphincsSignature;
 import io.ozgard.cryptomall.params.PostQuantumCryptoParams;
 
@@ -50,93 +51,83 @@ public class PostQuantumCryptoService
 	{
 		crystalsDilithiumSignature.generatePublicPrivateKeys(postQuantumCryptoParams.getDilithiumStrToParams().get(postQuantumCryptoParams.getParameterSet()));
 		
-		byte [] privKeyBytes = crystalsDilithiumSignature.getPrivateKeyBytes();
-		
-		byte [] pubKeyBytes = crystalsDilithiumSignature.getPublicKeyBytes();
-		
-		byte [] signatureBytesFile = null;
-		
-		if(postQuantumCryptoParams.getInputFileBytes() !=  null)
-		{
-			signatureBytesFile = crystalsDilithiumSignature.generateSignature(postQuantumCryptoParams.getInputFileBytes(), privKeyBytes);
-		}
-
-		byte [] signatureBytesTextArea = null;
-		
-		if(postQuantumCryptoParams.getTextAreaBytes() !=  null)
-		{
-			signatureBytesTextArea = crystalsDilithiumSignature.generateSignature(postQuantumCryptoParams.getTextAreaBytes(), privKeyBytes);
-		}
-
-		return processFileOperations(postQuantumCryptoParams, privKeyBytes, pubKeyBytes, signatureBytesFile, signatureBytesTextArea, "Dilithium");
+		return generateSignature(crystalsDilithiumSignature, postQuantumCryptoParams, "Dilithium");
 	}
 
 	public String signatureGenerateFalcon(PostQuantumCryptoParams postQuantumCryptoParams) 
 	{
 		falconSignature.generatePublicPrivateKeys(postQuantumCryptoParams.getFalconStrToParams().get(postQuantumCryptoParams.getParameterSet()));
 		
-		byte [] privKeyBytes = falconSignature.getPrivateKeyBytes();
-		
-		byte [] pubKeyBytes = falconSignature.getPublicKeyBytes();
-		
-		byte [] signatureBytesFile = null;
-		
-		if(postQuantumCryptoParams.getInputFileBytes() !=  null)
-		{
-			signatureBytesFile = falconSignature.generateSignature(postQuantumCryptoParams.getInputFileBytes(), privKeyBytes);
-		}
-
-		byte [] signatureBytesTextArea = null;
-		
-		if(postQuantumCryptoParams.getTextAreaBytes() !=  null)
-		{
-			signatureBytesTextArea = falconSignature.generateSignature(postQuantumCryptoParams.getTextAreaBytes(), privKeyBytes);
-		}
-
-		return processFileOperations(postQuantumCryptoParams, privKeyBytes, pubKeyBytes, signatureBytesFile, signatureBytesTextArea, "Falcon");
+		return generateSignature(falconSignature, postQuantumCryptoParams, "Falcon");
 	}
 
 	public String signatureGenerateSphincs(PostQuantumCryptoParams postQuantumCryptoParams) 
 	{
 		sphincsSignature.generatePublicPrivateKeys(postQuantumCryptoParams.getSphincsStrToParams().get(postQuantumCryptoParams.getParameterSet()));
 		
-		byte [] privKeyBytes = sphincsSignature.getPrivateKeyBytes();
+		return generateSignature(sphincsSignature, postQuantumCryptoParams, "Sphincs");
+	}
+	
+	private String generateSignature(ISignature sigAlgoRef, PostQuantumCryptoParams postQuantumCryptoParams, String algoName)
+	{
+		byte [] privKeyBytes = sigAlgoRef.getPrivateKeyBytes();
 		
-		byte [] pubKeyBytes = sphincsSignature.getPublicKeyBytes();
+		byte [] pubKeyBytes = sigAlgoRef.getPublicKeyBytes();
 		
 		byte [] signatureBytesFile = null;
 		
 		if(postQuantumCryptoParams.getInputFileBytes() !=  null)
 		{
-			signatureBytesFile = sphincsSignature.generateSignature(postQuantumCryptoParams.getInputFileBytes(), privKeyBytes);
+			signatureBytesFile = sigAlgoRef.generateSignature(postQuantumCryptoParams.getInputFileBytes(), privKeyBytes);
 		}
 		
 		byte [] signatureBytesTextArea = null;
 		
 		if(postQuantumCryptoParams.getTextAreaBytes() !=  null)
 		{
-			signatureBytesTextArea = sphincsSignature.generateSignature(postQuantumCryptoParams.getTextAreaBytes(), privKeyBytes);
+			signatureBytesTextArea = sigAlgoRef.generateSignature(postQuantumCryptoParams.getTextAreaBytes(), privKeyBytes);
 		}
 
-		return processFileOperations(postQuantumCryptoParams, privKeyBytes, pubKeyBytes, signatureBytesFile, signatureBytesTextArea, "Sphincs");
+		return processFileOperations(postQuantumCryptoParams, privKeyBytes, pubKeyBytes, signatureBytesFile, signatureBytesTextArea, algoName);
 	}
 
 	public String signatureVerifyDilithium(PostQuantumCryptoParams postQuantumCryptoParams) 
 	{
-		// TODO Auto-generated method stub
-		return "signatureVerifyDilithium";
+		return verifySignature(crystalsDilithiumSignature, postQuantumCryptoParams, "Dilithium");
 	}
 
 	public String signatureVerifyFalcon(PostQuantumCryptoParams postQuantumCryptoParams) 
 	{
-		// TODO Auto-generated method stub
-		return "signatureVerifyFalcon";
+		return verifySignature(falconSignature, postQuantumCryptoParams, "Falcon");
 	}
 
 	public String signatureVerifySphincs(PostQuantumCryptoParams postQuantumCryptoParams) 
 	{
-		// TODO Auto-generated method stub
-		return "signatureVerifySphincs";
+		return verifySignature(sphincsSignature, postQuantumCryptoParams, "Sphincs");
+	}
+	
+	private String verifySignature(ISignature sigAlgoRef, PostQuantumCryptoParams postQuantumCryptoParams, String algoName)
+	{
+		String retStr = null;
+		
+		if((postQuantumCryptoParams.getInputFileBytes() == null) || (postQuantumCryptoParams.getSignatureFileBytes() == null) || (postQuantumCryptoParams.getPublicKeyFileBytes() == null))
+		{
+			return "!!! Error: Select all the files needed for verification !!!";
+		}
+		
+		boolean isVerified = sigAlgoRef.verifySignature(postQuantumCryptoParams.getInputFileBytes(), postQuantumCryptoParams.getSignatureFileBytes(), postQuantumCryptoParams.getPublicKeyFileBytes());
+		
+		if(isVerified == true)
+		{
+			retStr = algoName + " Signature Verification: Success:)";
+		}
+		
+		if(isVerified == false)
+		{
+			retStr = algoName + " Signature Verification: Failed !!!";
+		}
+		
+		return retStr;
 	}
 
 	public String keyEncapsulateKyber(PostQuantumCryptoParams postQuantumCryptoParams) 

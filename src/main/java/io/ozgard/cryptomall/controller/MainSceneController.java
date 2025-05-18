@@ -1589,9 +1589,26 @@ public class MainSceneController implements Initializable
 	
 	private void setPqcSignatureVerifyParams() 
 	{
-		postQuantumCryptoParams.setInputFileBytes(utilityService.readFileContentToBytes(textFieldPQCDataFilePath.getText()));
-		postQuantumCryptoParams.setPublicKeyFileBytes(utilityService.readFileContentToBytes(textFieldPQCPublicKeyFilePath.getText()));
-		postQuantumCryptoParams.setSignatureFileBytes(utilityService.readFileContentToBytes(textFieldPQCSignatureFilePath.getText()));
+		postQuantumCryptoParams.setInputFileBytes(null);
+		
+		if(textFieldPQCDataFilePath.getText().contains("\\") == true)
+		{
+			postQuantumCryptoParams.setInputFileBytes(utilityService.readFileContentToBytes(textFieldPQCDataFilePath.getText()));
+		}
+		
+		postQuantumCryptoParams.setPublicKeyFileBytes(null);
+		
+		if(textFieldPQCPublicKeyFilePath.getText().contains("\\") == true)
+		{
+			postQuantumCryptoParams.setPublicKeyFileBytes(utilityService.readFileContentToBytes(textFieldPQCPublicKeyFilePath.getText()));
+		}
+		
+		postQuantumCryptoParams.setSignatureFileBytes(null);
+		
+		if(textFieldPQCSignatureFilePath.getText().contains("\\") == true)
+		{
+			postQuantumCryptoParams.setSignatureFileBytes(utilityService.readFileContentToBytes(textFieldPQCSignatureFilePath.getText()));
+		}
 	}
 
 	@FXML
