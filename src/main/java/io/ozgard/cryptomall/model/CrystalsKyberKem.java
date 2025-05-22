@@ -77,7 +77,7 @@ public class CrystalsKyberKem
         }  
     }
 
-    private PrivateKey getPrivateKeyFromEncoded(byte[] encodedKey) 
+    public PrivateKey getPrivateKeyFromEncoded(byte[] encodedKey) 
     {
         PKCS8EncodedKeySpec pkcs8EncodedKeySpec = new PKCS8EncodedKeySpec(encodedKey);
         KeyFactory keyFactory = null;
@@ -94,7 +94,7 @@ public class CrystalsKyberKem
         }
     }
 
-    private PublicKey getPublicKeyFromEncoded(byte[] encodedKey)
+    public PublicKey getPublicKeyFromEncoded(byte[] encodedKey)
     {   
         try 
         {
@@ -111,11 +111,12 @@ public class CrystalsKyberKem
         }
     }
     
-    public static SecretKeyWithEncapsulation pqcGenerateChrystalsKyberEncryptionKey(PublicKey publicKey) 
+    public SecretKeyWithEncapsulation pqcGenerateChrystalsKyberEncryptionKey(PublicKey publicKey) 
     {
+    	KeyGenerator keyGen = null;
+    	
         try 
         {
-        	KeyGenerator keyGen = null;
             keyGen = KeyGenerator.getInstance("KYBER", "BCPQC");
             keyGen.init(new KEMGenerateSpec((PublicKey) publicKey, "AES"), new SecureRandom());
             SecretKeyWithEncapsulation secEnc = (SecretKeyWithEncapsulation) keyGen.generateKey();
@@ -128,7 +129,7 @@ public class CrystalsKyberKem
         }
     }
 
-    public static byte[] pqcGenerateChrystalsKyberDecryptionKey(PrivateKey privateKey, byte[] encapsulatedKey) 
+    public byte[] pqcGenerateChrystalsKyberDecryptionKey(PrivateKey privateKey, byte[] encapsulatedKey) 
     {
         try 
         {

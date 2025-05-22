@@ -1,4 +1,4 @@
-package io.ozgard.cryptomall.service;
+package io.ozgard.cryptomall.utility;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -6,19 +6,11 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.io.FileOutputStream;
 
-import org.springframework.stereotype.Service;
-
-@Service
-public class UtilityService 
+public class Utility 
 {
 	private static final String UNKNOWN_CHARACTER = ".";
-	
-	UtilityService()
-	{
-		
-	}
-	
-	public void stringHexToFile(String filePath, String hexString) 
+
+	static public void stringHexToFile(String filePath, String hexString) 
 	{
         byte[] byteArray = hexStringToByteArray(hexString);
 
@@ -32,7 +24,7 @@ public class UtilityService
         }
 	}
 
-	public byte[] hexStringToByteArray(String hexString) 
+	static public byte[] hexStringToByteArray(String hexString) 
 	{
 		String pureHexStr = hexString.replaceAll(" 0x", "").replaceAll("0x", "").replaceAll(" 0X", "").replaceAll("0X", "");
 		int len = pureHexStr.length();
@@ -46,7 +38,7 @@ public class UtilityService
 		return data;
 	}
 
-	public byte [] readFileContentToBytes(String filePathName)
+	static public byte [] readFileContentToBytes(String filePathName)
 	{
 		try 
         {
@@ -60,7 +52,7 @@ public class UtilityService
 		return null;
 	}
     
-    public String bytesToHex(byte[] bytes) 
+	static public String bytesToHex(byte[] bytes) 
     {
         StringBuffer result = new StringBuffer();
         for (byte b : bytes) result.append(Integer.toString((b & 0xff) + 0x100, 16).substring(1));
@@ -80,7 +72,7 @@ public class UtilityService
 	    return hex.toString();
 	}
 
-	public String hexToAscii(String hexStr) 
+	static public String hexToAscii(String hexStr) 
 	{
 	    StringBuilder output = new StringBuilder("");
 	    
@@ -93,7 +85,7 @@ public class UtilityService
 	    return output.toString();
 	}
 	
-	public String convertFileToHex(String fileName) throws IOException  
+	static public String convertFileToHex(String fileName) throws IOException  
 	{
         StringBuilder result = new StringBuilder();
         StringBuilder hex = new StringBuilder();
@@ -139,4 +131,16 @@ public class UtilityService
         
         return result.toString();
     }
+	
+	static public void writeBytesToFile(byte [] data, String fileName)
+	{
+		try 
+		{
+			Files.write(Paths.get(fileName), data);
+		} 
+		catch (IOException e) 
+		{
+			System.err.println("Error writing to file: " + e.getMessage());
+		}
+	}
 }

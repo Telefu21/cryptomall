@@ -22,7 +22,7 @@ import io.ozgard.cryptomall.params.SignVerifyPrimeParams;
 import io.ozgard.cryptomall.service.CRCService;
 import io.ozgard.cryptomall.service.OpenSslService;
 import io.ozgard.cryptomall.service.PostQuantumCryptoService;
-import io.ozgard.cryptomall.service.UtilityService;
+import io.ozgard.cryptomall.utility.Utility;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -58,8 +58,6 @@ public class MainSceneController implements Initializable
 	private CRCService crcService;
 	@Autowired
 	private PostQuantumCryptoService postQuantumCryptoService;
-	@Autowired
-	private UtilityService utilityService;
 	
 	@Autowired
 	KeyGenerateParams keygenParams;
@@ -590,7 +588,7 @@ public class MainSceneController implements Initializable
 		{
 			try 
 			{
-				textAreaHexView.setText(utilityService.convertFileToHex(textFieldHexViewFilePath.getText()));
+				textAreaHexView.setText(Utility.convertFileToHex(textFieldHexViewFilePath.getText()));
 			} 
 			catch (IOException e) 
 			{
@@ -910,7 +908,7 @@ public class MainSceneController implements Initializable
 		
 		if(textAreaHexView.getText().length() != 0)
 		{
-			byte [] fileData = utilityService.readFileContentToBytes(textFieldHexViewFilePath.getText());
+			byte [] fileData = Utility.readFileContentToBytes(textFieldHexViewFilePath.getText());
 
 			setLogOutput(generateCRC(fileData, "File \"" + textFieldHexViewFilePath.getText().split("\\\\")[textFieldHexViewFilePath.getText().split("\\\\").length - 1]));
 		}
@@ -926,7 +924,7 @@ public class MainSceneController implements Initializable
 			
 			if(checkBoxCRCInputHex.isSelected())
 			{
-				inputData = utilityService.hexStringToByteArray(textAreaCRCInput.getText());
+				inputData = Utility.hexStringToByteArray(textAreaCRCInput.getText());
 			}
 			
 			if(!checkBoxCRCInputHex.isSelected())
@@ -1261,7 +1259,7 @@ public class MainSceneController implements Initializable
 		
 		if(checkBoxEncDecHashMacHexIn.isSelected())
 		{
-			utilityService.stringHexToFile(inputFileName, textInputStr);
+			Utility.stringHexToFile(inputFileName, textInputStr);
 		}
 		
 		if(!checkBoxEncDecHashMacHexIn.isSelected())
@@ -1564,7 +1562,7 @@ public class MainSceneController implements Initializable
 		
 		if(textFieldPQCDataFilePath.getText().contains("\\") == true)
 		{
-			postQuantumCryptoParams.setInputFileBytes(utilityService.readFileContentToBytes(textFieldPQCDataFilePath.getText()));
+			postQuantumCryptoParams.setInputFileBytes(Utility.readFileContentToBytes(textFieldPQCDataFilePath.getText()));
 		}
 		
 		postQuantumCryptoParams.setTextAreaBytes(null);
@@ -1575,7 +1573,7 @@ public class MainSceneController implements Initializable
 			
 			if(checkBoxPQCInputHex.isSelected())
 			{
-				textInputStr = utilityService.hexToAscii(textAreaPQCInput.getText().replaceAll(" 0x", "").replaceAll("0x", ""));
+				textInputStr = Utility.hexToAscii(textAreaPQCInput.getText().replaceAll(" 0x", "").replaceAll("0x", ""));
 			}
 			
 			if(!checkBoxPQCInputHex.isSelected())
@@ -1593,21 +1591,21 @@ public class MainSceneController implements Initializable
 		
 		if(textFieldPQCDataFilePath.getText().contains("\\") == true)
 		{
-			postQuantumCryptoParams.setInputFileBytes(utilityService.readFileContentToBytes(textFieldPQCDataFilePath.getText()));
+			postQuantumCryptoParams.setInputFileBytes(Utility.readFileContentToBytes(textFieldPQCDataFilePath.getText()));
 		}
 		
 		postQuantumCryptoParams.setPublicKeyFileBytes(null);
 		
 		if(textFieldPQCPublicKeyFilePath.getText().contains("\\") == true)
 		{
-			postQuantumCryptoParams.setPublicKeyFileBytes(utilityService.readFileContentToBytes(textFieldPQCPublicKeyFilePath.getText()));
+			postQuantumCryptoParams.setPublicKeyFileBytes(Utility.readFileContentToBytes(textFieldPQCPublicKeyFilePath.getText()));
 		}
 		
 		postQuantumCryptoParams.setSignatureFileBytes(null);
 		
 		if(textFieldPQCSignatureFilePath.getText().contains("\\") == true)
 		{
-			postQuantumCryptoParams.setSignatureFileBytes(utilityService.readFileContentToBytes(textFieldPQCSignatureFilePath.getText()));
+			postQuantumCryptoParams.setSignatureFileBytes(Utility.readFileContentToBytes(textFieldPQCSignatureFilePath.getText()));
 		}
 	}
 

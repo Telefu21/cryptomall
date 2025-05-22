@@ -1,19 +1,22 @@
 package io.ozgard.cryptomall.service;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.security.PrivateKey;
+import java.security.PublicKey;
 import java.security.Security;
 
+import org.bouncycastle.jcajce.SecretKeyWithEncapsulation;
 import org.bouncycastle.pqc.jcajce.provider.BouncyCastlePQCProvider;
+import org.bouncycastle.util.Arrays;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import io.ozgard.cryptomall.model.CrystalsDilithiumSignature;
+import io.ozgard.cryptomall.model.CrystalsKyberKem;
 import io.ozgard.cryptomall.model.FalconSignature;
 import io.ozgard.cryptomall.model.ISignature;
 import io.ozgard.cryptomall.model.SphincsSignature;
 import io.ozgard.cryptomall.params.PostQuantumCryptoParams;
+import io.ozgard.cryptomall.utility.Utility;
 
 
 //Selected Algorithms: Public-key Encryption and Key-establishment Algorithms:
@@ -38,6 +41,8 @@ public class PostQuantumCryptoService
 	FalconSignature falconSignature;
 	@Autowired
 	SphincsSignature sphincsSignature;
+	@Autowired
+	CrystalsKyberKem crystalsKyberKem;
 	
 	public PostQuantumCryptoService() 
 	{
@@ -132,8 +137,27 @@ public class PostQuantumCryptoService
 
 	public String keyEncapsulateKyber(PostQuantumCryptoParams postQuantumCryptoParams) 
 	{
-		// TODO Auto-generated method stub
-		return "keyEncapsulateKyber";
+		crystalsKyberKem.generatePublicPrivateKeys(postQuantumCryptoParams.getKyberStrToParams().get(postQuantumCryptoParams.getParameterSet()));
+		
+		
+		PrivateKey privateKeyLoad = crystalsKyberKem.getPrivateKeyFromEncoded(crystalsKyberKem.getPrivateKeyBytes());
+        PublicKey publicKeyLoad = crystalsKyberKem.getPublicKeyFromEncoded(crystalsKyberKem.getPublicKeyBytes());
+        
+     // generate the encryption key and the encapsulated key
+        String retStr = "the encryption key and the encapsulated key";
+        SecretKeyWithEncapsulation secretKeyWithEncapsulationSender = crystalsKyberKem.pqcGenerateChrystalsKyberEncryptionKey(publicKeyLoad);
+        byte[] encryptionKey = secretKeyWithEncapsulationSender.getEncoded();
+        retStr += "\n" + "encryption key length: " + encryptionKey.length
+                + " key: " + Utility.bytesToHex(secretKeyWithEncapsulationSender.getEncoded());
+        byte[] encapsulatedKey = secretKeyWithEncapsulationSender.getEncapsulation();
+        
+        retStr += "\n" + "\nDecryption side: receive the encapsulated key and generate the decryption key";
+        byte[] decryptionKey = crystalsKyberKem.pqcGenerateChrystalsKyberDecryptionKey(privateKeyLoad, encapsulatedKey);
+        retStr += "\n" + "decryption key length: " + decryptionKey.length + " key: " + Utility.bytesToHex(decryptionKey);
+        boolean keysAreEqual = Arrays.areEqual(encryptionKey, decryptionKey);
+        retStr += "\n" + "decryption key is equal to encryption key: " + keysAreEqual;
+        
+		return retStr;
 	}
 
 	public String keyEncapsulateHQC(PostQuantumCryptoParams postQuantumCryptoParams) 
@@ -162,36 +186,24 @@ public class PostQuantumCryptoService
 		String pubKeyBytesfileName = postQuantumCryptoParams.getWorkingDirectoryPath() + "\\" + postQuantumCryptoParams.getParameterSet() + "_" + fileSpecificName + "_public_key.bin";
 		String signatureBytesFilefileName = postQuantumCryptoParams.getWorkingDirectoryPath() + "\\" + postQuantumCryptoParams.getParameterSet() + "_" + fileSpecificName + "_file_signature.bin";
 		
-		writeBytesToFile(privKeyBytes, privKeyBytesfileName);
+		Utility.writeBytesToFile(privKeyBytes, privKeyBytesfileName);
 		retStr += privKeyBytes.length + " bytes of Private Key generated and written to --> " + privKeyBytesfileName + "\n";
 
-		writeBytesToFile(pubKeyBytes, pubKeyBytesfileName);
+		Utility.writeBytesToFile(pubKeyBytes, pubKeyBytesfileName);
 		retStr += pubKeyBytes.length + " bytes of Public Key generated and written to --> " + pubKeyBytesfileName + "\n";
 		
 		if(postQuantumCryptoParams.getInputFileBytes() !=  null)
 		{
-			writeBytesToFile(signatureBytesFile, signatureBytesFilefileName);
+			Utility.writeBytesToFile(signatureBytesFile, signatureBytesFilefileName);
 			retStr += signatureBytesFile.length + " bytes of Signature for Selected File generated and written to --> " + signatureBytesFilefileName + "\n";
 		}
 		
 		if(postQuantumCryptoParams.getTextAreaBytes() !=  null)
 		{
-			writeBytesToFile(signatureBytesTextArea, signatureBytesTextAreafileName);
+			Utility.writeBytesToFile(signatureBytesTextArea, signatureBytesTextAreafileName);
 			retStr += signatureBytesTextArea.length + " bytes of Signature for Text Area generated and written to --> " + signatureBytesTextAreafileName + "\n";
 		}
 		
 		return retStr;
-	}
-
-	private void writeBytesToFile(byte [] data, String fileName)
-	{
-		try 
-		{
-			Files.write(Paths.get(fileName), data);
-		} 
-		catch (IOException e) 
-		{
-			System.err.println("Error writing to file: " + e.getMessage());
-		}
 	}	
 }
