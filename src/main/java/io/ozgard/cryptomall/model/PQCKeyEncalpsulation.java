@@ -9,6 +9,7 @@ import java.security.NoSuchProviderException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.SecureRandom;
+import java.security.spec.AlgorithmParameterSpec;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
@@ -18,28 +19,29 @@ import javax.crypto.KeyGenerator;
 import org.bouncycastle.jcajce.SecretKeyWithEncapsulation;
 import org.bouncycastle.jcajce.spec.KEMExtractSpec;
 import org.bouncycastle.jcajce.spec.KEMGenerateSpec;
-import org.bouncycastle.pqc.jcajce.spec.KyberParameterSpec;
 import org.springframework.stereotype.Component;
 
 @Component
-public class CrystalsKyberKem
+public class PQCKeyEncalpsulation
 {
-	private byte[] privateKeyBytes;
-	private byte[] publicKeyBytes;
+	private byte[] 	privateKeyBytes;
+	private byte[] 	publicKeyBytes;
+	private byte[] 	encapsulation;
+	String 			algorithm;
 	
-	CrystalsKyberKem()
+	PQCKeyEncalpsulation()
 	{	
         
 	}
 
-    public byte[] getPrivateKeyBytes() 
+    public void setAlgorithm(String algorithm) 
     {
-		return privateKeyBytes;
+		this.algorithm = algorithm;
 	}
 
-	public void setPrivateKeyBytes(byte[] privateKeyBytes) 
-	{
-		this.privateKeyBytes = privateKeyBytes;
+	public byte[] getPrivateKeyBytes() 
+    {
+		return privateKeyBytes;
 	}
 
 	public byte[] getPublicKeyBytes() 
@@ -47,27 +49,20 @@ public class CrystalsKyberKem
 		return publicKeyBytes;
 	}
 
-	public void setPublicKeyBytes(byte[] publicKeyBytes) 
-	{
-		this.publicKeyBytes = publicKeyBytes;
-	}
-
-	public void generatePublicPrivateKeys(KyberParameterSpec kyberParameterSpec)
+	public void generatePublicPrivateKeys(AlgorithmParameterSpec parameterSpec)
     {
-        KeyPair keyPair = generateKeyPair(kyberParameterSpec);
+        KeyPair keyPair = generateKeyPair(parameterSpec);
         
-        setPrivateKeyBytes(keyPair.getPrivate().getEncoded());
-        setPublicKeyBytes(keyPair.getPublic().getEncoded());
+        privateKeyBytes = keyPair.getPrivate().getEncoded();
+        publicKeyBytes = keyPair.getPublic().getEncoded();
     }
     
-    private KeyPair generateKeyPair(KyberParameterSpec kyberParameterSpec) 
+    private KeyPair generateKeyPair(AlgorithmParameterSpec parameterSpec) 
     {
         try 
         {
-            SecureRandom sr = new SecureRandom();
-            KeyPairGenerator kpg = KeyPairGenerator.getInstance("KYBER", "BCPQC");
-            kpg.initialize(kyberParameterSpec, sr);
-            
+            KeyPairGenerator kpg = KeyPairGenerator.getInstance(algorithm, "BCPQC");
+            kpg.initialize(parameterSpec, new SecureRandom());
             return kpg.generateKeyPair();
         } 
         catch (NoSuchAlgorithmException | InvalidAlgorithmParameterException | NoSuchProviderException e) 
@@ -84,7 +79,7 @@ public class CrystalsKyberKem
         
         try 
         {
-            keyFactory = KeyFactory.getInstance("KYBER", "BCPQC");
+            keyFactory = KeyFactory.getInstance(algorithm, "BCPQC");
             return keyFactory.generatePrivate(pkcs8EncodedKeySpec);
         } 
         catch (NoSuchAlgorithmException | NoSuchProviderException | InvalidKeySpecException e) 
@@ -100,7 +95,7 @@ public class CrystalsKyberKem
         {
         	X509EncodedKeySpec x509EncodedKeySpec = new X509EncodedKeySpec(encodedKey);
         	
-            KeyFactory keyFactory = KeyFactory.getInstance("KYBER", "BCPQC");
+            KeyFactory keyFactory = KeyFactory.getInstance(algorithm, "BCPQC");
             
             return keyFactory.generatePublic(x509EncodedKeySpec);
         } 
@@ -111,16 +106,16 @@ public class CrystalsKyberKem
         }
     }
     
-    public SecretKeyWithEncapsulation pqcGenerateChrystalsKyberEncryptionKey(PublicKey publicKey) 
+    public byte [] pqcGenerateKEMEncryptionKey(PublicKey publicKey) 
     {
     	KeyGenerator keyGen = null;
     	
         try 
         {
-            keyGen = KeyGenerator.getInstance("KYBER", "BCPQC");
+            keyGen = KeyGenerator.getInstance(algorithm, "BCPQC");
             keyGen.init(new KEMGenerateSpec((PublicKey) publicKey, "AES"), new SecureRandom());
-            SecretKeyWithEncapsulation secEnc = (SecretKeyWithEncapsulation) keyGen.generateKey();
-            return secEnc;
+            encapsulation = ((SecretKeyWithEncapsulation) keyGen.generateKey()).getEncapsulation();
+            return ((SecretKeyWithEncapsulation) keyGen.generateKey()).getEncoded();
         } 
         catch (NoSuchAlgorithmException | NoSuchProviderException | InvalidAlgorithmParameterException e) 
         {
@@ -129,15 +124,15 @@ public class CrystalsKyberKem
         }
     }
 
-    public byte[] pqcGenerateChrystalsKyberDecryptionKey(PrivateKey privateKey, byte[] encapsulatedKey) 
+    public byte [] pqcGenerateKEMDecryptionKey(PrivateKey privateKey, byte[] encapsulatedKey) 
     {
+    	KeyGenerator keyGen = null;
+    	
         try 
         {
-        	KeyGenerator keyGen = null;
-            keyGen = KeyGenerator.getInstance("KYBER", "BCPQC");
+            keyGen = KeyGenerator.getInstance(algorithm, "BCPQC");
             keyGen.init(new KEMExtractSpec((PrivateKey) privateKey, encapsulatedKey, "AES"), new SecureRandom());
-            SecretKeyWithEncapsulation secEnc = (SecretKeyWithEncapsulation) keyGen.generateKey();
-            return secEnc.getEncoded();
+            return ((SecretKeyWithEncapsulation) keyGen.generateKey()).getEncoded();
         } 
         catch (NoSuchAlgorithmException | NoSuchProviderException | InvalidAlgorithmParameterException e) 
         {
@@ -145,4 +140,9 @@ public class CrystalsKyberKem
             return null;
         }
     }
+
+	public byte[] getEncapsulation() 
+	{
+		return encapsulation;
+	}
 }

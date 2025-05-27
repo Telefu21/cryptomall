@@ -1,19 +1,16 @@
 package io.ozgard.cryptomall.service;
 
-import java.security.PrivateKey;
-import java.security.PublicKey;
 import java.security.Security;
+import java.security.spec.AlgorithmParameterSpec;
 
-import org.bouncycastle.jcajce.SecretKeyWithEncapsulation;
 import org.bouncycastle.pqc.jcajce.provider.BouncyCastlePQCProvider;
-import org.bouncycastle.util.Arrays;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import io.ozgard.cryptomall.model.CrystalsDilithiumSignature;
-import io.ozgard.cryptomall.model.CrystalsKyberKem;
 import io.ozgard.cryptomall.model.FalconSignature;
 import io.ozgard.cryptomall.model.ISignature;
+import io.ozgard.cryptomall.model.PQCKeyEncalpsulation;
 import io.ozgard.cryptomall.model.SphincsSignature;
 import io.ozgard.cryptomall.params.PostQuantumCryptoParams;
 import io.ozgard.cryptomall.utility.Utility;
@@ -42,7 +39,7 @@ public class PostQuantumCryptoService
 	@Autowired
 	SphincsSignature sphincsSignature;
 	@Autowired
-	CrystalsKyberKem crystalsKyberKem;
+	PQCKeyEncalpsulation keyEncalpsulation;
 	
 	public PostQuantumCryptoService() 
 	{
@@ -93,7 +90,7 @@ public class PostQuantumCryptoService
 			signatureBytesTextArea = sigAlgoRef.generateSignature(postQuantumCryptoParams.getTextAreaBytes(), privKeyBytes);
 		}
 
-		return processFileOperations(postQuantumCryptoParams, privKeyBytes, pubKeyBytes, signatureBytesFile, signatureBytesTextArea, algoName);
+		return processFileOperationsSignature(postQuantumCryptoParams, privKeyBytes, pubKeyBytes, signatureBytesFile, signatureBytesTextArea, algoName);
 	}
 
 	public String signatureVerifyDilithium(PostQuantumCryptoParams postQuantumCryptoParams) 
@@ -135,29 +132,23 @@ public class PostQuantumCryptoService
 		return retStr;
 	}
 
+	public String keyEncapsulate(PostQuantumCryptoParams postQuantumCryptoParams, AlgorithmParameterSpec algoSpec, String algorithm) 
+	{
+		keyEncalpsulation.setAlgorithm(algorithm);
+		
+		keyEncalpsulation.generatePublicPrivateKeys(algoSpec);
+		
+		byte[] privateKey = keyEncalpsulation.getPrivateKeyBytes();
+		byte[] publicKey = keyEncalpsulation.getPublicKeyBytes();
+        byte[] secretKey = keyEncalpsulation.pqcGenerateKEMEncryptionKey(keyEncalpsulation.getPublicKeyFromEncoded(publicKey));
+        byte[] encapsulatedKey = keyEncalpsulation.getEncapsulation();
+       
+		return processFileOperationsKEM(postQuantumCryptoParams, privateKey, publicKey, encapsulatedKey, secretKey, algorithm);	
+	}
+	
 	public String keyEncapsulateKyber(PostQuantumCryptoParams postQuantumCryptoParams) 
 	{
-		crystalsKyberKem.generatePublicPrivateKeys(postQuantumCryptoParams.getKyberStrToParams().get(postQuantumCryptoParams.getParameterSet()));
-		
-		
-		PrivateKey privateKeyLoad = crystalsKyberKem.getPrivateKeyFromEncoded(crystalsKyberKem.getPrivateKeyBytes());
-        PublicKey publicKeyLoad = crystalsKyberKem.getPublicKeyFromEncoded(crystalsKyberKem.getPublicKeyBytes());
-        
-     // generate the encryption key and the encapsulated key
-        String retStr = "the encryption key and the encapsulated key";
-        SecretKeyWithEncapsulation secretKeyWithEncapsulationSender = crystalsKyberKem.pqcGenerateChrystalsKyberEncryptionKey(publicKeyLoad);
-        byte[] encryptionKey = secretKeyWithEncapsulationSender.getEncoded();
-        retStr += "\n" + "encryption key length: " + encryptionKey.length
-                + " key: " + Utility.bytesToHex(secretKeyWithEncapsulationSender.getEncoded());
-        byte[] encapsulatedKey = secretKeyWithEncapsulationSender.getEncapsulation();
-        
-        retStr += "\n" + "\nDecryption side: receive the encapsulated key and generate the decryption key";
-        byte[] decryptionKey = crystalsKyberKem.pqcGenerateChrystalsKyberDecryptionKey(privateKeyLoad, encapsulatedKey);
-        retStr += "\n" + "decryption key length: " + decryptionKey.length + " key: " + Utility.bytesToHex(decryptionKey);
-        boolean keysAreEqual = Arrays.areEqual(encryptionKey, decryptionKey);
-        retStr += "\n" + "decryption key is equal to encryption key: " + keysAreEqual;
-        
-		return retStr;
+		return keyEncapsulate(postQuantumCryptoParams, postQuantumCryptoParams.getKyberStrToParams().get(postQuantumCryptoParams.getParameterSet()), "Kyber");
 	}
 
 	public String keyEncapsulateHQC(PostQuantumCryptoParams postQuantumCryptoParams) 
@@ -168,17 +159,15 @@ public class PostQuantumCryptoService
 
 	public String keyEncapsulateBike(PostQuantumCryptoParams postQuantumCryptoParams) 
 	{
-		// TODO Auto-generated method stub
-		return "keyEncapsulateBike";
+		return keyEncapsulate(postQuantumCryptoParams, postQuantumCryptoParams.getBikeStrToParams().get(postQuantumCryptoParams.getParameterSet()), "Bike");
 	}
 
 	public String keyEncapsulateClassicMcEliece(PostQuantumCryptoParams postQuantumCryptoParams) 
 	{
-		// TODO Auto-generated method stub
-		return "keyEncapsulateClassicMcEliece";
+		return keyEncapsulate(postQuantumCryptoParams, postQuantumCryptoParams.getMecelieceStrToParams().get(postQuantumCryptoParams.getParameterSet()), "CMCE");
 	}
 	
-	private String processFileOperations(PostQuantumCryptoParams postQuantumCryptoParams, byte [] privKeyBytes, byte [] pubKeyBytes, byte [] signatureBytesFile, byte [] signatureBytesTextArea, String fileSpecificName)
+	private String processFileOperationsSignature(PostQuantumCryptoParams postQuantumCryptoParams, byte [] privKeyBytes, byte [] pubKeyBytes, byte [] signatureBytesFile, byte [] signatureBytesTextArea, String fileSpecificName)
 	{
 		String retStr = "";
 		String signatureBytesTextAreafileName = postQuantumCryptoParams.getWorkingDirectoryPath() + "\\" + postQuantumCryptoParams.getParameterSet() + "_" + fileSpecificName + "_text_area_signature.bin";
@@ -206,4 +195,28 @@ public class PostQuantumCryptoService
 		
 		return retStr;
 	}	
+	
+	private String processFileOperationsKEM(PostQuantumCryptoParams postQuantumCryptoParams, byte [] privKeyBytes, byte [] pubKeyBytes, byte [] encapsulatedKeyBytes, byte [] secretKeyBytes, String fileSpecificName)
+	{
+		String retStr = "";
+		String encapKeyBytesfileName = postQuantumCryptoParams.getWorkingDirectoryPath() + "\\" + postQuantumCryptoParams.getParameterSet() + "_" + fileSpecificName + "_encapsulated_key.bin";
+		String privKeyBytesfileName = postQuantumCryptoParams.getWorkingDirectoryPath() + "\\" + postQuantumCryptoParams.getParameterSet() + "_" + fileSpecificName + "_private_key.bin";
+		String pubKeyBytesfileName = postQuantumCryptoParams.getWorkingDirectoryPath() + "\\" + postQuantumCryptoParams.getParameterSet() + "_" + fileSpecificName + "_public_key.bin";
+		String secretKeyBytesfileName = postQuantumCryptoParams.getWorkingDirectoryPath() + "\\" + postQuantumCryptoParams.getParameterSet() + "_" + fileSpecificName + "_secret_key.bin";
+		
+		Utility.writeBytesToFile(privKeyBytes, privKeyBytesfileName);
+		retStr += privKeyBytes.length + " bytes of Private Key generated and written to --> " + privKeyBytesfileName + "\n";
+
+		Utility.writeBytesToFile(pubKeyBytes, pubKeyBytesfileName);
+		retStr += pubKeyBytes.length + " bytes of Public Key generated and written to --> " + pubKeyBytesfileName + "\n";
+		
+		Utility.writeBytesToFile(encapsulatedKeyBytes, encapKeyBytesfileName);
+		retStr += encapsulatedKeyBytes.length + " bytes of encapsulated Secret Key (Ciphertext) written to --> " + encapKeyBytesfileName + "\n";
+		
+		Utility.writeBytesToFile(secretKeyBytes, secretKeyBytesfileName);
+		retStr += secretKeyBytes.length + " bytes of Secret Key generated and written to --> " + secretKeyBytesfileName + "\n";
+		retStr +="Secret Key (Hex): " + Utility.bytesToHex(secretKeyBytes) + "\n";
+
+		return retStr;
+	}
 }
