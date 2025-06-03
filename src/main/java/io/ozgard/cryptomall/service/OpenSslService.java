@@ -525,7 +525,7 @@ public class OpenSslService
 		clProcess.addCommandLineStr("-macopt");
 		clProcess.addCommandLineStr("cipher:"  + encryptDecryptParams.getCipher());
 		clProcess.addCommandLineStr("-macopt");
-		clProcess.addCommandLineStr("key:"  + encryptDecryptParams.getPassPhrase());
+		clProcess.addCommandLineStr("hexkey:"  + encryptDecryptParams.getPassPhrase());
 		
 		clProcess.addCommandLineStr("-hex");
 		clProcess.addCommandLineStr(encryptDecryptParams.getInputFilePath());
@@ -551,7 +551,7 @@ public class OpenSslService
 		clProcess.addCommandLineStr("-mac");
 		clProcess.addCommandLineStr("hmac");
 		clProcess.addCommandLineStr("-macopt");
-		clProcess.addCommandLineStr("key:"  + encryptDecryptParams.getPassPhrase());
+		clProcess.addCommandLineStr("hexkey:"  + encryptDecryptParams.getPassPhrase());
 		
 		clProcess.addCommandLineStr("-hex");
 		clProcess.addCommandLineStr(encryptDecryptParams.getInputFilePath());

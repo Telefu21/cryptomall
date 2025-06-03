@@ -107,7 +107,7 @@
                                  <children>
                                     <TextArea fx:id="textAreaEncryptDecryptText" layoutX="7.0" layoutY="14.0" prefHeight="66.0" prefWidth="622.0" />
                                     <Button fx:id="buttonEncryptDecryptTextTrigger" layoutX="636.0" layoutY="42.0" mnemonicParsing="false" onMouseClicked="#buttonEncryptDecryptTextOnMouseClick" prefHeight="37.0" prefWidth="70.0" text="Encrypt" />
-                                    <CheckBox fx:id="checkBoxEncDecHashMacHexIn" layoutX="636.0" layoutY="14.0" mnemonicParsing="false" prefHeight="18.0" prefWidth="70.0" text="Hex In" />
+                                    <CheckBox fx:id="checkBoxEncDecHashMacHexIn" layoutX="636.0" layoutY="14.0" mnemonicParsing="false" onMouseClicked="#checkBoxEncDecHashMacHexInOnMouseClicked" prefHeight="18.0" prefWidth="70.0" text="Hex In" />
                                  </children>
                               </AnchorPane>
                           </content>
@@ -129,12 +129,13 @@
                         <ComboBox fx:id="comboEncryptDecryptType" layoutX="15.0" layoutY="14.0" onAction="#encryptDecryptTypeChanged" prefHeight="26.0" prefWidth="249.0" />
                         <ComboBox fx:id="comboEncryptDecryptCipher" layoutX="85.0" layoutY="54.0" prefHeight="26.0" prefWidth="180.0" />
                         <Label fx:id="labelEncryptDecypCipher" layoutX="15.0" layoutY="58.0" prefHeight="18.0" prefWidth="47.0" text="Cipher:" />
-                        <Label fx:id="labelEncryptDecryptPassPhrase" layoutX="290.0" layoutY="58.0" prefHeight="18.0" prefWidth="97.0" text="Enter Password:" />
-                        <CheckBox fx:id="checkBoxEncryptDecryptAddSalt" layoutX="601.0" layoutY="60.0" mnemonicParsing="false" prefHeight="18.0" prefWidth="85.0" text="Add Salt" />
+                        <Label fx:id="labelEncryptDecryptPassPhrase" layoutX="290.0" layoutY="58.0" prefHeight="18.0" prefWidth="97.0" text="Enter Key (Hex) :" />
+                        <CheckBox fx:id="checkBoxEncryptDecryptAddSalt" layoutX="629.0" layoutY="60.0" mnemonicParsing="false" prefHeight="18.0" prefWidth="85.0" text="Add Salt" />
                         <CheckBox fx:id="checkBoxEncryptDecyptEnableRSAOaep" layoutX="329.0" layoutY="18.0" mnemonicParsing="false" onAction="#checkBoxEncryptDecyptEnableRSAOaepOnAction" prefHeight="18.0" prefWidth="135.0" text="Enable RSA Oaep" />
                         <ComboBox fx:id="comboEncryptDecyptHashFunction" layoutX="573.0" layoutY="14.0" prefHeight="26.0" prefWidth="142.0" />
                         <Label fx:id="labelEncryptDecyptHashFunction" layoutX="471.0" layoutY="18.0" prefHeight="18.0" prefWidth="94.0" text="Hash Function:" />
-                        <PasswordField fx:id="textFieldEncryptDecryptPassPhrase" layoutX="399.0" layoutY="56.0" prefHeight="26.0" prefWidth="176.0" />
+                        <PasswordField fx:id="textFieldEncryptDecryptPassPhrase" layoutX="387.0" layoutY="56.0" prefHeight="26.0" prefWidth="230.0" />
+                        <TextField fx:id="textFieldEncryptDecryptMACKey" layoutX="387.0" layoutY="57.0" prefHeight="26.0" prefWidth="229.0" />
                      </children></AnchorPane>
             </content>
           </Tab>
@@ -291,7 +292,7 @@
                         <ComboBox fx:id="comboBoxPQCDilithiumParams" layoutX="157.0" layoutY="117.0" prefHeight="26.0" prefWidth="136.0" />
                         <TextArea fx:id="textAreaPQCInput" layoutX="19.0" layoutY="267.0" prefHeight="55.0" prefWidth="690.0" />
                         <Button fx:id="buttonPQCGenerateVerifyExchange" layoutX="241.0" layoutY="333.0" mnemonicParsing="false" onMouseClicked="#buttonPQCGenerateVerifyExchangeOnMouseClicked" prefHeight="26.0" prefWidth="245.0" text="Generate Signature" />
-                        <CheckBox fx:id="checkBoxPQCInputHex" layoutX="19.0" layoutY="335.0" mnemonicParsing="false" text="Hex In Text Area" />
+                        <CheckBox fx:id="checkBoxPQCInputHex" layoutX="19.0" layoutY="335.0" mnemonicParsing="false" onMouseClicked="#checkBoxPQCInputHexOnMouseClicked" text="Hex In Text Area" />
                         <HBox layoutX="8.0" layoutY="35.0" prefHeight="42.0" prefWidth="714.0">
                            <children>
                               <TextField fx:id="textFieldPQCPublicKeyFilePath" editable="false" prefHeight="26.0" prefWidth="596.0">
@@ -372,7 +373,7 @@
                         <TextField fx:id="textFieldCRCXorValue" layoutX="141.0" layoutY="331.0" prefHeight="26.0" prefWidth="130.0" />
                         <TextArea fx:id="textAreaCRCInput" layoutX="279.0" layoutY="255.0" prefHeight="67.0" prefWidth="430.0" />
                         <Button fx:id="buttonCRCGenerate" layoutX="404.0" layoutY="331.0" mnemonicParsing="false" onMouseClicked="#buttonCRCGenerateOnMouseClicked" prefHeight="26.0" prefWidth="245.0" text="Generate CRC for Text Input and File" />
-                        <CheckBox fx:id="checkBoxCRCInputHex" layoutX="279.0" layoutY="335.0" mnemonicParsing="false" text="Hex In Text Area" />
+                        <CheckBox fx:id="checkBoxCRCInputHex" layoutX="279.0" layoutY="335.0" mnemonicParsing="false" onMouseClicked="#checkBoxCRCInputHexOnMouseClicked" text="Hex In Text Area" />
                      </children></AnchorPane>
                </content>
             </Tab>

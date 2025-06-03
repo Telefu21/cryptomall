@@ -9,6 +9,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ResourceBundle;
 import java.util.Set;
+import java.util.function.UnaryOperator;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -30,6 +31,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.Tab;
@@ -38,6 +40,7 @@ import javafx.scene.control.TableColumn.CellEditEvent;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextFormatter;
 import javafx.scene.control.TitledPane;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
@@ -376,11 +379,23 @@ public class MainSceneController implements Initializable
 	@FXML
 	@Autowired
 	CheckBox checkBoxPQCSignatureGenerate;
+	@FXML
+	@Autowired
+	Label labelEncryptDecryptPassPhrase;
+	@FXML
+	@Autowired
+	TextField textFieldEncryptDecryptMACKey;
 	
 	TableColumn<CertificateParams, String> tableColumnCertificateElementsName;
 	TableColumn<CertificateParams, String> tableColumnRootCertificate;
 	TableColumn<CertificateParams, String> tableColumnIntermediateCertificate;
 	TableColumn<CertificateParams, String> tableColumnEndEntityCertificate;
+	
+	UnaryOperator<TextFormatter.Change> hexFilter = change -> 
+	{
+        String newText = change.getControlNewText();
+        return newText.matches("[0-9a-fA-F]*") ? change : null; 
+    };
 	
 	static public void setStage(Stage stageT)
 	{
@@ -389,7 +404,7 @@ public class MainSceneController implements Initializable
 	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) 
-	{			
+	{	
 		comboKeyGenKeyFileFormat.setItems(FXCollections.observableArrayList(KeyGenerateParams.KEYGEN_FILE_FORMAT_SELECT_PEM, KeyGenerateParams.KEYGEN_FILE_FORMAT_SELECT_DER));
 		comboKeyGenKeyFileFormat.setValue(KeyGenerateParams.KEYGEN_FILE_FORMAT_SELECT_PEM);
 		comboKeyGenAlgSelect.setItems(FXCollections.observableArrayList(KeyGenerateParams.KEYGEN_ALGO_SELECT_RSA, KeyGenerateParams.KEYGEN_ALGO_SELECT_ECC, 
@@ -465,6 +480,15 @@ public class MainSceneController implements Initializable
 		textFieldSignVerifySignedFilePath.setDisable(true);
 		buttonSignVerifySignedFileBrowse.setDisable(true);
 		textFieldSignVerifySaltLength.setDisable(true);
+		
+		textFieldEncryptDecryptPassPhrase.setDisable(false);
+		textFieldEncryptDecryptPassPhrase.setVisible(true);
+		textFieldEncryptDecryptPassPhrase.setText("");
+		textFieldEncryptDecryptMACKey.setDisable(true);
+		textFieldEncryptDecryptMACKey.setVisible(false);
+		textFieldEncryptDecryptMACKey.setText("");
+		textFieldEncryptDecryptMACKey.setTextFormatter(new TextFormatter<>(hexFilter));
+		labelEncryptDecryptPassPhrase.setText("Enter Password:");
 		
 		radioButtonCRC8OnAction();
 		
@@ -614,6 +638,54 @@ public class MainSceneController implements Initializable
 	}
 	
 	@FXML
+	void checkBoxEncDecHashMacHexInOnMouseClicked()
+	{
+		textAreaEncryptDecryptText.setText("");
+		
+		 if (checkBoxEncDecHashMacHexIn.isSelected())
+		 {
+			 textAreaEncryptDecryptText.setTextFormatter(new TextFormatter<>(hexFilter));
+		 }
+		 
+		 if (!checkBoxEncDecHashMacHexIn.isSelected())
+		 {
+			 textAreaEncryptDecryptText.setTextFormatter(null);
+		 }
+	}
+	
+	@FXML
+	void checkBoxPQCInputHexOnMouseClicked()
+	{
+		textAreaPQCInput.setText("");
+		
+		 if (checkBoxPQCInputHex.isSelected())
+		 {
+			 textAreaPQCInput.setTextFormatter(new TextFormatter<>(hexFilter));
+		 }
+		 
+		 if (!checkBoxPQCInputHex.isSelected())
+		 {
+			 textAreaPQCInput.setTextFormatter(null);
+		 }
+	}
+	
+	@FXML
+	void checkBoxCRCInputHexOnMouseClicked()
+	{
+		textAreaCRCInput.setText("");
+		
+		 if (checkBoxCRCInputHex.isSelected())
+		 {
+			 textAreaCRCInput.setTextFormatter(new TextFormatter<>(hexFilter));
+		 }
+		 
+		 if (!checkBoxCRCInputHex.isSelected())
+		 {
+			 textAreaCRCInput.setTextFormatter(null);
+		 }
+	}
+	
+	@FXML
 	void keyGenAlgoChanged()
 	{
 		if (comboKeyGenAlgSelect.getValue() == KeyGenerateParams.KEYGEN_ALGO_SELECT_ED25519
@@ -659,6 +731,12 @@ public class MainSceneController implements Initializable
 			buttonEncryptDecyptBrowseKeyFile.setDisable(true);
 			comboEncryptDecryptCipher.setDisable(false);
 			textFieldEncryptDecryptPassPhrase.setDisable(false);
+			textFieldEncryptDecryptPassPhrase.setVisible(true);
+			textFieldEncryptDecryptPassPhrase.setText("");
+			textFieldEncryptDecryptMACKey.setDisable(true);
+			textFieldEncryptDecryptMACKey.setVisible(false);
+			textFieldEncryptDecryptMACKey.setText("");
+			labelEncryptDecryptPassPhrase.setText("Enter Password:");
 			checkBoxEncryptDecryptAddSalt.setDisable(false);
 			titledPaneEncryptDecryptText.setDisable(false);
 			titledPaneEncryptDecryptFile.setText("File Encryption");
@@ -686,6 +764,12 @@ public class MainSceneController implements Initializable
 			buttonEncryptDecyptBrowseKeyFile.setDisable(false);
 			comboEncryptDecryptCipher.setDisable(true);
 			textFieldEncryptDecryptPassPhrase.setDisable(true);
+			textFieldEncryptDecryptPassPhrase.setVisible(true);
+			textFieldEncryptDecryptPassPhrase.setText("");
+			textFieldEncryptDecryptMACKey.setDisable(true);
+			textFieldEncryptDecryptMACKey.setVisible(false);
+			textFieldEncryptDecryptMACKey.setText("");
+			labelEncryptDecryptPassPhrase.setText("Enter Password:");
 			checkBoxEncryptDecryptAddSalt.setDisable(true);
 			titledPaneEncryptDecryptText.setDisable(false);
 			titledPaneEncryptDecryptFile.setText("File Encryption");
@@ -715,6 +799,12 @@ public class MainSceneController implements Initializable
 			buttonEncryptDecyptBrowseKeyFile.setDisable(true);
 			comboEncryptDecryptCipher.setDisable(true);
 			textFieldEncryptDecryptPassPhrase.setDisable(true);
+			textFieldEncryptDecryptPassPhrase.setVisible(true);
+			textFieldEncryptDecryptPassPhrase.setText("");
+			textFieldEncryptDecryptMACKey.setDisable(true);
+			textFieldEncryptDecryptMACKey.setVisible(false);
+			textFieldEncryptDecryptMACKey.setText("");
+			labelEncryptDecryptPassPhrase.setText("Enter Password:");
 			checkBoxEncryptDecryptAddSalt.setDisable(true);
 			titledPaneEncryptDecryptText.setDisable(false);
 			titledPaneEncryptDecryptFile.setText("File Hashing");
@@ -734,7 +824,13 @@ public class MainSceneController implements Initializable
 			textFieldEncryptDecryptBrowseKeyFile.setDisable(true);
 			buttonEncryptDecyptBrowseKeyFile.setDisable(true);
 			comboEncryptDecryptCipher.setDisable(false);
-			textFieldEncryptDecryptPassPhrase.setDisable(false);
+			textFieldEncryptDecryptPassPhrase.setDisable(true);
+			textFieldEncryptDecryptPassPhrase.setVisible(false);
+			textFieldEncryptDecryptPassPhrase.setText("");
+			textFieldEncryptDecryptMACKey.setDisable(false);
+			textFieldEncryptDecryptMACKey.setVisible(true);
+			textFieldEncryptDecryptMACKey.setText("");
+			labelEncryptDecryptPassPhrase.setText("Enter Key (Hex):");
 			checkBoxEncryptDecryptAddSalt.setDisable(true);
 			titledPaneEncryptDecryptText.setDisable(false);
 			titledPaneEncryptDecryptFile.setText("File CMAC Generation");
@@ -1239,10 +1335,12 @@ public class MainSceneController implements Initializable
 			case EncryptDecryptParams.ENCRYPT_DECRYPT_TYPE_GENERATE_CMAC:
 				encryptDecryptParams.setCipher(comboEncryptDecryptCipher.getValue().replaceFirst("-", ""));
 				encryptDecryptParams.setBinaryOutputFileEnabled(checkBoxEncryptDecryptBinaryOutput.isSelected());
+				encryptDecryptParams.setPassPhrase(textFieldEncryptDecryptMACKey.getText());
 				return(openSslService.generateCMac(encryptDecryptParams));
 				
 			case EncryptDecryptParams.ENCRYPT_DECRYPT_TYPE_GENERATE_HMAC:
 				encryptDecryptParams.setBinaryOutputFileEnabled(checkBoxEncryptDecryptBinaryOutput.isSelected());
+				encryptDecryptParams.setPassPhrase(textFieldEncryptDecryptMACKey.getText());
 				return(openSslService.generateHMac(encryptDecryptParams));
 		}
 		
