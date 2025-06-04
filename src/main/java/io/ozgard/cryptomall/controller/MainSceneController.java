@@ -385,6 +385,12 @@ public class MainSceneController implements Initializable
 	@FXML
 	@Autowired
 	TextField textFieldEncryptDecryptMACKey;
+	@FXML
+	@Autowired
+	CheckBox checkBoxPQCEncapsulate;
+	@FXML
+	@Autowired
+	CheckBox checkBoxPQCDecapsulate;
 	
 	TableColumn<CertificateParams, String> tableColumnCertificateElementsName;
 	TableColumn<CertificateParams, String> tableColumnRootCertificate;
@@ -1556,6 +1562,36 @@ public class MainSceneController implements Initializable
 	}
 	
 	@FXML
+	void checkBoxPQCEncapsulateOnAction()
+	{
+		buttonPQCDataFileBrowse.setDisable(true);
+		buttonPQCPublicKeyFileBrowse.setDisable(true);
+		checkBoxPQCEncapsulate.setSelected(true);
+		checkBoxPQCDecapsulate.setSelected(false);
+		textFieldPQCDataFilePath.setDisable(true);
+		textFieldPQCDataFilePath.setText("");
+		textFieldPQCPublicKeyFilePath.setDisable(true);
+		textFieldPQCPublicKeyFilePath.setText("");
+		textFieldPQCSignatureFilePath.setDisable(true);
+		textFieldPQCSignatureFilePath.setText("");
+	}
+	
+	@FXML
+	void checkBoxPQCDecapsulateOnAction()
+	{
+		buttonPQCDataFileBrowse.setDisable(false);
+		buttonPQCPublicKeyFileBrowse.setDisable(false);
+		checkBoxPQCEncapsulate.setSelected(false);
+		checkBoxPQCDecapsulate.setSelected(true);
+		textFieldPQCDataFilePath.setDisable(false);
+		textFieldPQCDataFilePath.setText("Select Key File to Decapsulate the Secret Key");
+		textFieldPQCPublicKeyFilePath.setDisable(false);
+		textFieldPQCPublicKeyFilePath.setText("Select Encapsulated Key File");
+		textFieldPQCSignatureFilePath.setDisable(true);
+		textFieldPQCSignatureFilePath.setText("");
+	}
+	
+	@FXML
 	void checkBoxPQCSignatureVerifyOnAction()
 	{
 		buttonPQCGenerateVerifyExchange.setText("Verify Signature");
@@ -1713,14 +1749,26 @@ public class MainSceneController implements Initializable
 		radioButtonPQCToggle(radioButtonPQCDilithium);
 		
 		checkBoxPQCSignatureGenerateOnAction();
+		
+		setDisableEncapDecapCheckBoxes(true);
 	}
 	
+	private void setDisableEncapDecapCheckBoxes(boolean isDisabled) 
+	{
+		checkBoxPQCEncapsulate.setDisable(isDisabled);
+		checkBoxPQCDecapsulate.setDisable(isDisabled);
+		checkBoxPQCEncapsulate.setSelected(true);
+		checkBoxPQCDecapsulate.setSelected(false);
+	}
+
 	@FXML
 	void radioButtonPQCSphincsOnAction()
 	{
 		radioButtonPQCToggle(radioButtonPQCSphincs);
 		
 		checkBoxPQCSignatureGenerateOnAction();
+		
+		setDisableEncapDecapCheckBoxes(true);
 	}
 	
 	@FXML
@@ -1729,6 +1777,8 @@ public class MainSceneController implements Initializable
 		radioButtonPQCToggle(radioButtonPQCFalcon);
 		
 		checkBoxPQCSignatureGenerateOnAction();
+		
+		setDisableEncapDecapCheckBoxes(true);
 	}
 	
 	@FXML
@@ -1739,6 +1789,8 @@ public class MainSceneController implements Initializable
 		buttonPQCGenerateVerifyExchange.setText("Start Key Encapsulation Mechanism");
 
 		radioButtonPQCToggle(radioButtonPQCKyber);
+		
+		setDisableEncapDecapCheckBoxes(false);
 	}
 	
 	@FXML
@@ -1749,6 +1801,8 @@ public class MainSceneController implements Initializable
 		buttonPQCGenerateVerifyExchange.setText("Start Key Encapsulation Mechanism");
 
 		radioButtonPQCToggle(radioButtonPQCHQC);
+		
+		setDisableEncapDecapCheckBoxes(false);
 	}
 	
 	@FXML
@@ -1759,6 +1813,8 @@ public class MainSceneController implements Initializable
 		buttonPQCGenerateVerifyExchange.setText("Start Key Encapsulation Mechanism");
 		
 		radioButtonPQCToggle(radioButtonPQCBike);
+		
+		setDisableEncapDecapCheckBoxes(false);
 	}
 	
 	@FXML
@@ -1769,6 +1825,8 @@ public class MainSceneController implements Initializable
 		buttonPQCGenerateVerifyExchange.setText("Start Key Encapsulation Mechanism");
 		
 		radioButtonPQCToggle(radioButtonPQCClassicMceliece);
+		
+		setDisableEncapDecapCheckBoxes(false);
 	}
 	
 	void radioButtonPQCToggle(RadioButton radioButtonToSelect)

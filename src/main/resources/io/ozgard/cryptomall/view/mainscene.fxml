@@ -335,6 +335,8 @@
                         <ComboBox fx:id="comboBoxPQCBikeParams" layoutX="461.0" layoutY="193.0" prefHeight="26.0" prefWidth="136.0" />
                         <RadioButton fx:id="radioButtonPQCClassicMceliece" layoutX="326.0" layoutY="234.0" mnemonicParsing="false" onAction="#radioButtonPQCClassicMcelieceOnAction" prefHeight="18.0" prefWidth="127.0" text="Classic McEliece:" />
                         <ComboBox fx:id="comboBoxPQCClassicMcElieceParams" layoutX="461.0" layoutY="230.0" prefHeight="26.0" prefWidth="136.0" />
+                        <CheckBox fx:id="checkBoxPQCEncapsulate" layoutX="617.0" layoutY="134.0" mnemonicParsing="false" onAction="#checkBoxPQCEncapsulateOnAction" prefHeight="18.0" prefWidth="91.0" text="Encapsulate" />
+                        <CheckBox fx:id="checkBoxPQCDecapsulate" layoutX="617.0" layoutY="173.0" mnemonicParsing="false" onAction="#checkBoxPQCDecapsulateOnAction" prefHeight="18.0" prefWidth="91.0" text="Decapsulate" />
                      </children>
                   </AnchorPane>
                </content>
