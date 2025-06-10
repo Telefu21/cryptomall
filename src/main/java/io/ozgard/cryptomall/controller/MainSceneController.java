@@ -1584,7 +1584,7 @@ public class MainSceneController implements Initializable
 		checkBoxPQCEncapsulate.setSelected(false);
 		checkBoxPQCDecapsulate.setSelected(true);
 		textFieldPQCDataFilePath.setDisable(false);
-		textFieldPQCDataFilePath.setText("Select Key File to Decapsulate the Secret Key");
+		textFieldPQCDataFilePath.setText("Select Private Key File to Decapsulate the Secret Key");
 		textFieldPQCPublicKeyFilePath.setDisable(false);
 		textFieldPQCPublicKeyFilePath.setText("Select Encapsulated Key File");
 		textFieldPQCSignatureFilePath.setDisable(true);
@@ -1663,28 +1663,56 @@ public class MainSceneController implements Initializable
 			retStr = postQuantumCryptoService.signatureVerifySphincs(postQuantumCryptoParams);
 		}
 		
-		if(radioButtonPQCKyber.isSelected())
+		if(radioButtonPQCKyber.isSelected() && checkBoxPQCEncapsulate.isSelected())
 		{
 			postQuantumCryptoParams.setParameterSet(comboBoxPQCKyberParams.getValue());
 			retStr = postQuantumCryptoService.keyEncapsulateKyber(postQuantumCryptoParams);
 		}
 		
-		if(radioButtonPQCHQC.isSelected())
+		if(radioButtonPQCKyber.isSelected() && checkBoxPQCDecapsulate.isSelected())
+		{
+			setPqcKEMDecapsulateParams();
+			postQuantumCryptoParams.setParameterSet(comboBoxPQCKyberParams.getValue());
+			retStr = postQuantumCryptoService.keyDecapsulateKyber(postQuantumCryptoParams);
+		}
+		
+		if(radioButtonPQCHQC.isSelected() && checkBoxPQCEncapsulate.isSelected())
 		{
 			postQuantumCryptoParams.setParameterSet(comboBoxPQCHQCParams.getValue());
 			retStr = postQuantumCryptoService.keyEncapsulateHQC(postQuantumCryptoParams);
 		}
 		
-		if(radioButtonPQCBike.isSelected())
+		if(radioButtonPQCHQC.isSelected() && checkBoxPQCDecapsulate.isSelected())
+		{
+			setPqcKEMDecapsulateParams();
+			postQuantumCryptoParams.setParameterSet(comboBoxPQCHQCParams.getValue());
+			retStr = postQuantumCryptoService.keyDecapsulateHQC(postQuantumCryptoParams);
+		}
+		
+		if(radioButtonPQCBike.isSelected() && checkBoxPQCEncapsulate.isSelected())
 		{
 			postQuantumCryptoParams.setParameterSet(comboBoxPQCBikeParams.getValue());
 			retStr = postQuantumCryptoService.keyEncapsulateBike(postQuantumCryptoParams);
 		}
 		
-		if(radioButtonPQCClassicMceliece.isSelected())
+		if(radioButtonPQCBike.isSelected() && checkBoxPQCDecapsulate.isSelected())
+		{
+			setPqcKEMDecapsulateParams();
+			postQuantumCryptoParams.setParameterSet(comboBoxPQCBikeParams.getValue());
+			retStr = postQuantumCryptoService.keyDecapsulateBike(postQuantumCryptoParams);
+		}
+		
+		if(radioButtonPQCClassicMceliece.isSelected() && checkBoxPQCEncapsulate.isSelected())
 		{
 			postQuantumCryptoParams.setParameterSet(comboBoxPQCClassicMcElieceParams.getValue());
 			retStr = postQuantumCryptoService.keyEncapsulateClassicMcEliece(postQuantumCryptoParams);
+		}
+		
+		if(radioButtonPQCClassicMceliece.isSelected() && checkBoxPQCDecapsulate.isSelected())
+		{
+			setPqcKEMDecapsulateParams();
+			postQuantumCryptoParams.setParameterSet(comboBoxPQCClassicMcElieceParams.getValue());
+			retStr = postQuantumCryptoService.keyDecapsulateClassicMcEliece(postQuantumCryptoParams);
 		}
 		
 		setLogOutput(retStr);
@@ -1717,6 +1745,22 @@ public class MainSceneController implements Initializable
 			
 			postQuantumCryptoParams.setTextAreaBytes(textInputStr.getBytes());
 		}	
+	}
+	private void setPqcKEMDecapsulateParams() 
+	{
+		postQuantumCryptoParams.setInputFileBytes(null);
+		
+		if(textFieldPQCDataFilePath.getText().contains("\\") == true)
+		{
+			postQuantumCryptoParams.setInputFileBytes(Utility.readFileContentToBytes(textFieldPQCDataFilePath.getText()));
+		}
+		
+		postQuantumCryptoParams.setPublicKeyFileBytes(null);
+		
+		if(textFieldPQCPublicKeyFilePath.getText().contains("\\") == true)
+		{
+			postQuantumCryptoParams.setPublicKeyFileBytes(Utility.readFileContentToBytes(textFieldPQCPublicKeyFilePath.getText()));
+		}
 	}
 	
 	private void setPqcSignatureVerifyParams() 
@@ -1858,7 +1902,7 @@ public class MainSceneController implements Initializable
 		checkBoxPQCSignatureVerify.setDisable(true);
 		checkBoxPQCSignatureVerify.setSelected(false);
 		textAreaPQCInput.setDisable(true);
-		textAreaPQCInput.setText("All Key Encapsulation Files will be stored to Working Directory");
+		textAreaPQCInput.setText("");
 		checkBoxPQCInputHex.setDisable(true);
 		checkBoxPQCInputHex.setSelected(false);
 	}

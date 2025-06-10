@@ -3,6 +3,7 @@ package io.ozgard.cryptomall.service;
 import java.security.Security;
 import java.security.spec.AlgorithmParameterSpec;
 
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.pqc.jcajce.provider.BouncyCastlePQCProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -46,6 +47,7 @@ public class PostQuantumCryptoService
 		if (Security.getProvider("BCPQC") == null) 
 		{
 	        Security.addProvider(new BouncyCastlePQCProvider());
+	        Security.addProvider(new BouncyCastleProvider());
 	    }
 	}
 
@@ -218,5 +220,39 @@ public class PostQuantumCryptoService
 		retStr +="Secret Key (Hex): " + Utility.bytesToHex(secretKeyBytes) + "\n";
 
 		return retStr;
+	}
+
+	private String keyDecapsulateAlgorithm(PostQuantumCryptoParams postQuantumCryptoParams, String algorithm) 
+	{
+		String retStr = "!!! Please Select the Private Key and Encapsulated Key Files !!!!";
+		
+		keyEncalpsulation.setAlgorithm(algorithm);
+		
+		if(postQuantumCryptoParams.getInputFileBytes() !=  null && postQuantumCryptoParams.getPublicKeyFileBytes() !=  null)
+		{
+			retStr = "Decapsulated Secret Key (Hex): " + Utility.bytesToHex(keyEncalpsulation.pqcGenerateKEMDecryptionKey(keyEncalpsulation.getPrivateKeyFromEncoded(postQuantumCryptoParams.getInputFileBytes()), postQuantumCryptoParams.getPublicKeyFileBytes())) + "\n";
+		}
+		
+		return retStr;
+	}
+
+	public String keyDecapsulateHQC(PostQuantumCryptoParams postQuantumCryptoParams) 
+	{
+		return keyDecapsulateAlgorithm(postQuantumCryptoParams, "HQC");
+	}
+	
+	public String keyDecapsulateBike(PostQuantumCryptoParams postQuantumCryptoParams) 
+	{
+		return keyDecapsulateAlgorithm(postQuantumCryptoParams, "Bike");
+	}
+
+	public String keyDecapsulateClassicMcEliece(PostQuantumCryptoParams postQuantumCryptoParams) 
+	{
+		return keyDecapsulateAlgorithm(postQuantumCryptoParams, "CMCE");
+	}
+
+	public String keyDecapsulateKyber(PostQuantumCryptoParams postQuantumCryptoParams) 
+	{
+		return keyDecapsulateAlgorithm(postQuantumCryptoParams, "Kyber");
 	}
 }

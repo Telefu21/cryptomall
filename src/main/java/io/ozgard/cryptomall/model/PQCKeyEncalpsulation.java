@@ -113,7 +113,7 @@ public class PQCKeyEncalpsulation
         try 
         {
             keyGen = KeyGenerator.getInstance(algorithm, "BCPQC");
-            keyGen.init(new KEMGenerateSpec((PublicKey) publicKey, "AES"), new SecureRandom());
+            keyGen.init(new KEMGenerateSpec((PublicKey) publicKey, "Secret"));
             encapsulation = ((SecretKeyWithEncapsulation) keyGen.generateKey()).getEncapsulation();
             return ((SecretKeyWithEncapsulation) keyGen.generateKey()).getEncoded();
         } 
@@ -131,7 +131,7 @@ public class PQCKeyEncalpsulation
         try 
         {
             keyGen = KeyGenerator.getInstance(algorithm, "BCPQC");
-            keyGen.init(new KEMExtractSpec((PrivateKey) privateKey, encapsulatedKey, "AES"), new SecureRandom());
+            keyGen.init(new KEMExtractSpec((PrivateKey) privateKey, encapsulatedKey, "Secret"), new SecureRandom());
             return ((SecretKeyWithEncapsulation) keyGen.generateKey()).getEncoded();
         } 
         catch (NoSuchAlgorithmException | NoSuchProviderException | InvalidAlgorithmParameterException e) 
