@@ -213,10 +213,13 @@ public class MainSceneController implements Initializable
 	Tab tabSignVerify;
 	@FXML
 	@Autowired
+	Tab tabHexViewCrc;
+	@FXML
+	@Autowired
 	Tab tabCertificateProcessing;
 	@FXML
 	@Autowired
-	Tab tabHexViewPQC;
+	Tab tabPQC;
 	@FXML
 	@Autowired
 	ComboBox<String> comboEncryptDecryptCipher;
@@ -477,8 +480,9 @@ public class MainSceneController implements Initializable
 		tabKeyGenerate.setDisable(true);
 		tabEncryptDecrypt.setDisable(true);
 		tabSignVerify.setDisable(true);
+		tabHexViewCrc.setDisable(true);
 		tabCertificateProcessing.setDisable(true);
-		tabHexViewPQC.setDisable(true);
+		tabPQC.setDisable(true);
 		
 		textFieldSignVerifyInputFilePath.setText("Select Input File");
 		textFieldSignVerifyKeyFilePath.setText("Select Private Key File");
@@ -577,8 +581,9 @@ public class MainSceneController implements Initializable
 			tabKeyGenerate.setDisable(false);
 			tabEncryptDecrypt.setDisable(false);
 			tabSignVerify.setDisable(false);
+			tabHexViewCrc.setDisable(false);
 			tabCertificateProcessing.setDisable(false);
-			tabHexViewPQC.setDisable(false);
+			tabPQC.setDisable(false);
         }
 	}
 	
@@ -1574,6 +1579,7 @@ public class MainSceneController implements Initializable
 		textFieldPQCPublicKeyFilePath.setText("");
 		textFieldPQCSignatureFilePath.setDisable(true);
 		textFieldPQCSignatureFilePath.setText("");
+		buttonPQCGenerateVerifyExchange.setText("Start Key Encapsulation");
 	}
 	
 	@FXML
@@ -1586,9 +1592,10 @@ public class MainSceneController implements Initializable
 		textFieldPQCDataFilePath.setDisable(false);
 		textFieldPQCDataFilePath.setText("Select Private Key File to Decapsulate the Secret Key");
 		textFieldPQCPublicKeyFilePath.setDisable(false);
-		textFieldPQCPublicKeyFilePath.setText("Select Encapsulated Key File");
+		textFieldPQCPublicKeyFilePath.setText("Select Encapsulated Key File to Decapsulate");
 		textFieldPQCSignatureFilePath.setDisable(true);
 		textFieldPQCSignatureFilePath.setText("");
+		buttonPQCGenerateVerifyExchange.setText("Start Key Decapsulation");
 	}
 	
 	@FXML
@@ -1830,7 +1837,7 @@ public class MainSceneController implements Initializable
 	{
 		disableAllWidgetsPQCKeyEn();
 		
-		buttonPQCGenerateVerifyExchange.setText("Start Key Encapsulation Mechanism");
+		buttonPQCGenerateVerifyExchange.setText("Start Key Encapsulation");
 
 		radioButtonPQCToggle(radioButtonPQCKyber);
 		
@@ -1842,7 +1849,7 @@ public class MainSceneController implements Initializable
 	{
 		disableAllWidgetsPQCKeyEn();
 		
-		buttonPQCGenerateVerifyExchange.setText("Start Key Encapsulation Mechanism");
+		buttonPQCGenerateVerifyExchange.setText("Start Key Encapsulation");
 
 		radioButtonPQCToggle(radioButtonPQCHQC);
 		
@@ -1854,7 +1861,7 @@ public class MainSceneController implements Initializable
 	{
 		disableAllWidgetsPQCKeyEn();
 		
-		buttonPQCGenerateVerifyExchange.setText("Start Key Encapsulation Mechanism");
+		buttonPQCGenerateVerifyExchange.setText("Start Key Encapsulation");
 		
 		radioButtonPQCToggle(radioButtonPQCBike);
 		
@@ -1866,7 +1873,7 @@ public class MainSceneController implements Initializable
 	{
 		disableAllWidgetsPQCKeyEn();
 		
-		buttonPQCGenerateVerifyExchange.setText("Start Key Encapsulation Mechanism");
+		buttonPQCGenerateVerifyExchange.setText("Start Key Encapsulation");
 		
 		radioButtonPQCToggle(radioButtonPQCClassicMceliece);
 		

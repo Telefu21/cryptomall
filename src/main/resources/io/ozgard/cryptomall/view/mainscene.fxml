@@ -270,7 +270,7 @@
                      </children></AnchorPane>
                </content>
             </Tab>
-            <Tab fx:id="tabHexViewPQC" text="Post Quantum">
+            <Tab fx:id="tabPQC" text="Post Quantum">
                <content>
                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
