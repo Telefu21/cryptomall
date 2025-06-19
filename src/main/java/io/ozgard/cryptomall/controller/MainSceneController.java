@@ -394,6 +394,9 @@ public class MainSceneController implements Initializable
 	@FXML
 	@Autowired
 	CheckBox checkBoxPQCDecapsulate;
+	@FXML
+	@Autowired
+	CheckBox checkBoxPQCKeygen;
 	
 	TableColumn<CertificateParams, String> tableColumnCertificateElementsName;
 	TableColumn<CertificateParams, String> tableColumnRootCertificate;
@@ -1569,17 +1572,19 @@ public class MainSceneController implements Initializable
 	@FXML
 	void checkBoxPQCEncapsulateOnAction()
 	{
-		buttonPQCDataFileBrowse.setDisable(true);
+		buttonPQCDataFileBrowse.setDisable(false);
 		buttonPQCPublicKeyFileBrowse.setDisable(true);
+		buttonPQCSignatureFileBrowse.setDisable(true);
 		checkBoxPQCEncapsulate.setSelected(true);
 		checkBoxPQCDecapsulate.setSelected(false);
-		textFieldPQCDataFilePath.setDisable(true);
-		textFieldPQCDataFilePath.setText("");
+		checkBoxPQCKeygen.setSelected(false);
+		textFieldPQCDataFilePath.setDisable(false);
+		textFieldPQCDataFilePath.setText("Select Public Key File to be used for Key Generation and Encapsulation ");
 		textFieldPQCPublicKeyFilePath.setDisable(true);
 		textFieldPQCPublicKeyFilePath.setText("");
 		textFieldPQCSignatureFilePath.setDisable(true);
 		textFieldPQCSignatureFilePath.setText("");
-		buttonPQCGenerateVerifyExchange.setText("Start Key Encapsulation");
+		buttonPQCGenerateVerifyExchange.setText("Generate and Encapsulate Secret Key");
 	}
 	
 	@FXML
@@ -1587,15 +1592,35 @@ public class MainSceneController implements Initializable
 	{
 		buttonPQCDataFileBrowse.setDisable(false);
 		buttonPQCPublicKeyFileBrowse.setDisable(false);
+		buttonPQCSignatureFileBrowse.setDisable(true);
 		checkBoxPQCEncapsulate.setSelected(false);
 		checkBoxPQCDecapsulate.setSelected(true);
+		checkBoxPQCKeygen.setSelected(false);
 		textFieldPQCDataFilePath.setDisable(false);
 		textFieldPQCDataFilePath.setText("Select Private Key File to Decapsulate the Secret Key");
 		textFieldPQCPublicKeyFilePath.setDisable(false);
 		textFieldPQCPublicKeyFilePath.setText("Select Encapsulated Key File to Decapsulate");
 		textFieldPQCSignatureFilePath.setDisable(true);
 		textFieldPQCSignatureFilePath.setText("");
-		buttonPQCGenerateVerifyExchange.setText("Start Key Decapsulation");
+		buttonPQCGenerateVerifyExchange.setText("Decapsulate Secret Key");
+	}
+	
+	@FXML
+	void checkBoxPQCKeygenOnAction()
+	{
+		buttonPQCDataFileBrowse.setDisable(true);
+		buttonPQCPublicKeyFileBrowse.setDisable(true);
+		buttonPQCSignatureFileBrowse.setDisable(true);
+		checkBoxPQCEncapsulate.setSelected(false);
+		checkBoxPQCDecapsulate.setSelected(false);
+		checkBoxPQCKeygen.setSelected(true);
+		textFieldPQCDataFilePath.setDisable(true);
+		textFieldPQCDataFilePath.setText("");
+		textFieldPQCPublicKeyFilePath.setDisable(true);
+		textFieldPQCPublicKeyFilePath.setText("");
+		textFieldPQCSignatureFilePath.setDisable(true);
+		textFieldPQCSignatureFilePath.setText("");
+		buttonPQCGenerateVerifyExchange.setText("Generate Key Pair");
 	}
 	
 	@FXML
@@ -1672,6 +1697,7 @@ public class MainSceneController implements Initializable
 		
 		if(radioButtonPQCKyber.isSelected() && checkBoxPQCEncapsulate.isSelected())
 		{
+			setPqcKEMEncapsulateParams();
 			postQuantumCryptoParams.setParameterSet(comboBoxPQCKyberParams.getValue());
 			retStr = postQuantumCryptoService.keyEncapsulateKyber(postQuantumCryptoParams);
 		}
@@ -1683,8 +1709,15 @@ public class MainSceneController implements Initializable
 			retStr = postQuantumCryptoService.keyDecapsulateKyber(postQuantumCryptoParams);
 		}
 		
+		if(radioButtonPQCKyber.isSelected() && checkBoxPQCKeygen.isSelected())
+		{
+			postQuantumCryptoParams.setParameterSet(comboBoxPQCKyberParams.getValue());
+			retStr = postQuantumCryptoService.keyPairGenerateKyber(postQuantumCryptoParams);
+		}
+		
 		if(radioButtonPQCHQC.isSelected() && checkBoxPQCEncapsulate.isSelected())
 		{
+			setPqcKEMEncapsulateParams();
 			postQuantumCryptoParams.setParameterSet(comboBoxPQCHQCParams.getValue());
 			retStr = postQuantumCryptoService.keyEncapsulateHQC(postQuantumCryptoParams);
 		}
@@ -1696,8 +1729,15 @@ public class MainSceneController implements Initializable
 			retStr = postQuantumCryptoService.keyDecapsulateHQC(postQuantumCryptoParams);
 		}
 		
+		if(radioButtonPQCHQC.isSelected() && checkBoxPQCKeygen.isSelected())
+		{
+			postQuantumCryptoParams.setParameterSet(comboBoxPQCHQCParams.getValue());
+			retStr = postQuantumCryptoService.keyPairGenerateHQC(postQuantumCryptoParams);
+		}
+		
 		if(radioButtonPQCBike.isSelected() && checkBoxPQCEncapsulate.isSelected())
 		{
+			setPqcKEMEncapsulateParams();
 			postQuantumCryptoParams.setParameterSet(comboBoxPQCBikeParams.getValue());
 			retStr = postQuantumCryptoService.keyEncapsulateBike(postQuantumCryptoParams);
 		}
@@ -1709,8 +1749,15 @@ public class MainSceneController implements Initializable
 			retStr = postQuantumCryptoService.keyDecapsulateBike(postQuantumCryptoParams);
 		}
 		
+		if(radioButtonPQCBike.isSelected() && checkBoxPQCKeygen.isSelected())
+		{
+			postQuantumCryptoParams.setParameterSet(comboBoxPQCBikeParams.getValue());
+			retStr = postQuantumCryptoService.keyPairGenerateBike(postQuantumCryptoParams);
+		}
+		
 		if(radioButtonPQCClassicMceliece.isSelected() && checkBoxPQCEncapsulate.isSelected())
 		{
+			setPqcKEMEncapsulateParams();
 			postQuantumCryptoParams.setParameterSet(comboBoxPQCClassicMcElieceParams.getValue());
 			retStr = postQuantumCryptoService.keyEncapsulateClassicMcEliece(postQuantumCryptoParams);
 		}
@@ -1720,6 +1767,12 @@ public class MainSceneController implements Initializable
 			setPqcKEMDecapsulateParams();
 			postQuantumCryptoParams.setParameterSet(comboBoxPQCClassicMcElieceParams.getValue());
 			retStr = postQuantumCryptoService.keyDecapsulateClassicMcEliece(postQuantumCryptoParams);
+		}
+		
+		if(radioButtonPQCClassicMceliece.isSelected() && checkBoxPQCKeygen.isSelected())
+		{
+			postQuantumCryptoParams.setParameterSet(comboBoxPQCClassicMcElieceParams.getValue());
+			retStr = postQuantumCryptoService.keyPairGenerateClassicMceliece(postQuantumCryptoParams);
 		}
 		
 		setLogOutput(retStr);
@@ -1753,6 +1806,7 @@ public class MainSceneController implements Initializable
 			postQuantumCryptoParams.setTextAreaBytes(textInputStr.getBytes());
 		}	
 	}
+	
 	private void setPqcKEMDecapsulateParams() 
 	{
 		postQuantumCryptoParams.setInputFileBytes(null);
@@ -1767,6 +1821,16 @@ public class MainSceneController implements Initializable
 		if(textFieldPQCPublicKeyFilePath.getText().contains("\\") == true)
 		{
 			postQuantumCryptoParams.setPublicKeyFileBytes(Utility.readFileContentToBytes(textFieldPQCPublicKeyFilePath.getText()));
+		}
+	}
+	
+	private void setPqcKEMEncapsulateParams() 
+	{
+		postQuantumCryptoParams.setInputFileBytes(null);
+		
+		if(textFieldPQCDataFilePath.getText().contains("\\") == true)
+		{
+			postQuantumCryptoParams.setInputFileBytes(Utility.readFileContentToBytes(textFieldPQCDataFilePath.getText()));
 		}
 	}
 	
@@ -1808,8 +1872,10 @@ public class MainSceneController implements Initializable
 	{
 		checkBoxPQCEncapsulate.setDisable(isDisabled);
 		checkBoxPQCDecapsulate.setDisable(isDisabled);
-		checkBoxPQCEncapsulate.setSelected(true);
+		checkBoxPQCKeygen.setDisable(isDisabled);
+		checkBoxPQCEncapsulate.setSelected(false);
 		checkBoxPQCDecapsulate.setSelected(false);
+		checkBoxPQCKeygen.setSelected(true);
 	}
 
 	@FXML

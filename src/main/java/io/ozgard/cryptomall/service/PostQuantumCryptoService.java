@@ -134,23 +134,30 @@ public class PostQuantumCryptoService
 		return retStr;
 	}
 
-	public String keyEncapsulate(PostQuantumCryptoParams postQuantumCryptoParams, AlgorithmParameterSpec algoSpec, String algorithm) 
+	public String keyEncapsulate(PostQuantumCryptoParams postQuantumCryptoParams, String algorithm) 
 	{
+		String retStr = "";
+		String encapKeyBytesfileName = postQuantumCryptoParams.getWorkingDirectoryPath() + "\\" + postQuantumCryptoParams.getParameterSet() + "_" + algorithm + "_encapsulated_key.bin";
+		String secretKeyBytesfileName = postQuantumCryptoParams.getWorkingDirectoryPath() + "\\" + postQuantumCryptoParams.getParameterSet() + "_" + algorithm + "_secret_key.bin";
+		
 		keyEncalpsulation.setAlgorithm(algorithm);
 		
-		keyEncalpsulation.generatePublicPrivateKeys(algoSpec);
-		
-		byte[] privateKey = keyEncalpsulation.getPrivateKeyBytes();
-		byte[] publicKey = keyEncalpsulation.getPublicKeyBytes();
-        byte[] secretKey = keyEncalpsulation.pqcGenerateKEMEncryptionKey(keyEncalpsulation.getPublicKeyFromEncoded(publicKey));
+		byte[] secretKey = keyEncalpsulation.pqcGenerateKEMEncryptionKey(keyEncalpsulation.getPublicKeyFromEncoded(postQuantumCryptoParams.getInputFileBytes()));
         byte[] encapsulatedKey = keyEncalpsulation.getEncapsulation();
        
-		return processFileOperationsKEM(postQuantumCryptoParams, privateKey, publicKey, encapsulatedKey, secretKey, algorithm);	
+		Utility.writeBytesToFile(encapsulatedKey, encapKeyBytesfileName);
+		retStr += encapsulatedKey.length + " bytes of encapsulated Secret Key (Ciphertext) written to --> " + encapKeyBytesfileName + "\n";
+		
+		Utility.writeBytesToFile(secretKey, secretKeyBytesfileName);
+		retStr += secretKey.length + " bytes of Secret Key generated and written to --> " + secretKeyBytesfileName + "\n";
+		retStr +="Secret Key (Hex): " + Utility.bytesToHex(secretKey) + "\n";
+
+		return retStr;
 	}
 	
 	public String keyEncapsulateKyber(PostQuantumCryptoParams postQuantumCryptoParams) 
 	{
-		return keyEncapsulate(postQuantumCryptoParams, postQuantumCryptoParams.getKyberStrToParams().get(postQuantumCryptoParams.getParameterSet()), "Kyber");
+		return keyEncapsulate(postQuantumCryptoParams, "Kyber");
 	}
 
 	public String keyEncapsulateHQC(PostQuantumCryptoParams postQuantumCryptoParams) 
@@ -161,12 +168,12 @@ public class PostQuantumCryptoService
 
 	public String keyEncapsulateBike(PostQuantumCryptoParams postQuantumCryptoParams) 
 	{
-		return keyEncapsulate(postQuantumCryptoParams, postQuantumCryptoParams.getBikeStrToParams().get(postQuantumCryptoParams.getParameterSet()), "Bike");
+		return keyEncapsulate(postQuantumCryptoParams, "Bike");
 	}
 
 	public String keyEncapsulateClassicMcEliece(PostQuantumCryptoParams postQuantumCryptoParams) 
 	{
-		return keyEncapsulate(postQuantumCryptoParams, postQuantumCryptoParams.getMecelieceStrToParams().get(postQuantumCryptoParams.getParameterSet()), "CMCE");
+		return keyEncapsulate(postQuantumCryptoParams, "CMCE");
 	}
 	
 	private String processFileOperationsSignature(PostQuantumCryptoParams postQuantumCryptoParams, byte [] privKeyBytes, byte [] pubKeyBytes, byte [] signatureBytesFile, byte [] signatureBytesTextArea, String fileSpecificName)
@@ -197,32 +204,8 @@ public class PostQuantumCryptoService
 		
 		return retStr;
 	}	
-	
-	private String processFileOperationsKEM(PostQuantumCryptoParams postQuantumCryptoParams, byte [] privKeyBytes, byte [] pubKeyBytes, byte [] encapsulatedKeyBytes, byte [] secretKeyBytes, String fileSpecificName)
-	{
-		String retStr = "";
-		String encapKeyBytesfileName = postQuantumCryptoParams.getWorkingDirectoryPath() + "\\" + postQuantumCryptoParams.getParameterSet() + "_" + fileSpecificName + "_encapsulated_key.bin";
-		String privKeyBytesfileName = postQuantumCryptoParams.getWorkingDirectoryPath() + "\\" + postQuantumCryptoParams.getParameterSet() + "_" + fileSpecificName + "_private_key.bin";
-		String pubKeyBytesfileName = postQuantumCryptoParams.getWorkingDirectoryPath() + "\\" + postQuantumCryptoParams.getParameterSet() + "_" + fileSpecificName + "_public_key.bin";
-		String secretKeyBytesfileName = postQuantumCryptoParams.getWorkingDirectoryPath() + "\\" + postQuantumCryptoParams.getParameterSet() + "_" + fileSpecificName + "_secret_key.bin";
-		
-		Utility.writeBytesToFile(privKeyBytes, privKeyBytesfileName);
-		retStr += privKeyBytes.length + " bytes of Private Key generated and written to --> " + privKeyBytesfileName + "\n";
 
-		Utility.writeBytesToFile(pubKeyBytes, pubKeyBytesfileName);
-		retStr += pubKeyBytes.length + " bytes of Public Key generated and written to --> " + pubKeyBytesfileName + "\n";
-		
-		Utility.writeBytesToFile(encapsulatedKeyBytes, encapKeyBytesfileName);
-		retStr += encapsulatedKeyBytes.length + " bytes of encapsulated Secret Key (Ciphertext) written to --> " + encapKeyBytesfileName + "\n";
-		
-		Utility.writeBytesToFile(secretKeyBytes, secretKeyBytesfileName);
-		retStr += secretKeyBytes.length + " bytes of Secret Key generated and written to --> " + secretKeyBytesfileName + "\n";
-		retStr +="Secret Key (Hex): " + Utility.bytesToHex(secretKeyBytes) + "\n";
-
-		return retStr;
-	}
-
-	private String keyDecapsulateAlgorithm(PostQuantumCryptoParams postQuantumCryptoParams, String algorithm) 
+	private String keyDecapsulate(PostQuantumCryptoParams postQuantumCryptoParams, String algorithm) 
 	{
 		String retStr = "!!! Please Select the Private Key and Encapsulated Key Files !!!!";
 		
@@ -238,21 +221,64 @@ public class PostQuantumCryptoService
 
 	public String keyDecapsulateHQC(PostQuantumCryptoParams postQuantumCryptoParams) 
 	{
-		return keyDecapsulateAlgorithm(postQuantumCryptoParams, "HQC");
+		return keyDecapsulate(postQuantumCryptoParams, "HQC");
 	}
 	
 	public String keyDecapsulateBike(PostQuantumCryptoParams postQuantumCryptoParams) 
 	{
-		return keyDecapsulateAlgorithm(postQuantumCryptoParams, "Bike");
+		return keyDecapsulate(postQuantumCryptoParams, "Bike");
 	}
 
 	public String keyDecapsulateClassicMcEliece(PostQuantumCryptoParams postQuantumCryptoParams) 
 	{
-		return keyDecapsulateAlgorithm(postQuantumCryptoParams, "CMCE");
+		return keyDecapsulate(postQuantumCryptoParams, "CMCE");
 	}
 
 	public String keyDecapsulateKyber(PostQuantumCryptoParams postQuantumCryptoParams) 
 	{
-		return keyDecapsulateAlgorithm(postQuantumCryptoParams, "Kyber");
+		return keyDecapsulate(postQuantumCryptoParams, "Kyber");
+	}
+
+	private String keyPairGenerate(PostQuantumCryptoParams postQuantumCryptoParams, AlgorithmParameterSpec algoSpec, String algorithm) 
+	{
+		keyEncalpsulation.setAlgorithm(algorithm);
+		
+		keyEncalpsulation.generatePublicPrivateKeys(algoSpec);
+		
+		byte[] privateKey = keyEncalpsulation.getPrivateKeyBytes();
+		byte[] publicKey = keyEncalpsulation.getPublicKeyBytes();
+		
+		String retStr = "";
+		String privKeyBytesfileName = postQuantumCryptoParams.getWorkingDirectoryPath() + "\\" + postQuantumCryptoParams.getParameterSet() + "_" + algorithm + "_private_key.bin";
+		String pubKeyBytesfileName = postQuantumCryptoParams.getWorkingDirectoryPath() + "\\" + postQuantumCryptoParams.getParameterSet() + "_" + algorithm + "_public_key.bin";
+		
+		Utility.writeBytesToFile(privateKey, privKeyBytesfileName);
+		retStr += privateKey.length + " bytes of Private Key generated and written to --> " + privKeyBytesfileName + "\n";
+
+		Utility.writeBytesToFile(publicKey, pubKeyBytesfileName);
+		retStr += publicKey.length + " bytes of Public Key generated and written to --> " + pubKeyBytesfileName + "\n";
+		
+		return retStr;
+	}
+	
+	public String keyPairGenerateKyber(PostQuantumCryptoParams postQuantumCryptoParams) 
+	{
+		return keyPairGenerate(postQuantumCryptoParams, AlgorithmParameterSpec algoSpec, "Kyber");
+	}
+
+	public String keyPairGenerateHQC(PostQuantumCryptoParams postQuantumCryptoParams) 
+	{
+		// TODO Auto-generated method stub
+		return "keyPairGenerateHQC";
+	}
+
+	public String keyPairGenerateBike(PostQuantumCryptoParams postQuantumCryptoParams) 
+	{
+		return keyPairGenerate(postQuantumCryptoParams, AlgorithmParameterSpec algoSpec, "Bike");
+	}
+
+	public String keyPairGenerateClassicMceliece(PostQuantumCryptoParams postQuantumCryptoParams) 
+	{
+		return keyPairGenerate(postQuantumCryptoParams, AlgorithmParameterSpec algoSpec, "CMCE");
 	}
 }
