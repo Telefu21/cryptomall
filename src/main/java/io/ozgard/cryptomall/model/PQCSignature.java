@@ -12,25 +12,36 @@ import java.security.PublicKey;
 import java.security.SecureRandom;
 import java.security.Signature;
 import java.security.SignatureException;
+import java.security.spec.AlgorithmParameterSpec;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 
-import org.bouncycastle.pqc.jcajce.spec.FalconParameterSpec;
 import org.springframework.stereotype.Component;
 
 @Component
-public class FalconSignature implements ISignature
+public class PQCSignature 
 {
-	private byte[] privateKeyBytes;
-	private byte[] publicKeyBytes;
+	private byte[] 	privateKeyBytes;
+	private byte[] 	publicKeyBytes;
+	String			algorithm;
 	
-	FalconSignature()
+	PQCSignature()
 	{	
         
 	}
 
-    public byte[] getPrivateKeyBytes() 
+    public String getAlgorithm() 
+    {
+		return algorithm;
+	}
+
+	public void setAlgorithm(String algorithm) 
+	{
+		this.algorithm = algorithm;
+	}
+
+	public byte[] getPrivateKeyBytes() 
     {
 		return privateKeyBytes;
 	}
@@ -50,9 +61,9 @@ public class FalconSignature implements ISignature
 		this.publicKeyBytes = publicKeyBytes;
 	}
 
-	public void generatePublicPrivateKeys(FalconParameterSpec falconParameterSpec)
+	public void generatePublicPrivateKeys(AlgorithmParameterSpec parameterSpec)
     {
-        KeyPair keyPair = generateKeyPair(falconParameterSpec);
+        KeyPair keyPair = generateKeyPair(parameterSpec);
         
         setPrivateKeyBytes(keyPair.getPrivate().getEncoded());
         setPublicKeyBytes(keyPair.getPublic().getEncoded());
@@ -82,17 +93,17 @@ public class FalconSignature implements ISignature
         return pqcVerification(publicKeyLoad, data, signature);
     }
 
-    private KeyPair generateKeyPair(FalconParameterSpec falconParameterSpec) 
+    private KeyPair generateKeyPair(AlgorithmParameterSpec parameterSpec) 
     {
         try 
         {
             SecureRandom sr = new SecureRandom();
-            KeyPairGenerator kpg = KeyPairGenerator.getInstance("Falcon", "BCPQC");
-            kpg.initialize(falconParameterSpec, sr);
+            KeyPairGenerator kpg = KeyPairGenerator.getInstance(algorithm, "BCPQC");
+            kpg.initialize(parameterSpec, sr);
             
             return kpg.generateKeyPair();
         } 
-        catch (NoSuchAlgorithmException | NoSuchProviderException | InvalidAlgorithmParameterException e) 
+        catch (NoSuchAlgorithmException | InvalidAlgorithmParameterException | NoSuchProviderException e) 
         {
             e.printStackTrace();
             return null;
@@ -106,7 +117,7 @@ public class FalconSignature implements ISignature
         
         try 
         {
-            keyFactory = KeyFactory.getInstance("Falcon", "BCPQC");
+            keyFactory = KeyFactory.getInstance(algorithm, "BCPQC");
             return keyFactory.generatePrivate(pkcs8EncodedKeySpec);
         } 
         catch (NoSuchAlgorithmException | NoSuchProviderException | InvalidKeySpecException e) 
@@ -122,7 +133,7 @@ public class FalconSignature implements ISignature
         {
         	X509EncodedKeySpec x509EncodedKeySpec = new X509EncodedKeySpec(encodedKey);
         	
-            KeyFactory keyFactory = KeyFactory.getInstance("Falcon", "BCPQC");
+            KeyFactory keyFactory = KeyFactory.getInstance(algorithm, "BCPQC");
             
             return keyFactory.generatePublic(x509EncodedKeySpec);
         } 
@@ -137,7 +148,7 @@ public class FalconSignature implements ISignature
     {
         try 
         {
-            Signature sig = Signature.getInstance("Falcon", "BCPQC");
+            Signature sig = Signature.getInstance(algorithm, "BCPQC");
             sig.initSign((PrivateKey) privateKey, new SecureRandom());
             sig.update(dataToSign, 0, dataToSign.length);
             byte[] signature = sig.sign();
@@ -154,7 +165,7 @@ public class FalconSignature implements ISignature
     {
         try 
         {
-            Signature sig = Signature.getInstance("Falcon", "BCPQC");
+            Signature sig = Signature.getInstance(algorithm, "BCPQC");
             sig.initVerify((PublicKey) publicKey);
             sig.update(dataToSign, 0, dataToSign.length);
             boolean result = sig.verify(signature);

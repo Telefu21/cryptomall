@@ -8,11 +8,9 @@ import org.bouncycastle.pqc.jcajce.provider.BouncyCastlePQCProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import io.ozgard.cryptomall.model.CrystalsDilithiumSignature;
-import io.ozgard.cryptomall.model.FalconSignature;
-import io.ozgard.cryptomall.model.ISignature;
 import io.ozgard.cryptomall.model.PQCKeyEncalpsulation;
-import io.ozgard.cryptomall.model.SphincsSignature;
+import io.ozgard.cryptomall.model.PQCKeyEncalpsulationHQC;
+import io.ozgard.cryptomall.model.PQCSignature;
 import io.ozgard.cryptomall.params.PostQuantumCryptoParams;
 import io.ozgard.cryptomall.utility.Utility;
 
@@ -34,13 +32,11 @@ import io.ozgard.cryptomall.utility.Utility;
 public class PostQuantumCryptoService 
 {
 	@Autowired
-	CrystalsDilithiumSignature crystalsDilithiumSignature;
-	@Autowired
-	FalconSignature falconSignature;
-	@Autowired
-	SphincsSignature sphincsSignature;
-	@Autowired
 	PQCKeyEncalpsulation keyEncalpsulation;
+	@Autowired
+	PQCKeyEncalpsulationHQC keyEncalpsulationHqc;
+	@Autowired
+	PQCSignature pqcSignature;
 	
 	public PostQuantumCryptoService() 
 	{
@@ -53,43 +49,46 @@ public class PostQuantumCryptoService
 
 	public String signatureGenerateDilithium(PostQuantumCryptoParams postQuantumCryptoParams) 
 	{
-		crystalsDilithiumSignature.generatePublicPrivateKeys(postQuantumCryptoParams.getDilithiumStrToParams().get(postQuantumCryptoParams.getParameterSet()));
+		pqcSignature.setAlgorithm("Dilithium");
+		pqcSignature.generatePublicPrivateKeys(postQuantumCryptoParams.getDilithiumStrToParams().get(postQuantumCryptoParams.getParameterSet()));
 		
-		return generateSignature(crystalsDilithiumSignature, postQuantumCryptoParams, "Dilithium");
+		return generateSignature(postQuantumCryptoParams, "Dilithium");
 	}
 
 	public String signatureGenerateFalcon(PostQuantumCryptoParams postQuantumCryptoParams) 
 	{
-		falconSignature.generatePublicPrivateKeys(postQuantumCryptoParams.getFalconStrToParams().get(postQuantumCryptoParams.getParameterSet()));
+		pqcSignature.setAlgorithm("Falcon");
+		pqcSignature.generatePublicPrivateKeys(postQuantumCryptoParams.getFalconStrToParams().get(postQuantumCryptoParams.getParameterSet()));
 		
-		return generateSignature(falconSignature, postQuantumCryptoParams, "Falcon");
+		return generateSignature(postQuantumCryptoParams, "Falcon");
 	}
 
 	public String signatureGenerateSphincs(PostQuantumCryptoParams postQuantumCryptoParams) 
 	{
-		sphincsSignature.generatePublicPrivateKeys(postQuantumCryptoParams.getSphincsStrToParams().get(postQuantumCryptoParams.getParameterSet()));
+		pqcSignature.setAlgorithm("SPHINCSPlus");
+		pqcSignature.generatePublicPrivateKeys(postQuantumCryptoParams.getSphincsStrToParams().get(postQuantumCryptoParams.getParameterSet()));
 		
-		return generateSignature(sphincsSignature, postQuantumCryptoParams, "Sphincs");
+		return generateSignature(postQuantumCryptoParams, "SPHINCSPlus");
 	}
 	
-	private String generateSignature(ISignature sigAlgoRef, PostQuantumCryptoParams postQuantumCryptoParams, String algoName)
+	private String generateSignature(PostQuantumCryptoParams postQuantumCryptoParams, String algoName)
 	{
-		byte [] privKeyBytes = sigAlgoRef.getPrivateKeyBytes();
+		byte [] privKeyBytes = pqcSignature.getPrivateKeyBytes();
 		
-		byte [] pubKeyBytes = sigAlgoRef.getPublicKeyBytes();
+		byte [] pubKeyBytes = pqcSignature.getPublicKeyBytes();
 		
 		byte [] signatureBytesFile = null;
 		
 		if(postQuantumCryptoParams.getInputFileBytes() !=  null)
 		{
-			signatureBytesFile = sigAlgoRef.generateSignature(postQuantumCryptoParams.getInputFileBytes(), privKeyBytes);
+			signatureBytesFile = pqcSignature.generateSignature(postQuantumCryptoParams.getInputFileBytes(), privKeyBytes);
 		}
 		
 		byte [] signatureBytesTextArea = null;
 		
 		if(postQuantumCryptoParams.getTextAreaBytes() !=  null)
 		{
-			signatureBytesTextArea = sigAlgoRef.generateSignature(postQuantumCryptoParams.getTextAreaBytes(), privKeyBytes);
+			signatureBytesTextArea = pqcSignature.generateSignature(postQuantumCryptoParams.getTextAreaBytes(), privKeyBytes);
 		}
 
 		return processFileOperationsSignature(postQuantumCryptoParams, privKeyBytes, pubKeyBytes, signatureBytesFile, signatureBytesTextArea, algoName);
@@ -97,20 +96,23 @@ public class PostQuantumCryptoService
 
 	public String signatureVerifyDilithium(PostQuantumCryptoParams postQuantumCryptoParams) 
 	{
-		return verifySignature(crystalsDilithiumSignature, postQuantumCryptoParams, "Dilithium");
+		pqcSignature.setAlgorithm("Dilithium");
+		return verifySignature(postQuantumCryptoParams, "Dilithium");
 	}
 
 	public String signatureVerifyFalcon(PostQuantumCryptoParams postQuantumCryptoParams) 
 	{
-		return verifySignature(falconSignature, postQuantumCryptoParams, "Falcon");
+		pqcSignature.setAlgorithm("Falcon");
+		return verifySignature(postQuantumCryptoParams, "Falcon");
 	}
 
 	public String signatureVerifySphincs(PostQuantumCryptoParams postQuantumCryptoParams) 
 	{
-		return verifySignature(sphincsSignature, postQuantumCryptoParams, "Sphincs");
+		pqcSignature.setAlgorithm("SPHINCSPlus");
+		return verifySignature(postQuantumCryptoParams, "SPHINCSPlus");
 	}
 	
-	private String verifySignature(ISignature sigAlgoRef, PostQuantumCryptoParams postQuantumCryptoParams, String algoName)
+	private String verifySignature(PostQuantumCryptoParams postQuantumCryptoParams, String algoName)
 	{
 		String retStr = null;
 		
@@ -119,7 +121,7 @@ public class PostQuantumCryptoService
 			return "!!! Error: Select all the files needed for verification !!!";
 		}
 		
-		boolean isVerified = sigAlgoRef.verifySignature(postQuantumCryptoParams.getInputFileBytes(), postQuantumCryptoParams.getSignatureFileBytes(), postQuantumCryptoParams.getPublicKeyFileBytes());
+		boolean isVerified = pqcSignature.verifySignature(postQuantumCryptoParams.getInputFileBytes(), postQuantumCryptoParams.getSignatureFileBytes(), postQuantumCryptoParams.getPublicKeyFileBytes());
 		
 		if(isVerified == true)
 		{
@@ -134,17 +136,29 @@ public class PostQuantumCryptoService
 		return retStr;
 	}
 
-	public String keyEncapsulate(PostQuantumCryptoParams postQuantumCryptoParams, String algorithm) 
+	private String keyEncapsulate(PostQuantumCryptoParams postQuantumCryptoParams, String algorithm) 
 	{
+		byte[] secretKey = null;
+		byte[] encapsulatedKey =null;
+		
 		String retStr = "";
 		String encapKeyBytesfileName = postQuantumCryptoParams.getWorkingDirectoryPath() + "\\" + postQuantumCryptoParams.getParameterSet() + "_" + algorithm + "_encapsulated_key.bin";
 		String secretKeyBytesfileName = postQuantumCryptoParams.getWorkingDirectoryPath() + "\\" + postQuantumCryptoParams.getParameterSet() + "_" + algorithm + "_secret_key.bin";
 		
-		keyEncalpsulation.setAlgorithm(algorithm);
+		if(algorithm != "HQC")
+		{
+			keyEncalpsulation.setAlgorithm(algorithm);
+			
+			secretKey = keyEncalpsulation.pqcGenerateKEMEncryptionKey(keyEncalpsulation.getPublicKeyFromEncoded(postQuantumCryptoParams.getInputFileBytes()));
+	        encapsulatedKey = keyEncalpsulation.getEncapsulation();
+		}
 		
-		byte[] secretKey = keyEncalpsulation.pqcGenerateKEMEncryptionKey(keyEncalpsulation.getPublicKeyFromEncoded(postQuantumCryptoParams.getInputFileBytes()));
-        byte[] encapsulatedKey = keyEncalpsulation.getEncapsulation();
-       
+		if(algorithm == "HQC")
+		{			
+			secretKey = keyEncalpsulationHqc.pqcGenerateKEMEncryptionKey(keyEncalpsulationHqc.getPublicKeyFromEncoded(postQuantumCryptoParams.getInputFileBytes(), postQuantumCryptoParams.getHqcStrToParams().get(postQuantumCryptoParams.getParameterSet())));
+	        encapsulatedKey = keyEncalpsulationHqc.getEncapsulation();
+		}
+		
 		Utility.writeBytesToFile(encapsulatedKey, encapKeyBytesfileName);
 		retStr += encapsulatedKey.length + " bytes of encapsulated Secret Key (Ciphertext) written to --> " + encapKeyBytesfileName + "\n";
 		
@@ -162,8 +176,7 @@ public class PostQuantumCryptoService
 
 	public String keyEncapsulateHQC(PostQuantumCryptoParams postQuantumCryptoParams) 
 	{
-		// TODO Auto-generated method stub
-		return "keyEncapsulateHQC";
+		return keyEncapsulate(postQuantumCryptoParams, "HQC");
 	}
 
 	public String keyEncapsulateBike(PostQuantumCryptoParams postQuantumCryptoParams) 
@@ -213,7 +226,15 @@ public class PostQuantumCryptoService
 		
 		if(postQuantumCryptoParams.getInputFileBytes() !=  null && postQuantumCryptoParams.getPublicKeyFileBytes() !=  null)
 		{
-			retStr = "Decapsulated Secret Key (Hex): " + Utility.bytesToHex(keyEncalpsulation.pqcGenerateKEMDecryptionKey(keyEncalpsulation.getPrivateKeyFromEncoded(postQuantumCryptoParams.getInputFileBytes()), postQuantumCryptoParams.getPublicKeyFileBytes())) + "\n";
+			if(algorithm == "HQC")
+			{
+				retStr = "Decapsulated Secret Key (Hex): " + Utility.bytesToHex(keyEncalpsulationHqc.pqcGenerateKEMDecryptionKey(keyEncalpsulationHqc.getPrivateKeyFromEncoded(postQuantumCryptoParams.getInputFileBytes(), postQuantumCryptoParams.getHqcStrToParams().get(postQuantumCryptoParams.getParameterSet())), postQuantumCryptoParams.getPublicKeyFileBytes())) + "\n";
+			}
+			
+			if(algorithm != "HQC")
+			{
+				retStr = "Decapsulated Secret Key (Hex): " + Utility.bytesToHex(keyEncalpsulation.pqcGenerateKEMDecryptionKey(keyEncalpsulation.getPrivateKeyFromEncoded(postQuantumCryptoParams.getInputFileBytes()), postQuantumCryptoParams.getPublicKeyFileBytes())) + "\n";
+			}
 		}
 		
 		return retStr;
@@ -241,12 +262,26 @@ public class PostQuantumCryptoService
 
 	private String keyPairGenerate(PostQuantumCryptoParams postQuantumCryptoParams, AlgorithmParameterSpec algoSpec, String algorithm) 
 	{
-		keyEncalpsulation.setAlgorithm(algorithm);
+		byte[] privateKey = null;
+		byte[] publicKey = null;
 		
-		keyEncalpsulation.generatePublicPrivateKeys(algoSpec);
+		if(algorithm != "HQC")
+		{
+			keyEncalpsulation.setAlgorithm(algorithm);
+			
+			keyEncalpsulation.generatePublicPrivateKeys(algoSpec);
+			
+			privateKey = keyEncalpsulation.getPrivateKeyBytes();
+			publicKey = keyEncalpsulation.getPublicKeyBytes();
+		}
 		
-		byte[] privateKey = keyEncalpsulation.getPrivateKeyBytes();
-		byte[] publicKey = keyEncalpsulation.getPublicKeyBytes();
+		if(algorithm == "HQC")
+		{
+			keyEncalpsulationHqc.generatePublicPrivateKeys(postQuantumCryptoParams.getHqcStrToParams().get(postQuantumCryptoParams.getParameterSet()));
+			
+			privateKey = keyEncalpsulationHqc.getPrivateKeyBytes();
+			publicKey = keyEncalpsulationHqc.getPublicKeyBytes();
+		}
 		
 		String retStr = "";
 		String privKeyBytesfileName = postQuantumCryptoParams.getWorkingDirectoryPath() + "\\" + postQuantumCryptoParams.getParameterSet() + "_" + algorithm + "_private_key.bin";
@@ -263,22 +298,21 @@ public class PostQuantumCryptoService
 	
 	public String keyPairGenerateKyber(PostQuantumCryptoParams postQuantumCryptoParams) 
 	{
-		return keyPairGenerate(postQuantumCryptoParams, AlgorithmParameterSpec algoSpec, "Kyber");
+		return keyPairGenerate(postQuantumCryptoParams, postQuantumCryptoParams.getKyberStrToParams().get(postQuantumCryptoParams.getParameterSet()), "Kyber");
 	}
 
 	public String keyPairGenerateHQC(PostQuantumCryptoParams postQuantumCryptoParams) 
 	{
-		// TODO Auto-generated method stub
-		return "keyPairGenerateHQC";
+		return keyPairGenerate(postQuantumCryptoParams, null, "HQC");
 	}
 
 	public String keyPairGenerateBike(PostQuantumCryptoParams postQuantumCryptoParams) 
 	{
-		return keyPairGenerate(postQuantumCryptoParams, AlgorithmParameterSpec algoSpec, "Bike");
+		return keyPairGenerate(postQuantumCryptoParams, postQuantumCryptoParams.getBikeStrToParams().get(postQuantumCryptoParams.getParameterSet()), "Bike");
 	}
 
 	public String keyPairGenerateClassicMceliece(PostQuantumCryptoParams postQuantumCryptoParams) 
 	{
-		return keyPairGenerate(postQuantumCryptoParams, AlgorithmParameterSpec algoSpec, "CMCE");
+		return keyPairGenerate(postQuantumCryptoParams, postQuantumCryptoParams.getMecelieceStrToParams().get(postQuantumCryptoParams.getParameterSet()), "CMCE");
 	}
 }

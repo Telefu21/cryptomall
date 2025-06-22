@@ -1903,7 +1903,7 @@ public class MainSceneController implements Initializable
 	{
 		disableAllWidgetsPQCKeyEn();
 		
-		buttonPQCGenerateVerifyExchange.setText("Start Key Encapsulation");
+		buttonPQCGenerateVerifyExchange.setText("Generate Key Pair");
 
 		radioButtonPQCToggle(radioButtonPQCKyber);
 		
@@ -1915,7 +1915,7 @@ public class MainSceneController implements Initializable
 	{
 		disableAllWidgetsPQCKeyEn();
 		
-		buttonPQCGenerateVerifyExchange.setText("Start Key Encapsulation");
+		buttonPQCGenerateVerifyExchange.setText("Generate Key Pair");
 
 		radioButtonPQCToggle(radioButtonPQCHQC);
 		
@@ -1927,7 +1927,7 @@ public class MainSceneController implements Initializable
 	{
 		disableAllWidgetsPQCKeyEn();
 		
-		buttonPQCGenerateVerifyExchange.setText("Start Key Encapsulation");
+		buttonPQCGenerateVerifyExchange.setText("Generate Key Pair");
 		
 		radioButtonPQCToggle(radioButtonPQCBike);
 		
@@ -1939,7 +1939,7 @@ public class MainSceneController implements Initializable
 	{
 		disableAllWidgetsPQCKeyEn();
 		
-		buttonPQCGenerateVerifyExchange.setText("Start Key Encapsulation");
+		buttonPQCGenerateVerifyExchange.setText("Generate Key Pair");
 		
 		radioButtonPQCToggle(radioButtonPQCClassicMceliece);
 		
