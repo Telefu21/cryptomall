@@ -472,7 +472,7 @@ public class MainSceneController implements Initializable
 		comboEncryptDecyptHashFunction.setItems(FXCollections.observableArrayList(hashList));
 		comboEncryptDecyptHashFunction.setValue(hashList[0]);
 		comboSignVerifyHashFunction.setItems(FXCollections.observableArrayList(hashList));
-		comboSignVerifyHashFunction.setValue(hashList[0]);
+		comboSignVerifyHashFunction.setValue(hashList[11]);
 		comboCertEndEntityHashFunction.setItems(FXCollections.observableArrayList(hashList));
 		comboCertEndEntityHashFunction.setValue(hashList[11]);
 		comboCertIntermediateHashFunction.setItems(FXCollections.observableArrayList(hashList));
@@ -1093,7 +1093,7 @@ public class MainSceneController implements Initializable
 		keygenParams.setKeyGenAlgo(comboKeyGenAlgSelect.getValue());
 		keygenParams.setKeyLength(comboKeyGenKeyLength.getValue());
 		
-		keygenParams.setInputFilePath("\"" + textFieldWorkingDirectory.getText() + "\\" + comboKeyGenAlgSelect.getValue().toLowerCase() + "_privkey" + "." + comboKeyGenKeyFileFormat.getValue().toLowerCase() + "\"");
+		keygenParams.setInputFilePath("\"" + textFieldWorkingDirectory.getText() + "\\" + comboKeyGenAlgSelect.getValue().toLowerCase() + "_privkey_" + LocalTime.now().getHour() + "-" + LocalTime.now().getMinute()+ "-" + LocalTime.now().getSecond() + "." + comboKeyGenKeyFileFormat.getValue().toLowerCase() + "\"");
 		keygenParams.setOutputFilePath(keygenParams.getInputFilePath());
 		
 		setLogOutput(openSslService.keyGenerate(keygenParams));
@@ -1208,7 +1208,7 @@ public class MainSceneController implements Initializable
 				keygenParams.setInKeyFileFormat(KeyGenerateParams.KEYGEN_FILE_FORMAT_SELECT_DER);
 				keygenParams.setOutKeyFileFormat(KeyGenerateParams.KEYGEN_FILE_FORMAT_SELECT_PEM);
 				
-				setLogOutput(openSslService.convertFilePemDer(keygenParams));
+				setLogOutput(openSslService.convertFilePemDer(keygenParams) );
 				break;
 				
 			case KeyGenerateParams.KEYGEN_CONVERT_PEM_TO_DER:

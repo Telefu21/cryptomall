@@ -149,14 +149,16 @@ public class OpenSslService
 		if(keygenParams.getKeyGenAlgo().compareTo(KeyGenerateParams.KEYGEN_ALGO_SELECT_DH) == 0
 		|| keygenParams.getKeyGenAlgo().compareTo(KeyGenerateParams.KEYGEN_ALGO_SELECT_DSA) == 0)
 		{
-			cmdRetStr = paramFileGenerate(keygenParams);
+			cmdRetStr += paramFileGenerate(keygenParams);
 			
 			cmdRetStr += privKeyGenerate(keygenParams);
 		}
 		else
 		{
-			cmdRetStr = privKeyGenerate(keygenParams);
+			cmdRetStr += privKeyGenerate(keygenParams);
 		}
+
+		cmdRetStr += "Private Key file generated and written to --> " + keygenParams.getOutputFilePath() + "\n";
 		
 		return cmdRetStr;
 	}
@@ -261,6 +263,8 @@ public class OpenSslService
 		
 		String cmdRetStr = clProcess.runCommand();
 		
+		cmdRetStr += "\n" + "Converted file save to --> " + keygenParams.getOutputFilePath() + "\n";
+		
 		clProcess.clearCommandLineStr();
 		
 		return cmdRetStr;
@@ -281,6 +285,8 @@ public class OpenSslService
 		
 		String cmdRetStr = clProcess.runCommand();
 		
+		cmdRetStr += "\n" + "Converted file saved to --> " + keygenParams.getOutputFilePath() + "\n";
+		
 		clProcess.clearCommandLineStr();
 		
 		return cmdRetStr;
@@ -300,6 +306,8 @@ public class OpenSslService
 		
 		clProcess.clearCommandLineStr();
 		
+		cmdRetStr += "\n" + "Converted file saved to --> " + keygenParams.getOutputFilePath() + "\n";
+		
 		return cmdRetStr;
 	}
 	
@@ -313,6 +321,8 @@ public class OpenSslService
 		clProcess.addCommandLineStr(keygenParams.getInputFilePath());
 		
 		String cmdRetStr = clProcess.runCommand();
+		
+		cmdRetStr += "\n" + "Converted file saved to --> " + keygenParams.getOutputFilePath() + "\n";
 		
 		clProcess.clearCommandLineStr();
 		
@@ -609,7 +619,9 @@ public class OpenSslService
 			clProcess.addCommandLineStr("-safe"); 
 		}
 		
-		String cmdRetStr = clProcess.runCommand();
+		String  cmdRetStr = "Generated Prime Number: \n";
+		
+		cmdRetStr += clProcess.runCommand();
 		
 		clProcess.clearCommandLineStr();
 		
@@ -638,6 +650,8 @@ public class OpenSslService
 		
 		String cmdRetStr = clProcess.runCommand();
 		
+		cmdRetStr += "Signature file saved to --> " + signVerifyPrimeParams.getOutputFilePath();
+		
 		clProcess.clearCommandLineStr();
 		
 		return cmdRetStr;
@@ -663,7 +677,8 @@ public class OpenSslService
 		clProcess.addCommandLineStr(signVerifyPrimeParams.getSignatureFilePath());
 		clProcess.addCommandLineStr(signVerifyPrimeParams.getInputFilePath());
 		
-		String cmdRetStr = clProcess.runCommand();
+		String cmdRetStr = "Verification Result: \n";
+		cmdRetStr += clProcess.runCommand();
 		
 		clProcess.clearCommandLineStr();
 		
@@ -894,7 +909,7 @@ public class OpenSslService
 			e.printStackTrace();
 		}
 		
-		return (rootCertLogStr + "\n" + intermediateCertLogStr + "\n" + endEntityCertLogStr + "\n");
+		return (rootCertLogStr + intermediateCertLogStr + endEntityCertLogStr);
 	}
 	
 	private String generateCsr(String keyFileName, String csrFileName, String subjectAttribute) 
@@ -910,6 +925,8 @@ public class OpenSslService
 		clProcess.addCommandLineStr(subjectAttribute); 
 		
 		String cmdRetStr = clProcess.runCommand();
+		
+		cmdRetStr += "Csr file saved to --> " + csrFileName + "\n";
 		
 		clProcess.clearCommandLineStr();
 		
@@ -951,6 +968,8 @@ public class OpenSslService
 		clProcess.addCommandLineStr("-notext");
 			
 		String cmdRetStr = clProcess.runAndConfirmCommand();
+		
+		cmdRetStr += "Certificate file saved to --> " + certFileName + "\n";
 		
 		clProcess.clearCommandLineStr();
 		
