@@ -1416,18 +1416,18 @@ public class MainSceneController implements Initializable
 				break;
 				
 			case EncryptDecryptParams.ENCRYPT_DECRYPT_TYPE_GENERATE_HASH:
-				outputStr = "Hash of Iput Data: (" + encryptDecryptParams.getHashFunction().replaceAll(" ", "") + ") " + outputStr.split("=")[1];
+				outputStr = "Hash of Data: " + outputStr;
 				break;
 				
 			case EncryptDecryptParams.ENCRYPT_DECRYPT_TYPE_GENERATE_CMAC:
 				if(outputStr.contains("="))
 				{
-					outputStr = "CMAC of Iput Data: (" + encryptDecryptParams.getHashFunction().replaceAll(" ", "") + "&" + encryptDecryptParams.getCipher().replaceAll(" ", "") + ") " + outputStr.split("=")[1];
+					outputStr = "CMAC of Data: (" + encryptDecryptParams.getHashFunction().replaceAll(" ", "") + "&" + encryptDecryptParams.getCipher().replaceAll(" ", "") + ") " + outputStr;
 				}
 				break;
 				
 			case EncryptDecryptParams.ENCRYPT_DECRYPT_TYPE_GENERATE_HMAC:
-				outputStr = "HMAC of Iput Data: (" + encryptDecryptParams.getHashFunction().replaceAll(" ", "") + ") " + outputStr.split("=")[1];
+				outputStr = "HMAC of Data: " + outputStr;
 				break;
 		}
 		
@@ -2033,7 +2033,7 @@ public class MainSceneController implements Initializable
 	
 	void setLogOutput(String text)
 	{
-		texAreaLogOutput.setText(texAreaLogOutput.getText() +  "------------- [" + LocalDate.now() + " Time: " + LocalTime.now() + " ] ------------- \n\n" + text + "\n\n" );
+		texAreaLogOutput.setText(texAreaLogOutput.getText() +  "------------- [" + LocalDate.now() + " Time: " + LocalTime.now().getHour() + ":" + LocalTime.now().getMinute() +" ] ------------- \n\n" + text + "\n\n" );
 		texAreaLogOutput.setScrollTop(Double.MAX_VALUE);
 	}
 }

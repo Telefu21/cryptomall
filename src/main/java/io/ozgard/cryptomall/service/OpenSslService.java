@@ -593,7 +593,7 @@ public class OpenSslService
 			passwdLen = 32;
 		}
 
-		if(encryptDecryptParams.getPassPhrase().length() == passwdLen)
+		if(encryptDecryptParams.getPassPhrase().length() == (2 * passwdLen)) // Hex input 2 digit corresponds to 1 number
 		{
 			return 0;
 		}
