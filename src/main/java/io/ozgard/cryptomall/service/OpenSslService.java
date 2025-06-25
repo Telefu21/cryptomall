@@ -1033,4 +1033,10 @@ public class OpenSslService
 		
 		return cmdRetStr;
 	}
+
+	public boolean isOpensslInstalled() 
+	{
+		// TODO Auto-generated method stub
+		return false;
+	}
 }

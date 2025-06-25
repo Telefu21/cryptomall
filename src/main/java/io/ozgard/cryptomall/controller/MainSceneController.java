@@ -28,6 +28,8 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
@@ -54,6 +56,8 @@ import net.rgielen.fxweaver.core.FxmlView;
 public class MainSceneController implements Initializable
 {
 	private static Stage stage = null;
+	
+	boolean opensslInstalled = false;
 	
 	@Autowired
 	private OpenSslService openSslService;
@@ -397,6 +401,9 @@ public class MainSceneController implements Initializable
 	@FXML
 	@Autowired
 	CheckBox checkBoxPQCKeygen;
+	@FXML
+	@Autowired
+	Button buttonClearTextArea;
 	
 	TableColumn<CertificateParams, String> tableColumnCertificateElementsName;
 	TableColumn<CertificateParams, String> tableColumnRootCertificate;
@@ -417,6 +424,13 @@ public class MainSceneController implements Initializable
 	@Override
 	public void initialize(URL location, ResourceBundle resources) 
 	{	
+		opensslInstalled = openSslService.isOpensslInstalled();
+		
+		if(opensslInstalled == false)
+		{
+			lauchWarningAlertPopUp("Warning", "Caution!", "!!! No OpenSssl installation dedected. \n Application will be launched with \n restiricted functionality, \n some tabs will be disabled !!!");
+		}
+		
 		comboKeyGenKeyFileFormat.setItems(FXCollections.observableArrayList(KeyGenerateParams.KEYGEN_FILE_FORMAT_SELECT_PEM, KeyGenerateParams.KEYGEN_FILE_FORMAT_SELECT_DER));
 		comboKeyGenKeyFileFormat.setValue(KeyGenerateParams.KEYGEN_FILE_FORMAT_SELECT_PEM);
 		comboKeyGenAlgSelect.setItems(FXCollections.observableArrayList(KeyGenerateParams.KEYGEN_ALGO_SELECT_RSA, KeyGenerateParams.KEYGEN_ALGO_SELECT_ECC, 
@@ -458,27 +472,30 @@ public class MainSceneController implements Initializable
 		checkBoxKeyGenEncryptKeyFile.setSelected(false);
 		checkBoxEncryptDecryptBinaryOutput.setVisible(false);
 		
-		String [] ecList = openSslService.getListElipticCurveName();
-		comboKeygenElipticCurveName.setItems(FXCollections.observableArrayList(ecList));
-		comboKeygenElipticCurveName.setValue(ecList[0]);
-		
-		String [] cipherList = openSslService.getListCiphers();
-		comboKeyGenFileEncyptCipher.setItems(FXCollections.observableArrayList(cipherList));
-		comboKeyGenFileEncyptCipher.setValue(cipherList[0]);
-		comboEncryptDecryptCipher.setItems(FXCollections.observableArrayList(cipherList));
-		comboEncryptDecryptCipher.setValue(cipherList[0]);
-		
-		String [] hashList = openSslService.getListHashFuncs();
-		comboEncryptDecyptHashFunction.setItems(FXCollections.observableArrayList(hashList));
-		comboEncryptDecyptHashFunction.setValue(hashList[0]);
-		comboSignVerifyHashFunction.setItems(FXCollections.observableArrayList(hashList));
-		comboSignVerifyHashFunction.setValue(hashList[11]);
-		comboCertEndEntityHashFunction.setItems(FXCollections.observableArrayList(hashList));
-		comboCertEndEntityHashFunction.setValue(hashList[11]);
-		comboCertIntermediateHashFunction.setItems(FXCollections.observableArrayList(hashList));
-		comboCertIntermediateHashFunction.setValue(hashList[11]);
-		comboCertRootHashFunction.setItems(FXCollections.observableArrayList(hashList));
-		comboCertRootHashFunction.setValue(hashList[11]);
+		if(opensslInstalled == true)
+		{
+			String [] ecList = openSslService.getListElipticCurveName();
+			comboKeygenElipticCurveName.setItems(FXCollections.observableArrayList(ecList));
+			comboKeygenElipticCurveName.setValue(ecList[0]);
+			
+			String [] cipherList = openSslService.getListCiphers();
+			comboKeyGenFileEncyptCipher.setItems(FXCollections.observableArrayList(cipherList));
+			comboKeyGenFileEncyptCipher.setValue(cipherList[0]);
+			comboEncryptDecryptCipher.setItems(FXCollections.observableArrayList(cipherList));
+			comboEncryptDecryptCipher.setValue(cipherList[0]);
+			
+			String [] hashList = openSslService.getListHashFuncs();
+			comboEncryptDecyptHashFunction.setItems(FXCollections.observableArrayList(hashList));
+			comboEncryptDecyptHashFunction.setValue(hashList[0]);
+			comboSignVerifyHashFunction.setItems(FXCollections.observableArrayList(hashList));
+			comboSignVerifyHashFunction.setValue(hashList[11]);
+			comboCertEndEntityHashFunction.setItems(FXCollections.observableArrayList(hashList));
+			comboCertEndEntityHashFunction.setValue(hashList[11]);
+			comboCertIntermediateHashFunction.setItems(FXCollections.observableArrayList(hashList));
+			comboCertIntermediateHashFunction.setValue(hashList[11]);
+			comboCertRootHashFunction.setItems(FXCollections.observableArrayList(hashList));
+			comboCertRootHashFunction.setValue(hashList[11]);
+		}
 		
 		tabKeyGenerate.setDisable(true);
 		tabEncryptDecrypt.setDisable(true);
@@ -581,11 +598,16 @@ public class MainSceneController implements Initializable
 		if (selectedDirectory != null) 
         {
 			textFieldWorkingDirectory.setText(selectedDirectory.getAbsolutePath());
-			tabKeyGenerate.setDisable(false);
-			tabEncryptDecrypt.setDisable(false);
-			tabSignVerify.setDisable(false);
+			
+			if(opensslInstalled == true)
+			{
+				tabKeyGenerate.setDisable(false);
+				tabEncryptDecrypt.setDisable(false);
+				tabSignVerify.setDisable(false);
+				tabCertificateProcessing.setDisable(false);
+			}
+			
 			tabHexViewCrc.setDisable(false);
-			tabCertificateProcessing.setDisable(false);
 			tabPQC.setDisable(false);
         }
 	}
@@ -2035,5 +2057,21 @@ public class MainSceneController implements Initializable
 	{
 		texAreaLogOutput.setText(texAreaLogOutput.getText() +  "------------- [" + LocalDate.now() + " Time: " + LocalTime.now().getHour() + ":" + LocalTime.now().getMinute() +" ] ------------- \n\n" + text + "\n\n" );
 		texAreaLogOutput.setScrollTop(Double.MAX_VALUE);
+	}
+	
+	@FXML
+	void buttonClearTextAreaOnMouseClicked()
+	{
+		texAreaLogOutput.setText("");
+	}
+	
+	void lauchWarningAlertPopUp(String title, String headerText, String contentText)
+	{
+		Alert alert = new Alert(AlertType.WARNING);
+		alert.setTitle(title);
+		alert.setHeaderText(headerText);
+		alert.setContentText(contentText);
+		
+		alert.showAndWait();
 	}
 }
