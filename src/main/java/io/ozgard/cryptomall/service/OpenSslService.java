@@ -1033,10 +1033,21 @@ public class OpenSslService
 		
 		return cmdRetStr;
 	}
-
+	
 	public boolean isOpensslInstalled() 
 	{
-		// TODO Auto-generated method stub
-		return false;
+		clProcess.addCommandLineStr("openssl"); 
+		clProcess.addCommandLineStr("version");
+		
+		String cmdRetStr = clProcess.runCommand();
+		
+		clProcess.clearCommandLineStr();
+		
+		if(cmdRetStr.toLowerCase().contains("not recognized") == true)
+		{
+			return false;
+		}
+
+		return true;
 	}
 }

@@ -2055,7 +2055,7 @@ public class MainSceneController implements Initializable
 	
 	void setLogOutput(String text)
 	{
-		texAreaLogOutput.setText(texAreaLogOutput.getText() +  "------------- [" + LocalDate.now() + " Time: " + LocalTime.now().getHour() + ":" + LocalTime.now().getMinute() +" ] ------------- \n\n" + text + "\n\n" );
+		texAreaLogOutput.setText(texAreaLogOutput.getText() +  "------------- [" + LocalDate.now() + " Time: " + LocalTime.now().getHour() + ":" + LocalTime.now().getMinute() + ":" + LocalTime.now().getSecond() +" ] ------------- \n\n" + text + "\n\n" );
 		texAreaLogOutput.setScrollTop(Double.MAX_VALUE);
 	}
 	
