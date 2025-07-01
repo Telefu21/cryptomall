@@ -163,7 +163,7 @@ public class PostQuantumCryptoService
 			}
 			
 			Utility.writeBytesToFile(encapsulatedKey, encapKeyBytesfileName);
-			retStr += encapsulatedKey.length + " bytes of encapsulated Secret Key (Ciphertext) written to --> " + encapKeyBytesfileName + "\n";
+			retStr = encapsulatedKey.length + " bytes of encapsulated Secret Key (Ciphertext) written to --> " + encapKeyBytesfileName + "\n";
 			
 			Utility.writeBytesToFile(secretKey, secretKeyBytesfileName);
 			retStr += secretKey.length + " bytes of Secret Key generated and written to --> " + secretKeyBytesfileName + "\n";
