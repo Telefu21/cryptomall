@@ -12,6 +12,7 @@ import io.ozgard.cryptomall.params.CertificateParams;
 import io.ozgard.cryptomall.params.EncryptDecryptParams;
 import io.ozgard.cryptomall.params.KeyGenerateParams;
 import io.ozgard.cryptomall.params.SignVerifyPrimeParams;
+import io.ozgard.cryptomall.utility.Utility;
 
 @Service
 public class OpenSslService 
@@ -757,7 +758,7 @@ public class OpenSslService
 		
 		for(int i=1; i < path.length ; i++)
 		{
-			workingDirectorypathWith1BackSlash = workingDirectorypathWith1BackSlash + "\\"+ path[i];
+			workingDirectorypathWith1BackSlash = workingDirectorypathWith1BackSlash + Utility.getPathSeperator()+ path[i];
 			workingDirectorypathWith2BackSlash = workingDirectorypathWith2BackSlash + "\\\\"+ path[i];
 			workingDirectorypathWith4BackSlash = workingDirectorypathWith4BackSlash + "\\\\\\\\"+  path[i];
 		}

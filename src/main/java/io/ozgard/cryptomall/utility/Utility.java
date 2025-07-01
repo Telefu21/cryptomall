@@ -143,4 +143,22 @@ public class Utility
 			System.err.println("Error writing to file: " + e.getMessage());
 		}
 	}
+	
+	static public String getPathSeperator()
+	{
+		String os = System.getProperty("os.name").toLowerCase();
+		String retStr = "";
+		
+		if(os.contains("win"))
+		{
+			retStr = "\\";
+		}
+		
+		if(os.contains("nix") || os.contains("nux") || os.contains("aix"))
+		{
+			retStr = "/";
+		}
+		
+		return retStr;
+	}
 }

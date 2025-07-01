@@ -83,7 +83,24 @@ public class CommandLineProcess
 			cmd = cmd + " " + commandLineStr.get(i);
 		}
 			
-		ProcessBuilder builder = new ProcessBuilder("cmd.exe", "/c", cmd);
+		String os = System.getProperty("os.name").toLowerCase();
+		
+		String app = "";
+		String appParam = "";
+		
+		if(os.contains("win"))
+		{
+			app = "cmd.exe";
+			appParam = "/c";
+		}
+		
+		if(os.contains("nix") || os.contains("nux") || os.contains("aix"))
+		{
+			app = "bash";
+			appParam = "-c";
+		}
+		
+		ProcessBuilder builder = new ProcessBuilder(app, appParam, cmd);
 		
 		builder.redirectErrorStream(true);
 				

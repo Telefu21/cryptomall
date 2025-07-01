@@ -619,7 +619,7 @@ public class MainSceneController implements Initializable
 		
 		fileChooser.setTitle("Select File");
 		
-		if(textFieldWorkingDirectory.getText().contains("\\") == true)
+		if(textFieldWorkingDirectory.getText().contains(Utility.getPathSeperator()) == true)
 		{
 			fileChooser.setInitialDirectory(new File(textFieldWorkingDirectory.getText()));
 		}
@@ -1115,7 +1115,7 @@ public class MainSceneController implements Initializable
 		keygenParams.setKeyGenAlgo(comboKeyGenAlgSelect.getValue());
 		keygenParams.setKeyLength(comboKeyGenKeyLength.getValue());
 		
-		keygenParams.setInputFilePath("\"" + textFieldWorkingDirectory.getText() + "\\" + comboKeyGenAlgSelect.getValue().toLowerCase() + "_privkey_" + LocalTime.now().getHour() + "-" + LocalTime.now().getMinute()+ "-" + LocalTime.now().getSecond() + "." + comboKeyGenKeyFileFormat.getValue().toLowerCase() + "\"");
+		keygenParams.setInputFilePath("\"" + textFieldWorkingDirectory.getText() + Utility.getPathSeperator() + comboKeyGenAlgSelect.getValue().toLowerCase() + "_privkey_" + LocalTime.now().getHour() + "-" + LocalTime.now().getMinute()+ "-" + LocalTime.now().getSecond() + "." + comboKeyGenKeyFileFormat.getValue().toLowerCase() + "\"");
 		keygenParams.setOutputFilePath(keygenParams.getInputFilePath());
 		
 		setLogOutput(openSslService.keyGenerate(keygenParams));
@@ -1150,7 +1150,7 @@ public class MainSceneController implements Initializable
 	@FXML
 	void buttonGenerateVerifySignatureOnMouseClicked()
 	{
-		String outputFileName = textFieldWorkingDirectory.getText() + "\\" + textFieldSignVerifyInputFilePath.getText().split("\\\\")[textFieldSignVerifyInputFilePath.getText().split("\\\\").length - 1].split("\\.")[0];
+		String outputFileName = textFieldWorkingDirectory.getText() + Utility.getPathSeperator() + textFieldSignVerifyInputFilePath.getText().split("\\\\")[textFieldSignVerifyInputFilePath.getText().split("\\\\").length - 1].split("\\.")[0];
 		
 		signVerifyPrimeParams.setInputFilePath("\"" + textFieldSignVerifyInputFilePath.getText() + "\"");
 		signVerifyPrimeParams.setHashFunction(comboSignVerifyHashFunction.getValue().replaceAll(" ", ""));
@@ -1220,7 +1220,7 @@ public class MainSceneController implements Initializable
 	@FXML
 	void buttonKeyFileConvertConvertOnMouseClicked()
 	{
-		String outputFileName = textFieldWorkingDirectory.getText() + "\\" + textFieldKeyFileConvertFilePath.getText().split("\\\\")[textFieldKeyFileConvertFilePath.getText().split("\\\\").length - 1].split("\\.")[0];
+		String outputFileName = textFieldWorkingDirectory.getText() + Utility.getPathSeperator() + textFieldKeyFileConvertFilePath.getText().split("\\\\")[textFieldKeyFileConvertFilePath.getText().split("\\\\").length - 1].split("\\.")[0];
 		
 		switch(comboKeyFileConvertConversionOptions.getValue())
 		{
@@ -1329,7 +1329,7 @@ public class MainSceneController implements Initializable
 	@FXML
 	void buttonEncryptDecryptFileOnMouseClick()
 	{
-		String outputFileName = textFieldWorkingDirectory.getText() + "\\" + textFieldEncryptDecryptBrowseFile.getText().split("\\\\")[textFieldEncryptDecryptBrowseFile.getText().split("\\\\").length - 1].split("\\.")[0];
+		String outputFileName = textFieldWorkingDirectory.getText() + Utility.getPathSeperator() + textFieldEncryptDecryptBrowseFile.getText().split("\\\\")[textFieldEncryptDecryptBrowseFile.getText().split("\\\\").length - 1].split("\\.")[0];
 		String inputFileName = "\"" + textFieldEncryptDecryptBrowseFile.getText() + "\"";
 		
 		encryptDecryptProcessorWithRetStr(outputFileName, inputFileName);
@@ -1386,7 +1386,7 @@ public class MainSceneController implements Initializable
 	@FXML
 	void buttonEncryptDecryptTextOnMouseClick()
 	{
-		String outputFileName = textFieldWorkingDirectory.getText() + "\\" + "Text_Area";
+		String outputFileName = textFieldWorkingDirectory.getText() + Utility.getPathSeperator() + "Text_Area";
 		String inputFileName = outputFileName;
 		
 		String textInputStr = textAreaEncryptDecryptText.getText();
@@ -1804,7 +1804,7 @@ public class MainSceneController implements Initializable
 	{
 		postQuantumCryptoParams.setInputFileBytes(null);
 		
-		if(textFieldPQCDataFilePath.getText().contains("\\") == true)
+		if(textFieldPQCDataFilePath.getText().contains(Utility.getPathSeperator()) == true)
 		{
 			postQuantumCryptoParams.setInputFileBytes(Utility.readFileContentToBytes(textFieldPQCDataFilePath.getText()));
 		}
@@ -1833,14 +1833,14 @@ public class MainSceneController implements Initializable
 	{
 		postQuantumCryptoParams.setInputFileBytes(null);
 		
-		if(textFieldPQCDataFilePath.getText().contains("\\") == true)
+		if(textFieldPQCDataFilePath.getText().contains(Utility.getPathSeperator()) == true)
 		{
 			postQuantumCryptoParams.setInputFileBytes(Utility.readFileContentToBytes(textFieldPQCDataFilePath.getText()));
 		}
 		
 		postQuantumCryptoParams.setPublicKeyFileBytes(null);
 		
-		if(textFieldPQCPublicKeyFilePath.getText().contains("\\") == true)
+		if(textFieldPQCPublicKeyFilePath.getText().contains(Utility.getPathSeperator()) == true)
 		{
 			postQuantumCryptoParams.setPublicKeyFileBytes(Utility.readFileContentToBytes(textFieldPQCPublicKeyFilePath.getText()));
 		}
@@ -1850,7 +1850,7 @@ public class MainSceneController implements Initializable
 	{
 		postQuantumCryptoParams.setInputFileBytes(null);
 		
-		if(textFieldPQCDataFilePath.getText().contains("\\") == true)
+		if(textFieldPQCDataFilePath.getText().contains(Utility.getPathSeperator()) == true)
 		{
 			postQuantumCryptoParams.setInputFileBytes(Utility.readFileContentToBytes(textFieldPQCDataFilePath.getText()));
 		}
@@ -1860,21 +1860,21 @@ public class MainSceneController implements Initializable
 	{
 		postQuantumCryptoParams.setInputFileBytes(null);
 		
-		if(textFieldPQCDataFilePath.getText().contains("\\") == true)
+		if(textFieldPQCDataFilePath.getText().contains(Utility.getPathSeperator()) == true)
 		{
 			postQuantumCryptoParams.setInputFileBytes(Utility.readFileContentToBytes(textFieldPQCDataFilePath.getText()));
 		}
 		
 		postQuantumCryptoParams.setPublicKeyFileBytes(null);
 		
-		if(textFieldPQCPublicKeyFilePath.getText().contains("\\") == true)
+		if(textFieldPQCPublicKeyFilePath.getText().contains(Utility.getPathSeperator()) == true)
 		{
 			postQuantumCryptoParams.setPublicKeyFileBytes(Utility.readFileContentToBytes(textFieldPQCPublicKeyFilePath.getText()));
 		}
 		
 		postQuantumCryptoParams.setSignatureFileBytes(null);
 		
-		if(textFieldPQCSignatureFilePath.getText().contains("\\") == true)
+		if(textFieldPQCSignatureFilePath.getText().contains(Utility.getPathSeperator()) == true)
 		{
 			postQuantumCryptoParams.setSignatureFileBytes(Utility.readFileContentToBytes(textFieldPQCSignatureFilePath.getText()));
 		}
@@ -2023,7 +2023,7 @@ public class MainSceneController implements Initializable
 		
 		fileChooser.setTitle(title);
 		
-		if(textFieldWorkingDirectory.getText().contains("\\") == true)
+		if(textFieldWorkingDirectory.getText().contains(Utility.getPathSeperator()) == true)
 		{
 			fileChooser.setInitialDirectory(new File(textFieldWorkingDirectory.getText()));
 		}
