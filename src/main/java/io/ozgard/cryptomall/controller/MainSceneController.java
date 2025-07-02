@@ -1349,19 +1349,19 @@ public class MainSceneController implements Initializable
 		switch(comboEncryptDecryptType.getValue())
 		{
 			case EncryptDecryptParams.ENCRYPT_DECRYPT_TYPE_SYM_ENCRYPTION:
-				encryptDecryptParams.setOutputFilePath("\"" + outputFileName + "_" + encryptDecryptParams.getCipher().replaceAll(" ", "") + ".enc" + "\"");
+				encryptDecryptParams.setOutputFilePath("\"" + outputFileName + "_" + encryptDecryptParams.getCipher().replaceAll(" ", "") + "_" + LocalTime.now().getHour() + "-" + LocalTime.now().getMinute()+ "-" + LocalTime.now().getSecond() + ".enc\"");
 				return(openSslService.symmetricEncrypt(encryptDecryptParams));
 				
 			case EncryptDecryptParams.ENCRYPT_DECRYPT_TYPE_ASYM_ENCRYPTION:
-				encryptDecryptParams.setOutputFilePath("\"" + outputFileName + ".enc" + "\"");
+				encryptDecryptParams.setOutputFilePath("\"" + outputFileName + "_" + LocalTime.now().getHour() + "-" + LocalTime.now().getMinute()+ "-" + LocalTime.now().getSecond() + ".enc\"");
 				return(openSslService.asymmetricEncrypt(encryptDecryptParams));
 				
 			case EncryptDecryptParams.ENCRYPT_DECRYPT_TYPE_SYM_DECRYPTION:
-				encryptDecryptParams.setOutputFilePath("\"" + outputFileName + ".dec" + "\"");
+				encryptDecryptParams.setOutputFilePath("\"" + outputFileName + ".dec\"");
 				return(openSslService.symmetricDecrypt(encryptDecryptParams));
 				
 			case EncryptDecryptParams.ENCRYPT_DECRYPT_TYPE_ASYM_DECRYPTION:
-				encryptDecryptParams.setOutputFilePath("\"" + outputFileName + ".dec" + "\"");
+				encryptDecryptParams.setOutputFilePath("\"" + outputFileName + ".dec\"");
 				return(openSslService.asymmetricDecrypt(encryptDecryptParams));
 				
 			case EncryptDecryptParams.ENCRYPT_DECRYPT_TYPE_GENERATE_HASH:
@@ -1504,6 +1504,13 @@ public class MainSceneController implements Initializable
 	void buttonCertGenerateVerifyOnMouseClicked()
 	{
 		setCertificatesParams();
+		
+		if(certificateParams.getRootKeyVerifyFilePath().contains(Utility.getPathSeperator()) == false ||  certificateParams.getIntermediateKeyVerifyFilePath().contains(Utility.getPathSeperator()) == false )
+		{
+			setLogOutput("!!! Please Select all the Files needed for Certificate Operation !!!");
+			
+			return;
+		}
 		
 		if(certificateParams.getIsGenerateCertificateSelected())
 		{

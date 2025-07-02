@@ -3,6 +3,7 @@ package io.ozgard.cryptomall.service;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.time.LocalTime;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -851,14 +852,14 @@ public class OpenSslService
 
 	public String generateCertificates(CertificateParams certificateParams) 
 	{
-		String rootCsrFile = "\"" + certificateParams.getWorkingDirectory() + "\\root_csr.pem" + "\"";
-		String rootCertFile = "\"" + certificateParams.getWorkingDirectory() + "\\root_cert.pem" + "\"";
+		String rootCsrFile = "\"" + certificateParams.getWorkingDirectory() + "\\root_csr_" + LocalTime.now().getHour() + "-" + LocalTime.now().getMinute()+ "-" + LocalTime.now().getSecond() + ".pem\"";
+		String rootCertFile = "\"" + certificateParams.getWorkingDirectory() + "\\root_cert_" + LocalTime.now().getHour() + "-" + LocalTime.now().getMinute()+ "-" + LocalTime.now().getSecond()+ ".pem\"";
 		String rootConfigFile = "\"" + certificateParams.getWorkingDirectory() + "\\root.config" + "\"";
-		String intermediateCsrFile = "\"" + certificateParams.getWorkingDirectory() + "\\intermediate_csr.pem" + "\"";
-		String intermediateCertFile = "\"" + certificateParams.getWorkingDirectory() + "\\intermediate_cert.pem" + "\"";
+		String intermediateCsrFile = "\"" + certificateParams.getWorkingDirectory() + "\\intermediate_csr_" + LocalTime.now().getHour() + "-" + LocalTime.now().getMinute()+ "-" + LocalTime.now().getSecond()+ ".pem\"";
+		String intermediateCertFile = "\"" + certificateParams.getWorkingDirectory() + "\\intermediate_cert_" + LocalTime.now().getHour() + "-" + LocalTime.now().getMinute()+ "-" + LocalTime.now().getSecond()+ ".pem\"";
 		String intermediateConfigFile = "\"" + certificateParams.getWorkingDirectory() + "\\intermediate.config" + "\"";
-		String endEntityCsrFile = "\"" + certificateParams.getWorkingDirectory() + "\\endEntity_csr.pem" + "\"";
-		String endEntityCertFile = "\"" + certificateParams.getWorkingDirectory() + "\\endEntity_cert.pem" + "\"";
+		String endEntityCsrFile = "\"" + certificateParams.getWorkingDirectory() + "\\endEntity_csr_" + LocalTime.now().getHour() + "-" + LocalTime.now().getMinute()+ "-" + LocalTime.now().getSecond()+ ".pem\"";
+		String endEntityCertFile = "\"" + certificateParams.getWorkingDirectory() + "\\endEntity_cert_" + LocalTime.now().getHour() + "-" + LocalTime.now().getMinute()+ "-" + LocalTime.now().getSecond()+ ".pem\"";
 		
 		String [] tmp = new String[certificateParams.getCertificateParamsRows().length - 1];
 		
@@ -996,7 +997,9 @@ public class OpenSslService
 		clProcess.addCommandLineStr("\"" + certificateParams.getWorkingDirectory()  + "\\*old*\"");
 		clProcess.addCommandLineStr("\"" + certificateParams.getWorkingDirectory()  + "\\*attr*\"");
 		clProcess.addCommandLineStr("\"" + certificateParams.getWorkingDirectory()  + "\\*config*\"");
-		clProcess.addCommandLineStr("\"" + certificateParams.getWorkingDirectory()  + "\\*0*\"");
+		clProcess.addCommandLineStr("\"" + certificateParams.getWorkingDirectory()  + "\\00.pem\"");
+		clProcess.addCommandLineStr("\"" + certificateParams.getWorkingDirectory()  + "\\01.pem\"");
+		clProcess.addCommandLineStr("\"" + certificateParams.getWorkingDirectory()  + "\\02.pem\"");
 		clProcess.runCommand();
 		
 		clProcess.runAndConfirmCommand();
