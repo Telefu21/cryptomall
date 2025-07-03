@@ -1042,7 +1042,7 @@ public class MainSceneController implements Initializable
 		{
 			byte [] fileData = Utility.readFileContentToBytes(textFieldHexViewFilePath.getText());
 
-			setLogOutput(generateCRC(fileData, "File \"" + textFieldHexViewFilePath.getText().split("\\\\")[textFieldHexViewFilePath.getText().split("\\\\").length - 1]));
+			setLogOutput(generateCRC(fileData, "File \"" + textFieldHexViewFilePath.getText().split(Utility.getDoublePathSeperator())[textFieldHexViewFilePath.getText().split(Utility.getDoublePathSeperator()).length - 1]));
 		}
 		
 		if(textAreaCRCInput.getText().length() == 0)
@@ -1150,7 +1150,7 @@ public class MainSceneController implements Initializable
 	@FXML
 	void buttonGenerateVerifySignatureOnMouseClicked()
 	{
-		String outputFileName = textFieldWorkingDirectory.getText() + Utility.getPathSeperator() + textFieldSignVerifyInputFilePath.getText().split("\\\\")[textFieldSignVerifyInputFilePath.getText().split("\\\\").length - 1].split("\\.")[0];
+		String outputFileName = textFieldWorkingDirectory.getText() + Utility.getPathSeperator() + textFieldSignVerifyInputFilePath.getText().split(Utility.getDoublePathSeperator())[textFieldSignVerifyInputFilePath.getText().split(Utility.getDoublePathSeperator()).length - 1].split("\\.")[0];
 		
 		signVerifyPrimeParams.setInputFilePath("\"" + textFieldSignVerifyInputFilePath.getText() + "\"");
 		signVerifyPrimeParams.setHashFunction(comboSignVerifyHashFunction.getValue().replaceAll(" ", ""));
@@ -1220,7 +1220,7 @@ public class MainSceneController implements Initializable
 	@FXML
 	void buttonKeyFileConvertConvertOnMouseClicked()
 	{
-		String outputFileName = textFieldWorkingDirectory.getText() + Utility.getPathSeperator() + textFieldKeyFileConvertFilePath.getText().split("\\\\")[textFieldKeyFileConvertFilePath.getText().split("\\\\").length - 1].split("\\.")[0];
+		String outputFileName = textFieldWorkingDirectory.getText() + Utility.getPathSeperator() + textFieldKeyFileConvertFilePath.getText().split(Utility.getDoublePathSeperator())[textFieldKeyFileConvertFilePath.getText().split(Utility.getDoublePathSeperator()).length - 1].split("\\.")[0];
 		
 		switch(comboKeyFileConvertConversionOptions.getValue())
 		{
@@ -1329,7 +1329,7 @@ public class MainSceneController implements Initializable
 	@FXML
 	void buttonEncryptDecryptFileOnMouseClick()
 	{
-		String outputFileName = textFieldWorkingDirectory.getText() + Utility.getPathSeperator() + textFieldEncryptDecryptBrowseFile.getText().split("\\\\")[textFieldEncryptDecryptBrowseFile.getText().split("\\\\").length - 1].split("\\.")[0];
+		String outputFileName = textFieldWorkingDirectory.getText() + Utility.getPathSeperator() + textFieldEncryptDecryptBrowseFile.getText().split(Utility.getDoublePathSeperator())[textFieldEncryptDecryptBrowseFile.getText().split(Utility.getDoublePathSeperator()).length - 1].split("\\.")[0];
 		String inputFileName = "\"" + textFieldEncryptDecryptBrowseFile.getText() + "\"";
 		
 		encryptDecryptProcessorWithRetStr(outputFileName, inputFileName);

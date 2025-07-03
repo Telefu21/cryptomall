@@ -750,7 +750,7 @@ public class OpenSslService
 	
 	public void generateConfigFilesToWorkingDirectory(String directoryPath, String fileName) 
 	{		
-		String[] path = directoryPath.split("\\\\");
+		String[] path = directoryPath.split(Utility.getDoublePathSeperator());
 		
 		String workingDirectorypathWith1BackSlash = path[0];
 		String workingDirectorypathWith2BackSlash = path[0];
@@ -759,13 +759,13 @@ public class OpenSslService
 		for(int i=1; i < path.length ; i++)
 		{
 			workingDirectorypathWith1BackSlash = workingDirectorypathWith1BackSlash + Utility.getPathSeperator()+ path[i];
-			workingDirectorypathWith2BackSlash = workingDirectorypathWith2BackSlash + "\\\\"+ path[i];
-			workingDirectorypathWith4BackSlash = workingDirectorypathWith4BackSlash + "\\\\\\\\"+  path[i];
+			workingDirectorypathWith2BackSlash = workingDirectorypathWith2BackSlash + Utility.getDoublePathSeperator()+ path[i];
+			workingDirectorypathWith4BackSlash = workingDirectorypathWith4BackSlash + Utility.getQuadPathSeperator()+  path[i];
 		}
 		
-		String indexFile = workingDirectorypathWith2BackSlash  + "\\\\" + fileName + "index"; 
-		String serialFile = workingDirectorypathWith2BackSlash  + "\\\\" + fileName + "serial";  
-		String configFile = workingDirectorypathWith2BackSlash  + "\\\\" + fileName +".config"; 
+		String indexFile = workingDirectorypathWith2BackSlash  + Utility.getDoublePathSeperator() + fileName + "index"; 
+		String serialFile = workingDirectorypathWith2BackSlash  + Utility.getDoublePathSeperator() + fileName + "serial";  
+		String configFile = workingDirectorypathWith2BackSlash  + Utility.getDoublePathSeperator() + fileName +".config"; 
 		
 		File index = new File(indexFile);
 		File serial = new File(serialFile);
@@ -811,8 +811,8 @@ public class OpenSslService
 					+ "keyUsage         = critical,keyCertSign";
 			
 			configWriter.write("[ CA_default]\r\n"
-					+ "database        = \"" + workingDirectorypathWith4BackSlash + "\\\\rootindex\"\r\n"
-					+ "serial          = \"" + workingDirectorypathWith4BackSlash + "\\\\rootserial\"\r\n"
+					+ "database        = \"" + workingDirectorypathWith4BackSlash + Utility.getDoublePathSeperator() + "rootindex\"\r\n"
+					+ "serial          = \"" + workingDirectorypathWith4BackSlash + Utility.getDoublePathSeperator() + "rootserial\"\r\n"
 					+ "\r\n"
 					+ policyAndExtStr);
 			
@@ -851,14 +851,14 @@ public class OpenSslService
 
 	public String generateCertificates(CertificateParams certificateParams) 
 	{
-		String rootCsrFile = "\"" + certificateParams.getWorkingDirectory() + "\\root_csr_" + LocalTime.now().getHour() + "-" + LocalTime.now().getMinute()+ "-" + LocalTime.now().getSecond() + ".pem\"";
-		String rootCertFile = "\"" + certificateParams.getWorkingDirectory() + "\\root_cert_" + LocalTime.now().getHour() + "-" + LocalTime.now().getMinute()+ "-" + LocalTime.now().getSecond()+ ".pem\"";
-		String rootConfigFile = "\"" + certificateParams.getWorkingDirectory() + "\\root.config" + "\"";
-		String intermediateCsrFile = "\"" + certificateParams.getWorkingDirectory() + "\\intermediate_csr_" + LocalTime.now().getHour() + "-" + LocalTime.now().getMinute()+ "-" + LocalTime.now().getSecond()+ ".pem\"";
-		String intermediateCertFile = "\"" + certificateParams.getWorkingDirectory() + "\\intermediate_cert_" + LocalTime.now().getHour() + "-" + LocalTime.now().getMinute()+ "-" + LocalTime.now().getSecond()+ ".pem\"";
-		String intermediateConfigFile = "\"" + certificateParams.getWorkingDirectory() + "\\intermediate.config" + "\"";
-		String endEntityCsrFile = "\"" + certificateParams.getWorkingDirectory() + "\\endEntity_csr_" + LocalTime.now().getHour() + "-" + LocalTime.now().getMinute()+ "-" + LocalTime.now().getSecond()+ ".pem\"";
-		String endEntityCertFile = "\"" + certificateParams.getWorkingDirectory() + "\\endEntity_cert_" + LocalTime.now().getHour() + "-" + LocalTime.now().getMinute()+ "-" + LocalTime.now().getSecond()+ ".pem\"";
+		String rootCsrFile = "\"" + certificateParams.getWorkingDirectory() + Utility.getPathSeperator() + "root_csr_" + LocalTime.now().getHour() + "-" + LocalTime.now().getMinute()+ "-" + LocalTime.now().getSecond() + ".pem\"";
+		String rootCertFile = "\"" + certificateParams.getWorkingDirectory() + Utility.getPathSeperator() + "root_cert_" + LocalTime.now().getHour() + "-" + LocalTime.now().getMinute()+ "-" + LocalTime.now().getSecond()+ ".pem\"";
+		String rootConfigFile = "\"" + certificateParams.getWorkingDirectory() + Utility.getPathSeperator() + "root.config" + "\"";
+		String intermediateCsrFile = "\"" + certificateParams.getWorkingDirectory() + Utility.getPathSeperator() + "intermediate_csr_" + LocalTime.now().getHour() + "-" + LocalTime.now().getMinute()+ "-" + LocalTime.now().getSecond()+ ".pem\"";
+		String intermediateCertFile = "\"" + certificateParams.getWorkingDirectory() + Utility.getPathSeperator() + "intermediate_cert_" + LocalTime.now().getHour() + "-" + LocalTime.now().getMinute()+ "-" + LocalTime.now().getSecond()+ ".pem\"";
+		String intermediateConfigFile = "\"" + certificateParams.getWorkingDirectory() + Utility.getPathSeperator() + "intermediate.config" + "\"";
+		String endEntityCsrFile = "\"" + certificateParams.getWorkingDirectory() + Utility.getPathSeperator() + "endEntity_csr_" + LocalTime.now().getHour() + "-" + LocalTime.now().getMinute()+ "-" + LocalTime.now().getSecond()+ ".pem\"";
+		String endEntityCertFile = "\"" + certificateParams.getWorkingDirectory() + Utility.getPathSeperator() + "endEntity_cert_" + LocalTime.now().getHour() + "-" + LocalTime.now().getMinute()+ "-" + LocalTime.now().getSecond()+ ".pem\"";
 		
 		String [] tmp = new String[certificateParams.getCertificateParamsRows().length - 1];
 		
