@@ -1161,7 +1161,7 @@ public class MainSceneController implements Initializable
 		
 		if(radioButtonGenerateSignature.isSelected() == true)
 		{
-			signVerifyPrimeParams.setOutputFilePath("\"" + outputFileName + signVerifyPrimeParams.getHashFunction() +  ".signature" + "\"");
+			signVerifyPrimeParams.setOutputFilePath("\"" + outputFileName + signVerifyPrimeParams.getHashFunction() + "_" + LocalTime.now().getHour() + "-" + LocalTime.now().getMinute()+ "-" + LocalTime.now().getSecond() + ".signature" + "\"");
 			setLogOutput(openSslService.generateSignature(signVerifyPrimeParams));
 		}
 		
@@ -1349,11 +1349,11 @@ public class MainSceneController implements Initializable
 		switch(comboEncryptDecryptType.getValue())
 		{
 			case EncryptDecryptParams.ENCRYPT_DECRYPT_TYPE_SYM_ENCRYPTION:
-				encryptDecryptParams.setOutputFilePath("\"" + outputFileName + "_" + encryptDecryptParams.getCipher().replaceAll(" ", "") + "_" + LocalTime.now().getHour() + "-" + LocalTime.now().getMinute()+ "-" + LocalTime.now().getSecond() + ".enc\"");
+				encryptDecryptParams.setOutputFilePath("\"" + outputFileName + encryptDecryptParams.getCipher().replaceAll(" ", "") + "_" + LocalTime.now().getHour() + "-" + LocalTime.now().getMinute()+ "-" + LocalTime.now().getSecond() + ".enc\"");
 				return(openSslService.symmetricEncrypt(encryptDecryptParams));
 				
 			case EncryptDecryptParams.ENCRYPT_DECRYPT_TYPE_ASYM_ENCRYPTION:
-				encryptDecryptParams.setOutputFilePath("\"" + outputFileName + "_" + LocalTime.now().getHour() + "-" + LocalTime.now().getMinute()+ "-" + LocalTime.now().getSecond() + ".enc\"");
+				encryptDecryptParams.setOutputFilePath("\"" + outputFileName + LocalTime.now().getHour() + "-" + LocalTime.now().getMinute()+ "-" + LocalTime.now().getSecond() + ".enc\"");
 				return(openSslService.asymmetricEncrypt(encryptDecryptParams));
 				
 			case EncryptDecryptParams.ENCRYPT_DECRYPT_TYPE_SYM_DECRYPTION:

@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalTime;
+import java.util.ArrayList;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,21 +30,19 @@ public class OpenSslService
 		
 		String [] ecList = clProcess.runCommand().split("\n");
 		
+		ArrayList<String> ecArrayList = new ArrayList<>(); 
+		
 		clProcess.clearCommandLineStr();
 		
 		for(int i = 0; i < ecList.length; i++)
 		{			
 			if(ecList[i].contains(":") == true)
 			{
-				ecList[i] = ecList[i].split(":")[0].replace(" " , "");
-			}
-			else
-			{
-				ecList[i] = ecList[i-1];
+				ecArrayList.add(ecList[i].split(":")[0].replace(" " , ""));
 			}
 		}
 		
-		return ecList;
+		return ecArrayList.toArray(new String[ecArrayList.size()]);
 	}
 	
 	public String [] getListHashFuncs() 

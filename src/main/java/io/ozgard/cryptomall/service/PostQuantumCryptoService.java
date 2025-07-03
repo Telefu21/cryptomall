@@ -2,6 +2,7 @@ package io.ozgard.cryptomall.service;
 
 import java.security.Security;
 import java.security.spec.AlgorithmParameterSpec;
+import java.time.LocalTime;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.pqc.jcajce.provider.BouncyCastlePQCProvider;
@@ -145,8 +146,8 @@ public class PostQuantumCryptoService
 			byte[] secretKey = null;
 			byte[] encapsulatedKey =null;
 			
-			String encapKeyBytesfileName = postQuantumCryptoParams.getWorkingDirectoryPath() + Utility.getPathSeperator() + postQuantumCryptoParams.getParameterSet() + "_" + algorithm + "_encapsulated_key.bin";
-			String secretKeyBytesfileName = postQuantumCryptoParams.getWorkingDirectoryPath() + Utility.getPathSeperator() + postQuantumCryptoParams.getParameterSet() + "_" + algorithm + "_secret_key.bin";
+			String encapKeyBytesfileName = postQuantumCryptoParams.getWorkingDirectoryPath() + Utility.getPathSeperator() + postQuantumCryptoParams.getParameterSet() + "_" + algorithm + "_encapsulated_key_"  + LocalTime.now().getHour() + "-" + LocalTime.now().getMinute()+ "-" + LocalTime.now().getSecond() + ".bin";
+			String secretKeyBytesfileName = postQuantumCryptoParams.getWorkingDirectoryPath() + Utility.getPathSeperator() + postQuantumCryptoParams.getParameterSet() + "_" + algorithm + "_secret_key_"  + LocalTime.now().getHour() + "-" + LocalTime.now().getMinute()+ "-" + LocalTime.now().getSecond() + ".bin";
 			
 			if(algorithm != "HQC")
 			{
@@ -196,10 +197,10 @@ public class PostQuantumCryptoService
 	private String processFileOperationsSignature(PostQuantumCryptoParams postQuantumCryptoParams, byte [] privKeyBytes, byte [] pubKeyBytes, byte [] signatureBytesFile, byte [] signatureBytesTextArea, String fileSpecificName)
 	{
 		String retStr = "";
-		String signatureBytesTextAreafileName = postQuantumCryptoParams.getWorkingDirectoryPath() + Utility.getPathSeperator() + postQuantumCryptoParams.getParameterSet() + "_" + fileSpecificName + "_text_area_signature.bin";
-		String privKeyBytesfileName = postQuantumCryptoParams.getWorkingDirectoryPath() + Utility.getPathSeperator() + postQuantumCryptoParams.getParameterSet() + "_" + fileSpecificName + "_private_key.bin";
-		String pubKeyBytesfileName = postQuantumCryptoParams.getWorkingDirectoryPath() + Utility.getPathSeperator() + postQuantumCryptoParams.getParameterSet() + "_" + fileSpecificName + "_public_key.bin";
-		String signatureBytesFilefileName = postQuantumCryptoParams.getWorkingDirectoryPath() + Utility.getPathSeperator() + postQuantumCryptoParams.getParameterSet() + "_" + fileSpecificName + "_file_signature.bin";
+		String signatureBytesTextAreafileName = postQuantumCryptoParams.getWorkingDirectoryPath() + Utility.getPathSeperator() + postQuantumCryptoParams.getParameterSet() + "_" + fileSpecificName + "_text_area_signature_"  + LocalTime.now().getHour() + "-" + LocalTime.now().getMinute()+ "-" + LocalTime.now().getSecond() + ".bin";
+		String privKeyBytesfileName = postQuantumCryptoParams.getWorkingDirectoryPath() + Utility.getPathSeperator() + postQuantumCryptoParams.getParameterSet() + "_" + fileSpecificName + "_private_key_"  + LocalTime.now().getHour() + "-" + LocalTime.now().getMinute()+ "-" + LocalTime.now().getSecond() + ".bin";
+		String pubKeyBytesfileName = postQuantumCryptoParams.getWorkingDirectoryPath() + Utility.getPathSeperator() + postQuantumCryptoParams.getParameterSet() + "_" + fileSpecificName + "_public_key_"  + LocalTime.now().getHour() + "-" + LocalTime.now().getMinute()+ "-" + LocalTime.now().getSecond() + ".bin";
+		String signatureBytesFilefileName = postQuantumCryptoParams.getWorkingDirectoryPath() + Utility.getPathSeperator() + postQuantumCryptoParams.getParameterSet() + "_" + fileSpecificName + "_file_signature_"  + LocalTime.now().getHour() + "-" + LocalTime.now().getMinute()+ "-" + LocalTime.now().getSecond() + ".bin";
 		
 		Utility.writeBytesToFile(privKeyBytes, privKeyBytesfileName);
 		retStr += privKeyBytes.length + " bytes of Private Key generated and written to --> " + privKeyBytesfileName + "\n";
@@ -288,8 +289,8 @@ public class PostQuantumCryptoService
 		}
 		
 		String retStr = "";
-		String privKeyBytesfileName = postQuantumCryptoParams.getWorkingDirectoryPath() + Utility.getPathSeperator() + postQuantumCryptoParams.getParameterSet() + "_" + algorithm + "_private_key.bin";
-		String pubKeyBytesfileName = postQuantumCryptoParams.getWorkingDirectoryPath() + Utility.getPathSeperator() + postQuantumCryptoParams.getParameterSet() + "_" + algorithm + "_public_key.bin";
+		String privKeyBytesfileName = postQuantumCryptoParams.getWorkingDirectoryPath() + Utility.getPathSeperator() + postQuantumCryptoParams.getParameterSet() + "_" + algorithm + "_private_key_"  + LocalTime.now().getHour() + "-" + LocalTime.now().getMinute()+ "-" + LocalTime.now().getSecond() + ".bin";
+		String pubKeyBytesfileName = postQuantumCryptoParams.getWorkingDirectoryPath() + Utility.getPathSeperator() + postQuantumCryptoParams.getParameterSet() + "_" + algorithm + "_public_key_"  + LocalTime.now().getHour() + "-" + LocalTime.now().getMinute()+ "-" + LocalTime.now().getSecond() + ".bin";
 		
 		Utility.writeBytesToFile(privateKey, privKeyBytesfileName);
 		retStr += privateKey.length + " bytes of Private Key generated and written to --> " + privKeyBytesfileName + "\n";
