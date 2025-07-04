@@ -991,14 +991,14 @@ public class OpenSslService
 			clProcess.addCommandLineStr("rm"); 
 		}
 		
-		clProcess.addCommandLineStr("\"" + certificateParams.getWorkingDirectory()  + "\\*serial*\"");
-		clProcess.addCommandLineStr("\"" + certificateParams.getWorkingDirectory()  + "\\*index*\"");
-		clProcess.addCommandLineStr("\"" + certificateParams.getWorkingDirectory()  + "\\*old*\"");
-		clProcess.addCommandLineStr("\"" + certificateParams.getWorkingDirectory()  + "\\*attr*\"");
-		clProcess.addCommandLineStr("\"" + certificateParams.getWorkingDirectory()  + "\\*config*\"");
-		clProcess.addCommandLineStr("\"" + certificateParams.getWorkingDirectory()  + "\\00.pem\"");
-		clProcess.addCommandLineStr("\"" + certificateParams.getWorkingDirectory()  + "\\01.pem\"");
-		clProcess.addCommandLineStr("\"" + certificateParams.getWorkingDirectory()  + "\\02.pem\"");
+		clProcess.addCommandLineStr("\"" + certificateParams.getWorkingDirectory()  + Utility.getPathSeperator() + "*serial*\"");
+		clProcess.addCommandLineStr("\"" + certificateParams.getWorkingDirectory()  + Utility.getPathSeperator() + "*index*\"");
+		clProcess.addCommandLineStr("\"" + certificateParams.getWorkingDirectory()  + Utility.getPathSeperator() + "*old*\"");
+		clProcess.addCommandLineStr("\"" + certificateParams.getWorkingDirectory()  + Utility.getPathSeperator() + "*attr*\"");
+		clProcess.addCommandLineStr("\"" + certificateParams.getWorkingDirectory()  + Utility.getPathSeperator() + "*config*\"");
+		clProcess.addCommandLineStr("\"" + certificateParams.getWorkingDirectory()  + Utility.getPathSeperator() + "00.pem\"");
+		clProcess.addCommandLineStr("\"" + certificateParams.getWorkingDirectory()  + Utility.getPathSeperator() + "01.pem\"");
+		clProcess.addCommandLineStr("\"" + certificateParams.getWorkingDirectory()  + Utility.getPathSeperator() + "02.pem\"");
 		clProcess.runCommand();
 		
 		clProcess.runAndConfirmCommand();
