@@ -991,14 +991,14 @@ public class OpenSslService
 			clProcess.addCommandLineStr("rm"); 
 		}
 		
-		clProcess.addCommandLineStr("\"" + certificateParams.getWorkingDirectory()  + Utility.getPathSeperator() + "*serial*\"");
-		clProcess.addCommandLineStr("\"" + certificateParams.getWorkingDirectory()  + Utility.getPathSeperator() + "*index*\"");
-		clProcess.addCommandLineStr("\"" + certificateParams.getWorkingDirectory()  + Utility.getPathSeperator() + "*old*\"");
-		clProcess.addCommandLineStr("\"" + certificateParams.getWorkingDirectory()  + Utility.getPathSeperator() + "*attr*\"");
-		clProcess.addCommandLineStr("\"" + certificateParams.getWorkingDirectory()  + Utility.getPathSeperator() + "*config*\"");
-		clProcess.addCommandLineStr("\"" + certificateParams.getWorkingDirectory()  + Utility.getPathSeperator() + "00.pem\"");
-		clProcess.addCommandLineStr("\"" + certificateParams.getWorkingDirectory()  + Utility.getPathSeperator() + "01.pem\"");
-		clProcess.addCommandLineStr("\"" + certificateParams.getWorkingDirectory()  + Utility.getPathSeperator() + "02.pem\"");
+		clProcess.addCommandLineStr(Utility.getDoubleQuote() + certificateParams.getWorkingDirectory()  + Utility.getPathSeperator() + "*serial*" + Utility.getDoubleQuote());
+		clProcess.addCommandLineStr(Utility.getDoubleQuote() + certificateParams.getWorkingDirectory()  + Utility.getPathSeperator() + "*index*" + Utility.getDoubleQuote());
+		clProcess.addCommandLineStr(Utility.getDoubleQuote() + certificateParams.getWorkingDirectory()  + Utility.getPathSeperator() + "*old*" + Utility.getDoubleQuote());
+		clProcess.addCommandLineStr(Utility.getDoubleQuote() + certificateParams.getWorkingDirectory()  + Utility.getPathSeperator() + "*attr*" + Utility.getDoubleQuote());
+		clProcess.addCommandLineStr(Utility.getDoubleQuote() + certificateParams.getWorkingDirectory()  + Utility.getPathSeperator() + "*config*" + Utility.getDoubleQuote());
+		clProcess.addCommandLineStr(Utility.getDoubleQuote() + certificateParams.getWorkingDirectory()  + Utility.getPathSeperator() + "00.pem" + Utility.getDoubleQuote());
+		clProcess.addCommandLineStr(Utility.getDoubleQuote() + certificateParams.getWorkingDirectory()  + Utility.getPathSeperator() + "01.pem" + Utility.getDoubleQuote());
+		clProcess.addCommandLineStr(Utility.getDoubleQuote() + certificateParams.getWorkingDirectory()  + Utility.getPathSeperator() + "02.pem" + Utility.getDoubleQuote());
 		clProcess.runCommand();
 		
 		clProcess.runAndConfirmCommand();

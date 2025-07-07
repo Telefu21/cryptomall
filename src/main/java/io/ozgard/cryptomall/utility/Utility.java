@@ -197,4 +197,22 @@ public class Utility
 		
 		return retStr;
 	}
+
+	public static String getDoubleQuote() 
+	{
+		String os = System.getProperty("os.name").toLowerCase();
+		String retStr = "";
+		
+		if(os.contains("win"))
+		{
+			retStr = "\"";
+		}
+		
+		if(os.contains("nix") || os.contains("nux") || os.contains("aix"))
+		{
+			retStr = "";
+		}
+		
+		return retStr;
+	}
 }
