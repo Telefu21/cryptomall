@@ -871,7 +871,7 @@ public class OpenSslService
 		
 		String rootCertLogStr = generateCsr(certificateParams.getRootKeyVerifyFilePath(), rootCsrFile, rootSubjAttribsCertStr);
 		
-		rootCertLogStr += generateCertificate(true, "\"" + certificateParams.getWorkingDirectory() + "\"", rootCsrFile, rootCertFile, rootCertFile, "\"" + certificateParams.getRootKeyVerifyFilePath() + "\"", certificateParams.getCertificateParamsRows()[0].getRootCertificate() , rootConfigFile,  certificateParams.getRootHashFunction().replaceAll("-", ""));
+		rootCertLogStr += generateCertificate(true, "\"" + certificateParams.getWorkingDirectory() + "\"", rootCsrFile, rootCertFile, rootCertFile, "\"" + certificateParams.getRootKeyVerifyFilePath() + "\"", certificateParams.getCertificateParamsRows()[0].getRootCertificate() , rootConfigFile,  certificateParams.getRootHashFunction().replaceFirst("-", ""));
 		
 		for(int i = 0; i < certificateParams.getCertificateParamsRows().length - 1; i++)
 		{
@@ -884,7 +884,7 @@ public class OpenSslService
 		
 		String intermediateCertLogStr = generateCsr(certificateParams.getIntermediateKeyVerifyFilePath(), intermediateCsrFile, intermediateSubjAttribsCertStr);
 		
-		intermediateCertLogStr += generateCertificate(false, "\"" + certificateParams.getWorkingDirectory() + "\"", intermediateCsrFile, intermediateCertFile, rootCertFile, "\"" + certificateParams.getRootKeyVerifyFilePath() + "\"", certificateParams.getCertificateParamsRows()[0].getIntermediateCertificate(), rootConfigFile,  certificateParams.getIntermediateHashFunction().replaceAll("-", ""));
+		intermediateCertLogStr += generateCertificate(false, "\"" + certificateParams.getWorkingDirectory() + "\"", intermediateCsrFile, intermediateCertFile, rootCertFile, "\"" + certificateParams.getRootKeyVerifyFilePath() + "\"", certificateParams.getCertificateParamsRows()[0].getIntermediateCertificate(), rootConfigFile,  certificateParams.getIntermediateHashFunction().replaceFirst("-", ""));
 		
 		for(int i = 0; i < certificateParams.getCertificateParamsRows().length - 1; i++)
 		{
@@ -895,7 +895,7 @@ public class OpenSslService
 		
 		String endEntityCertLogStr = generateCsr(certificateParams.getEndEntityKeyVerifyFilePath(), endEntityCsrFile, endEntitySubjAttribsCertStr);
 		
-		endEntityCertLogStr += generateCertificate(false, "\"" + certificateParams.getWorkingDirectory() + "\"", endEntityCsrFile, endEntityCertFile, intermediateCertFile, "\"" + certificateParams.getIntermediateKeyVerifyFilePath() + "\"", certificateParams.getCertificateParamsRows()[0].getIntermediateCertificate(), intermediateConfigFile,  certificateParams.getEndEntityHashFunction().replaceAll("-", ""));
+		endEntityCertLogStr += generateCertificate(false, "\"" + certificateParams.getWorkingDirectory() + "\"", endEntityCsrFile, endEntityCertFile, intermediateCertFile, "\"" + certificateParams.getIntermediateKeyVerifyFilePath() + "\"", certificateParams.getCertificateParamsRows()[0].getIntermediateCertificate(), intermediateConfigFile,  certificateParams.getEndEntityHashFunction().replaceFirst("-", ""));
 
 		try 
 		{
