@@ -754,13 +754,11 @@ public class OpenSslService
 		
 		String workingDirectorypathWith1BackSlash = path[0];
 		String workingDirectorypathWith2BackSlash = path[0];
-		String workingDirectorypathWith4BackSlash = path[0];
 		
 		for(int i=1; i < path.length ; i++)
 		{
 			workingDirectorypathWith1BackSlash = workingDirectorypathWith1BackSlash + Utility.getPathSeperator()+ path[i];
 			workingDirectorypathWith2BackSlash = workingDirectorypathWith2BackSlash + Utility.getDoublePathSeperator()+ path[i];
-			workingDirectorypathWith4BackSlash = workingDirectorypathWith4BackSlash + Utility.getQuadPathSeperator()+  path[i];
 		}
 		
 		String indexFile = workingDirectorypathWith2BackSlash  + Utility.getDoublePathSeperator() + fileName + "index"; 
@@ -811,8 +809,8 @@ public class OpenSslService
 					+ "keyUsage         = critical,keyCertSign";
 			
 			configWriter.write("[ CA_default]\r\n"
-					+ "database        = \"" + workingDirectorypathWith4BackSlash + Utility.getDoublePathSeperator() + "rootindex\"\r\n"
-					+ "serial          = \"" + workingDirectorypathWith4BackSlash + Utility.getDoublePathSeperator() + "rootserial\"\r\n"
+					+ "database        = " + Utility.getDoubleQuote() + workingDirectorypathWith2BackSlash + Utility.getDoublePathSeperator() + "rootindex" + Utility.getDoubleQuote() + "\r\n"
+					+ "serial          = " + Utility.getDoubleQuote() + workingDirectorypathWith2BackSlash + Utility.getDoublePathSeperator() + "rootserial" + Utility.getDoubleQuote() + "\r\n"
 					+ "\r\n"
 					+ policyAndExtStr);
 			
