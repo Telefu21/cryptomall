@@ -38,7 +38,7 @@ public class RestApiController
 	
 	private String workingDir;
 	
-	private static final Logger logger = LogManager.getLogger(RestApiController.class);
+	private Logger logger;
 	
 	@Autowired
 	private OpenSslService openSslService;
@@ -62,6 +62,8 @@ public class RestApiController
 	
 	RestApiController()
 	{
+		logger = LogManager.getLogger(RestApiController.class);
+		
 		Path folderPath = Paths.get("web_app_wd");
 		
 		if (!(Files.exists(folderPath) && Files.isDirectory(folderPath))) 
@@ -76,13 +78,13 @@ public class RestApiController
 	        }
         } 
 		
-		workingDir = folderPath.toAbsolutePath().toString();
+		workingDir = folderPath.toAbsolutePath().toString().replace("\\", "\\\\");
 	}
 	
 	@PostMapping("/keygenerateparams")
     public ResponseEntity<Resource> keyGenerate(@RequestBody KeyGenerateParams params) 
 	{
-		params.setInputFilePath("\"" + workingDir + Utility.getPathSeperator() + "keyfile" + "\"");
+		params.setInputFilePath(workingDir + Utility.getDoublePathSeperator() + "keyfile");
 		params.setOutputFilePath(params.getInputFilePath());
 		
 		params.setEncryptKeyFile(true);
@@ -94,7 +96,7 @@ public class RestApiController
 		
 		logger.info(openSslService.keyGenerate(params));
 		
-		Path filePath = Paths.get("C:\\Users\\zgrrd\\OneDrive\\Desktop\\OZGUR-PROJECTS\\cryptomall\\web_app_wd\\keyfile");
+		Path filePath = Paths.get(params.getOutputFilePath());
 		Resource resource = null;
 		
 		try 
