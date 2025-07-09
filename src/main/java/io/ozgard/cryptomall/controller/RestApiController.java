@@ -1,12 +1,20 @@
 package io.ozgard.cryptomall.controller;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,13 +28,17 @@ import io.ozgard.cryptomall.params.SignVerifyPrimeParams;
 import io.ozgard.cryptomall.service.CRCService;
 import io.ozgard.cryptomall.service.OpenSslService;
 import io.ozgard.cryptomall.service.PostQuantumCryptoService;
+import io.ozgard.cryptomall.utility.Utility;
 
 @RestController
 public class RestApiController 
 {
 	@Value("${version}")
 	private String version;
+	
 	private String workingDir;
+	
+	private static final Logger logger = LogManager.getLogger(RestApiController.class);
 	
 	@Autowired
 	private OpenSslService openSslService;
@@ -57,19 +69,43 @@ public class RestApiController
 			try 
 	        {
 	            Files.createDirectory(folderPath);
-	            workingDir = folderPath.toAbsolutePath().toString();
-	            
 	        } 
 	        catch (IOException e) 
 	        {
 	            System.err.println("Error creating folder: " + e.getMessage());
 	        }
         } 
+		
+		workingDir = folderPath.toAbsolutePath().toString();
 	}
 	
 	@PostMapping("/keygenerateparams")
-    public String createUser(@RequestBody KeyGenerateParams params) 
+    public ResponseEntity<Resource> keyGenerate(@RequestBody KeyGenerateParams params) 
 	{
-		return "algorithm: " + params.getKeyGenAlgo() + ", length: " + params.getKeyLength();
+		params.setInputFilePath("\"" + workingDir + Utility.getPathSeperator() + "keyfile" + "\"");
+		params.setOutputFilePath(params.getInputFilePath());
+		
+		params.setEncryptKeyFile(true);
+		
+		if(params.getFileEncryptionPassword() == "")
+		{
+			params.setEncryptKeyFile(false);
+		}
+		
+		logger.info(openSslService.keyGenerate(params));
+		
+		Path filePath = Paths.get("C:\\Users\\zgrrd\\OneDrive\\Desktop\\OZGUR-PROJECTS\\cryptomall\\web_app_wd\\keyfile");
+		Resource resource = null;
+		
+		try 
+		{
+			resource = new UrlResource(filePath.toUri());
+		} 
+		catch (MalformedURLException e) 
+		{
+			e.printStackTrace();
+		}
+
+		return ResponseEntity.ok().contentType(MediaType.APPLICATION_OCTET_STREAM).header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filePath.getFileName().toString() + "\"").body(resource);
     }
 }
