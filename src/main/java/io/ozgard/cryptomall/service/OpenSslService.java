@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import io.ozgard.cryptomall.model.CommandLineProcess;
 import io.ozgard.cryptomall.params.CertificateParams;
 import io.ozgard.cryptomall.params.EncryptDecryptParams;
+import io.ozgard.cryptomall.params.FileConvertParams;
 import io.ozgard.cryptomall.params.KeyGenerateParams;
 import io.ozgard.cryptomall.params.SignVerifyPrimeParams;
 import io.ozgard.cryptomall.utility.Utility;
@@ -242,108 +243,130 @@ public class OpenSslService
 		return cmdRetStr;
 	}
 	
-	public String pubKeyGenerate(KeyGenerateParams keygenParams) 
+	public String pubKeyGenerate(FileConvertParams fileConvertParams) 
 	{
 		clProcess.addCommandLineStr("openssl"); 
 		clProcess.addCommandLineStr("pkey");
 		clProcess.addCommandLineStr("-pubout");
 		clProcess.addCommandLineStr("-outform");
-		clProcess.addCommandLineStr(keygenParams.getOutKeyFileFormat());
+		clProcess.addCommandLineStr("PEM");
 		clProcess.addCommandLineStr("-out");
-		clProcess.addCommandLineStr(keygenParams.getOutputFilePath());
+		clProcess.addCommandLineStr(fileConvertParams.getOutputFilePath());
 		clProcess.addCommandLineStr("-inform");
-		clProcess.addCommandLineStr(keygenParams.getInKeyFileFormat());
+		clProcess.addCommandLineStr("PEM");
 		clProcess.addCommandLineStr("-in");
-		clProcess.addCommandLineStr(keygenParams.getInputFilePath());
+		clProcess.addCommandLineStr(fileConvertParams.getInputFilePath());
 		
-		if(keygenParams.getEncryptKeyFile() == true)	
+		if(fileConvertParams.getEncryptKeyFile() == true)	
 		{
 			clProcess.addCommandLineStr("-passin");
-			clProcess.addCommandLineStr("pass:" + keygenParams.getFileEncryptionPassword());
+			clProcess.addCommandLineStr("pass:" + fileConvertParams.getFileEncryptionPassword());
 		}
 		
 		String cmdRetStr = clProcess.runCommand();
 		
-		cmdRetStr += "\n" + "Converted file save to --> " + keygenParams.getOutputFilePath() + "\n";
+		cmdRetStr += "\n" + "Converted file save to --> " + fileConvertParams.getOutputFilePath() + "\n";
 		
 		clProcess.clearCommandLineStr();
 		
 		return cmdRetStr;
 	}
 	
-	public String convertFilePemDer(KeyGenerateParams keygenParams) 
+	public String convertFileDerToPem(FileConvertParams fileConvertParams) 
 	{
 		clProcess.addCommandLineStr("openssl"); 
 		clProcess.addCommandLineStr("pkey");
 		clProcess.addCommandLineStr("-outform");
-		clProcess.addCommandLineStr(keygenParams.getOutKeyFileFormat());
+		clProcess.addCommandLineStr("PEM");
 		clProcess.addCommandLineStr("-out");
-		clProcess.addCommandLineStr(keygenParams.getOutputFilePath());
+		clProcess.addCommandLineStr(fileConvertParams.getOutputFilePath());
 		clProcess.addCommandLineStr("-inform");
-		clProcess.addCommandLineStr(keygenParams.getInKeyFileFormat());
+		clProcess.addCommandLineStr("DER");
 		clProcess.addCommandLineStr("-in");
-		clProcess.addCommandLineStr(keygenParams.getInputFilePath());
+		clProcess.addCommandLineStr(fileConvertParams.getInputFilePath());
 		
 		String cmdRetStr = clProcess.runCommand();
 		
-		cmdRetStr += "\n" + "Converted file saved to --> " + keygenParams.getOutputFilePath() + "\n";
+		cmdRetStr += "\n" + "Converted file saved to --> " + fileConvertParams.getOutputFilePath() + "\n";
 		
 		clProcess.clearCommandLineStr();
 		
 		return cmdRetStr;
 	}
 	
-	public String convertFileBase64ToAny(KeyGenerateParams keygenParams) 
+	public String convertFilePemToDer(FileConvertParams fileConvertParams) 
+	{
+		clProcess.addCommandLineStr("openssl"); 
+		clProcess.addCommandLineStr("pkey");
+		clProcess.addCommandLineStr("-outform");
+		clProcess.addCommandLineStr("DER");
+		clProcess.addCommandLineStr("-out");
+		clProcess.addCommandLineStr(fileConvertParams.getOutputFilePath());
+		clProcess.addCommandLineStr("-inform");
+		clProcess.addCommandLineStr("PEM");
+		clProcess.addCommandLineStr("-in");
+		clProcess.addCommandLineStr(fileConvertParams.getInputFilePath());
+		
+		String cmdRetStr = clProcess.runCommand();
+		
+		cmdRetStr += "\n" + "Converted file saved to --> " + fileConvertParams.getOutputFilePath() + "\n";
+		
+		clProcess.clearCommandLineStr();
+		
+		return cmdRetStr;
+	}
+	
+	public String convertFileBase64ToAny(FileConvertParams fileConvertParams) 
 	{
 		clProcess.addCommandLineStr("openssl");
 		clProcess.addCommandLineStr("base64");
 		clProcess.addCommandLineStr("-d");
 		clProcess.addCommandLineStr("-out");
-		clProcess.addCommandLineStr(keygenParams.getOutputFilePath());
+		clProcess.addCommandLineStr(fileConvertParams.getOutputFilePath());
 		clProcess.addCommandLineStr("-in");
-		clProcess.addCommandLineStr(keygenParams.getInputFilePath());
+		clProcess.addCommandLineStr(fileConvertParams.getInputFilePath());
 		
 		String cmdRetStr = clProcess.runCommand();
 		
 		clProcess.clearCommandLineStr();
 		
-		cmdRetStr += "\n" + "Converted file saved to --> " + keygenParams.getOutputFilePath() + "\n";
+		cmdRetStr += "\n" + "Converted file saved to --> " + fileConvertParams.getOutputFilePath() + "\n";
 		
 		return cmdRetStr;
 	}
 	
-	public String convertFileAnyToBase64(KeyGenerateParams keygenParams) 
+	public String convertFileAnyToBase64(FileConvertParams fileConvertParams) 
 	{
 		clProcess.addCommandLineStr("openssl");
 		clProcess.addCommandLineStr("base64");
 		clProcess.addCommandLineStr("-out");
-		clProcess.addCommandLineStr(keygenParams.getOutputFilePath());
+		clProcess.addCommandLineStr(fileConvertParams.getOutputFilePath());
 		clProcess.addCommandLineStr("-in");
-		clProcess.addCommandLineStr(keygenParams.getInputFilePath());
+		clProcess.addCommandLineStr(fileConvertParams.getInputFilePath());
 		
 		String cmdRetStr = clProcess.runCommand();
 		
-		cmdRetStr += "\n" + "Converted file saved to --> " + keygenParams.getOutputFilePath() + "\n";
+		cmdRetStr += "\n" + "Converted file saved to --> " + fileConvertParams.getOutputFilePath() + "\n";
 		
 		clProcess.clearCommandLineStr();
 		
 		return cmdRetStr;
 	}
 	
-	public String privKeyView(KeyGenerateParams keygenParams) 
+	public String privKeyView(FileConvertParams fileConvertParams) 
 	{
 		clProcess.addCommandLineStr("openssl"); 
 		clProcess.addCommandLineStr("pkey");
 		clProcess.addCommandLineStr("-text");
 		clProcess.addCommandLineStr("-inform");
-		clProcess.addCommandLineStr(keygenParams.getInKeyFileFormat());
+		clProcess.addCommandLineStr("PEM");
 		clProcess.addCommandLineStr("-in");
-		clProcess.addCommandLineStr(keygenParams.getInputFilePath());
+		clProcess.addCommandLineStr(fileConvertParams.getInputFilePath());
 		
-		if(keygenParams.getEncryptKeyFile() == true)	
+		if(fileConvertParams.getEncryptKeyFile() == true)	
 		{
 			clProcess.addCommandLineStr("-passin");
-			clProcess.addCommandLineStr("pass:" + keygenParams.getFileEncryptionPassword());
+			clProcess.addCommandLineStr("pass:" + fileConvertParams.getFileEncryptionPassword());
 		}
 		
 		String cmdRetStr = clProcess.runCommand();
@@ -353,15 +376,15 @@ public class OpenSslService
 		return cmdRetStr;
 	}
 	
-	public String pubKeyView(KeyGenerateParams keygenParams) 
+	public String pubKeyView(FileConvertParams fileConvertParams) 
 	{
 		clProcess.addCommandLineStr("openssl"); 
 		clProcess.addCommandLineStr("pkey");
 		clProcess.addCommandLineStr("-inform");
-		clProcess.addCommandLineStr(keygenParams.getInKeyFileFormat());
+		clProcess.addCommandLineStr("PEM");
 		clProcess.addCommandLineStr("-pubin");
 		clProcess.addCommandLineStr("-in");
-		clProcess.addCommandLineStr(keygenParams.getInputFilePath());
+		clProcess.addCommandLineStr(fileConvertParams.getInputFilePath());
 		clProcess.addCommandLineStr("-text");
 		
 		String cmdRetStr = clProcess.runCommand();
@@ -686,12 +709,12 @@ public class OpenSslService
 		return cmdRetStr;
 	}
 
-	public String convertFileViewCertificate(KeyGenerateParams keygenParams) 
+	public String convertFileViewCertificate(FileConvertParams fileConvertParams) 
 	{
 		clProcess.addCommandLineStr("openssl"); 
 		clProcess.addCommandLineStr("x509");
 		clProcess.addCommandLineStr("-in");
-		clProcess.addCommandLineStr(keygenParams.getInputFilePath());
+		clProcess.addCommandLineStr(fileConvertParams.getInputFilePath());
 		clProcess.addCommandLineStr("-text"); 
 		clProcess.addCommandLineStr("-noout");
 
@@ -702,12 +725,12 @@ public class OpenSslService
 		return cmdRetStr;
 	}
 	
-	public String convertFileViewCsrCertificate(KeyGenerateParams keygenParams) 
+	public String convertFileViewCsrCertificate(FileConvertParams fileConvertParams) 
 	{
 		clProcess.addCommandLineStr("openssl"); 
 		clProcess.addCommandLineStr("req");
 		clProcess.addCommandLineStr("-in");
-		clProcess.addCommandLineStr(keygenParams.getInputFilePath());
+		clProcess.addCommandLineStr(fileConvertParams.getInputFilePath());
 		clProcess.addCommandLineStr("-text"); 
 		clProcess.addCommandLineStr("-noout");
 
@@ -718,12 +741,12 @@ public class OpenSslService
 		return cmdRetStr;
 	}
 
-	public String convertFileViewCrlCertificate(KeyGenerateParams keygenParams) 
+	public String convertFileViewCrlCertificate(FileConvertParams fileConvertParams) 
 	{
 		clProcess.addCommandLineStr("openssl"); 
 		clProcess.addCommandLineStr("crl");
 		clProcess.addCommandLineStr("-in");
-		clProcess.addCommandLineStr(keygenParams.getInputFilePath());
+		clProcess.addCommandLineStr(fileConvertParams.getInputFilePath());
 		clProcess.addCommandLineStr("-text"); 
 		clProcess.addCommandLineStr("-noout");
 
@@ -734,12 +757,12 @@ public class OpenSslService
 		return cmdRetStr;
 	}
 
-	public String convertFilePemToAnsi(KeyGenerateParams keygenParams) 
+	public String convertFilePemToAnsi(FileConvertParams fileConvertParams) 
 	{
 		clProcess.addCommandLineStr("openssl"); 
 		clProcess.addCommandLineStr("asn1parse");
 		clProcess.addCommandLineStr("-in");
-		clProcess.addCommandLineStr(keygenParams.getInputFilePath());
+		clProcess.addCommandLineStr(fileConvertParams.getInputFilePath());
 
 		String cmdRetStr = clProcess.runCommand();
 		

@@ -7,8 +7,9 @@ import java.math.BigInteger;
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Collection;
+import java.util.Map;
 import java.util.ResourceBundle;
-import java.util.Set;
 import java.util.function.UnaryOperator;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Component;
 import io.ozgard.cryptomall.params.CertificateParams;
 import io.ozgard.cryptomall.params.CrcParams;
 import io.ozgard.cryptomall.params.EncryptDecryptParams;
+import io.ozgard.cryptomall.params.FileConvertParams;
 import io.ozgard.cryptomall.params.KeyGenerateParams;
 import io.ozgard.cryptomall.params.PostQuantumCryptoParams;
 import io.ozgard.cryptomall.params.SignVerifyPrimeParams;
@@ -78,6 +80,8 @@ public class MainSceneController implements Initializable
 	CertificateParams certificateParams;
 	@Autowired
 	PostQuantumCryptoParams postQuantumCryptoParams;
+	@Autowired
+	FileConvertParams fileConvertParams;
 	
 	@FXML
 	@Autowired
@@ -439,22 +443,20 @@ public class MainSceneController implements Initializable
 		comboKeyGenAlgSelect.setValue(KeyGenerateParams.KEYGEN_ALGO_SELECT_RSA);
 		comboKeyGenKeyLength.setItems(FXCollections.observableArrayList(KeyGenerateParams.KEYGEN_KEY_LENGHT_512,KeyGenerateParams.KEYGEN_KEY_LENGHT_1024, KeyGenerateParams.KEYGEN_KEY_LENGHT_2048, KeyGenerateParams.KEYGEN_KEY_LENGHT_4096));
 		comboKeyGenKeyLength.setValue(KeyGenerateParams.KEYGEN_KEY_LENGHT_1024);
-		comboKeyFileConvertConversionOptions.setItems(FXCollections.observableArrayList(KeyGenerateParams.KEYGEN_CONVERT_PUB_FROM_PRIV, KeyGenerateParams.KEYGEN_CONVERT_PRIVKEY_TO_VIEW, KeyGenerateParams.KEYGEN_CONVERT_PUBKEY_TO_VIEW,
-				KeyGenerateParams.KEYGEN_CONVERT_PEM_TO_DER, KeyGenerateParams.KEYGEN_CONVERT_DER_TO_PEM, KeyGenerateParams.KEYGEN_CONVERT_TO_BASE64, KeyGenerateParams.KEYGEN_CONVERT_FROM_BASE64, KeyGenerateParams.KEYGEN_CONVERT_VIEW_CERTIFICATE,
-				KeyGenerateParams.KEYGEN_CONVERT_VIEW_CSR, KeyGenerateParams.KEYGEN_CONVERT_VIEW_CRL,KeyGenerateParams.KEYGEN_CONVERT_PEM_TO_ASN1));
-		comboKeyFileConvertConversionOptions.setValue(KeyGenerateParams.KEYGEN_CONVERT_PUB_FROM_PRIV);
 		comboEncryptDecryptType.setItems(FXCollections.observableArrayList(EncryptDecryptParams.ENCRYPT_DECRYPT_TYPE_SYM_ENCRYPTION, EncryptDecryptParams.ENCRYPT_DECRYPT_TYPE_SYM_DECRYPTION, EncryptDecryptParams.ENCRYPT_DECRYPT_TYPE_ASYM_ENCRYPTION, 
 				EncryptDecryptParams.ENCRYPT_DECRYPT_TYPE_ASYM_DECRYPTION, EncryptDecryptParams.ENCRYPT_DECRYPT_TYPE_GENERATE_HASH, EncryptDecryptParams.ENCRYPT_DECRYPT_TYPE_GENERATE_CMAC, EncryptDecryptParams.ENCRYPT_DECRYPT_TYPE_GENERATE_HMAC));
 		comboEncryptDecryptType.setValue(EncryptDecryptParams.ENCRYPT_DECRYPT_TYPE_SYM_ENCRYPTION);
 		
-		pqcComboItemSet(postQuantumCryptoParams.getDilithiumStrToParams().keySet(), comboBoxPQCDilithiumParams);
-		pqcComboItemSet(postQuantumCryptoParams.getKyberStrToParams().keySet(), comboBoxPQCKyberParams);
-		pqcComboItemSet(postQuantumCryptoParams.getFalconStrToParams().keySet(), comboBoxPQCFalconParams);
-		pqcComboItemSet(postQuantumCryptoParams.getBikeStrToParams().keySet(), comboBoxPQCBikeParams);
-		pqcComboItemSet(postQuantumCryptoParams.getHqcStrToParams().keySet(), comboBoxPQCHQCParams);
-		pqcComboItemSet(postQuantumCryptoParams.getMecelieceStrToParams().keySet(), comboBoxPQCClassicMcElieceParams);
-		pqcComboItemSet(postQuantumCryptoParams.getSphincsStrToParams().keySet(), comboBoxPQCSphincsParams);
-				
+		comboItemSet(postQuantumCryptoParams.getDilithiumStrToParams().keySet(), comboBoxPQCDilithiumParams);
+		comboItemSet(postQuantumCryptoParams.getKyberStrToParams().keySet(), comboBoxPQCKyberParams);
+		comboItemSet(postQuantumCryptoParams.getFalconStrToParams().keySet(), comboBoxPQCFalconParams);
+		comboItemSet(postQuantumCryptoParams.getBikeStrToParams().keySet(), comboBoxPQCBikeParams);
+		comboItemSet(postQuantumCryptoParams.getHqcStrToParams().keySet(), comboBoxPQCHQCParams);
+		comboItemSet(postQuantumCryptoParams.getMecelieceStrToParams().keySet(), comboBoxPQCClassicMcElieceParams);
+		comboItemSet(postQuantumCryptoParams.getSphincsStrToParams().keySet(), comboBoxPQCSphincsParams);
+		comboItemSet(postQuantumCryptoParams.getSphincsStrToParams().keySet(), comboBoxPQCSphincsParams);
+		comboItemSet(fileConvertParams.getConvertOperationIdToName().values(), comboKeyFileConvertConversionOptions);
+		
 		titledPaneKeygenSettings.setCollapsible(false);
 		titledPaneKeygenProcessing.setCollapsible(false);
 		titledPaneEncryptDecryptFile.setCollapsible(false);
@@ -1222,106 +1224,93 @@ public class MainSceneController implements Initializable
 	{
 		String outputFileName = textFieldWorkingDirectory.getText() + Utility.getPathSeperator() + textFieldKeyFileConvertFilePath.getText().split(Utility.getDoublePathSeperator())[textFieldKeyFileConvertFilePath.getText().split(Utility.getDoublePathSeperator()).length - 1].split("\\.")[0];
 		
-		switch(comboKeyFileConvertConversionOptions.getValue())
+		fileConvertParams.setInputFilePath("\"" + textFieldKeyFileConvertFilePath.getText() + "\"");
+		
+		int fileConvertOperationId = 0;
+		
+		for (Map.Entry<Integer, String> entry : fileConvertParams.getConvertOperationIdToName().entrySet()) 
 		{
-			case KeyGenerateParams.KEYGEN_CONVERT_DER_TO_PEM:
-				keygenParams.setInputFilePath("\"" + textFieldKeyFileConvertFilePath.getText() + "\"");
-				keygenParams.setOutputFilePath("\"" + outputFileName + ".pem" + "\"");
-				keygenParams.setInKeyFileFormat(KeyGenerateParams.KEYGEN_FILE_FORMAT_SELECT_DER);
-				keygenParams.setOutKeyFileFormat(KeyGenerateParams.KEYGEN_FILE_FORMAT_SELECT_PEM);
+			if (entry.getValue().equals(comboKeyFileConvertConversionOptions.getValue())) 
+			{
+				fileConvertOperationId = entry.getKey();
+				break;
+			}
+		}
+         
+		switch(fileConvertOperationId)
+		{
+			case FileConvertParams.FILE_CONVERT_DER_TO_PEM:
+				fileConvertParams.setOutputFilePath("\"" + outputFileName + ".pem" + "\"");
 				
-				setLogOutput(openSslService.convertFilePemDer(keygenParams) );
+				setLogOutput(openSslService.convertFileDerToPem(fileConvertParams) );
 				break;
 				
-			case KeyGenerateParams.KEYGEN_CONVERT_PEM_TO_DER:
-				keygenParams.setInputFilePath("\"" + textFieldKeyFileConvertFilePath.getText() + "\"");
-				keygenParams.setOutputFilePath("\"" + outputFileName + ".der" + "\"");
-				keygenParams.setInKeyFileFormat(KeyGenerateParams.KEYGEN_FILE_FORMAT_SELECT_PEM);
-				keygenParams.setOutKeyFileFormat(KeyGenerateParams.KEYGEN_FILE_FORMAT_SELECT_DER);
+			case FileConvertParams.FILE_CONVERT_PEM_TO_DER:
+				fileConvertParams.setOutputFilePath("\"" + outputFileName + ".der" + "\"");
 				
-				setLogOutput(openSslService.convertFilePemDer(keygenParams));
+				setLogOutput(openSslService.convertFilePemToDer(fileConvertParams));
 				break;
 				
-			case KeyGenerateParams.KEYGEN_CONVERT_PRIVKEY_TO_VIEW:
-				keygenParams.setInputFilePath("\"" + textFieldKeyFileConvertFilePath.getText() + "\"");
-				keygenParams.setInKeyFileFormat(KeyGenerateParams.KEYGEN_FILE_FORMAT_SELECT_PEM);
-				keygenParams.setOutKeyFileFormat(KeyGenerateParams.KEYGEN_FILE_FORMAT_SELECT_PEM);
-				
+			case FileConvertParams.FILE_CONVERT_PRIVKEY_TO_VIEW:
 				if(passFieldKeyFileConvertPasswd.getText().length() >= 4)
 				{
-					keygenParams.setFileEncryptionPassword(passFieldKeyFileConvertPasswd.getText());
-					keygenParams.setEncryptKeyFile(true);
+					fileConvertParams.setFileEncryptionPassword(passFieldKeyFileConvertPasswd.getText());
+					fileConvertParams.setEncryptKeyFile(true);
 				}
 				else
 				{
-					keygenParams.setEncryptKeyFile(false);
+					fileConvertParams.setEncryptKeyFile(false);
 				}
 				
-				setLogOutput(openSslService.privKeyView(keygenParams));
+				setLogOutput(openSslService.privKeyView(fileConvertParams));
 				break;
 				
-			case KeyGenerateParams.KEYGEN_CONVERT_PUBKEY_TO_VIEW:
-				keygenParams.setInputFilePath("\"" + textFieldKeyFileConvertFilePath.getText() + "\"");
-				keygenParams.setInKeyFileFormat(KeyGenerateParams.KEYGEN_FILE_FORMAT_SELECT_PEM);
-				keygenParams.setOutKeyFileFormat(KeyGenerateParams.KEYGEN_FILE_FORMAT_SELECT_PEM);
-				setLogOutput(openSslService.pubKeyView(keygenParams));
+			case FileConvertParams.FILE_CONVERT_PUBKEY_TO_VIEW:
+				setLogOutput(openSslService.pubKeyView(fileConvertParams));
 				break;
 				
-			case KeyGenerateParams.KEYGEN_CONVERT_PUB_FROM_PRIV:
-				keygenParams.setInputFilePath("\"" + textFieldKeyFileConvertFilePath.getText() + "\"");
-				keygenParams.setOutputFilePath("\"" + outputFileName  + "_pub.pem" + "\"");
-				keygenParams.setInKeyFileFormat(KeyGenerateParams.KEYGEN_FILE_FORMAT_SELECT_PEM);
-				keygenParams.setOutKeyFileFormat(KeyGenerateParams.KEYGEN_FILE_FORMAT_SELECT_PEM);
+			case FileConvertParams.FILE_CONVERT_PUB_FROM_PRIV:
+				fileConvertParams.setOutputFilePath("\"" + outputFileName  + "_pub.pem" + "\"");
 				
 				if(passFieldKeyFileConvertPasswd.getText().length() >= 4)
 				{
-					keygenParams.setFileEncryptionPassword(passFieldKeyFileConvertPasswd.getText());
-					keygenParams.setEncryptKeyFile(true);
+					fileConvertParams.setFileEncryptionPassword(passFieldKeyFileConvertPasswd.getText());
+					fileConvertParams.setEncryptKeyFile(true);
 				}
 				else
 				{
-					keygenParams.setEncryptKeyFile(false);
+					fileConvertParams.setEncryptKeyFile(false);
 				}
 				
-				setLogOutput(openSslService.pubKeyGenerate(keygenParams));
+				setLogOutput(openSslService.pubKeyGenerate(fileConvertParams));
 				break;
 				
-			case KeyGenerateParams.KEYGEN_CONVERT_FROM_BASE64:
-				keygenParams.setInputFilePath("\"" + textFieldKeyFileConvertFilePath.getText() + "\"");
-				keygenParams.setOutputFilePath("\"" + outputFileName + ".file" + "\"");
+			case FileConvertParams.FILE_CONVERT_FROM_BASE64:
+				fileConvertParams.setOutputFilePath("\"" + outputFileName + ".file" + "\"");
 				
-				setLogOutput(openSslService.convertFileBase64ToAny(keygenParams));
+				setLogOutput(openSslService.convertFileBase64ToAny(fileConvertParams));
 				break;
 				
-			case KeyGenerateParams.KEYGEN_CONVERT_TO_BASE64:
-				keygenParams.setInputFilePath("\"" + textFieldKeyFileConvertFilePath.getText() + "\"");
-				keygenParams.setOutputFilePath("\"" + outputFileName + ".b64" + "\"");
+			case FileConvertParams.FILE_CONVERT_TO_BASE64:
+				fileConvertParams.setOutputFilePath("\"" + outputFileName + ".b64" + "\"");
 				
-				setLogOutput(openSslService.convertFileBase64ToAny(keygenParams));
+				setLogOutput(openSslService.convertFileBase64ToAny(fileConvertParams));
 				break;
 				
-			case KeyGenerateParams.KEYGEN_CONVERT_VIEW_CERTIFICATE:
-				keygenParams.setInputFilePath("\"" + textFieldKeyFileConvertFilePath.getText() + "\"");
-				
-				setLogOutput(openSslService.convertFileViewCertificate(keygenParams));
+			case FileConvertParams.FILE_CONVERT_VIEW_CERTIFICATE:
+				setLogOutput(openSslService.convertFileViewCertificate(fileConvertParams));
 				break;
 				
-			case KeyGenerateParams.KEYGEN_CONVERT_VIEW_CRL:
-				keygenParams.setInputFilePath("\"" + textFieldKeyFileConvertFilePath.getText() + "\"");
-				
-				setLogOutput(openSslService.convertFileViewCrlCertificate(keygenParams));
+			case FileConvertParams.FILE_CONVERT_VIEW_CRL:
+				setLogOutput(openSslService.convertFileViewCrlCertificate(fileConvertParams));
 				break;
 				
-			case KeyGenerateParams.KEYGEN_CONVERT_VIEW_CSR:
-				keygenParams.setInputFilePath("\"" + textFieldKeyFileConvertFilePath.getText() + "\"");
-				
-				setLogOutput(openSslService.convertFileViewCsrCertificate(keygenParams));
+			case FileConvertParams.FILE_CONVERT_VIEW_CSR:
+				setLogOutput(openSslService.convertFileViewCsrCertificate(fileConvertParams));
 				break;
 				
-			case KeyGenerateParams.KEYGEN_CONVERT_PEM_TO_ASN1:
-				keygenParams.setInputFilePath("\"" + textFieldKeyFileConvertFilePath.getText() + "\"");
-				
-				setLogOutput(openSslService.convertFilePemToAnsi(keygenParams));
+			case FileConvertParams.FILE_CONVERT_PEM_TO_ASN1:
+				setLogOutput(openSslService.convertFilePemToAnsi(fileConvertParams));
 				break;
 		}
 	}
@@ -2046,18 +2035,17 @@ public class MainSceneController implements Initializable
 		return isFileSelected;
 	}
 	
-	private void pqcComboItemSet(Set<String> keyset, ComboBox<String> comboBox)
+	private void comboItemSet(Collection<String> keyset, ComboBox<String> comboBox)
 	{
-		ObservableList<String> itemListPqc = FXCollections.observableArrayList();
+		ObservableList<String> itemList = FXCollections.observableArrayList();
 		
 		for (String key : keyset) 
 		{
-			itemListPqc.add(key);
+			itemList.add(key);
 		}
 		
-		
-		comboBox.setItems(itemListPqc.sorted());	
-		comboBox.setValue(itemListPqc.sorted().get(0));
+		comboBox.setItems(itemList.sorted());	
+		comboBox.setValue(itemList.sorted().get(0));
 	}
 	
 	void setLogOutput(String text)

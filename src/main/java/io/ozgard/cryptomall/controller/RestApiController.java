@@ -17,11 +17,15 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import io.ozgard.cryptomall.params.CertificateParams;
 import io.ozgard.cryptomall.params.CrcParams;
 import io.ozgard.cryptomall.params.EncryptDecryptParams;
+import io.ozgard.cryptomall.params.FileConvertParams;
 import io.ozgard.cryptomall.params.KeyGenerateParams;
 import io.ozgard.cryptomall.params.PostQuantumCryptoParams;
 import io.ozgard.cryptomall.params.SignVerifyPrimeParams;
@@ -109,5 +113,12 @@ public class RestApiController
 		}
 
 		return ResponseEntity.ok().contentType(MediaType.APPLICATION_OCTET_STREAM).header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filePath.getFileName().toString() + "\"").body(resource);
+    }
+	
+	@PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+	@RequestMapping("/fileConvertparams")
+    public String handleMixedUpload(@RequestPart("metadata") FileConvertParams metadata, @RequestPart("file") MultipartFile file) 
+	{
+        return "deneme";
     }
 }
