@@ -32,16 +32,16 @@ public class FileConvertParams
 	{
 		convertOperationIdToName = new HashMap<>();
 		
-		convertOperationIdToName.put(FILE_CONVERT_PUB_FROM_PRIV, "Get Public Key from Private Key File - Only PEM File");
-		convertOperationIdToName.put(FILE_CONVERT_PUBKEY_TO_VIEW, "View Public Key File in Human Readable Form - Only PEM File");
-		convertOperationIdToName.put(FILE_CONVERT_PRIVKEY_TO_VIEW, "View Private Key File in Human Readable Form - Only PEM File");
-		convertOperationIdToName.put(FILE_CONVERT_DER_TO_PEM, "Convert DER File to PEM File");
-		convertOperationIdToName.put(FILE_CONVERT_PEM_TO_DER, "Convert PEM File to DER File");
+		convertOperationIdToName.put(FILE_CONVERT_PUB_FROM_PRIV, "Get Public Key from Private Key File (PEM)");
+		convertOperationIdToName.put(FILE_CONVERT_PUBKEY_TO_VIEW, "View Public Key File in Human Readable Form (PEM)");
+		convertOperationIdToName.put(FILE_CONVERT_PRIVKEY_TO_VIEW, "View Private Key File in Human Readable Form (PEM)");
+		convertOperationIdToName.put(FILE_CONVERT_DER_TO_PEM, "Convert DER Private Key file to PEM");
+		convertOperationIdToName.put(FILE_CONVERT_PEM_TO_DER, "Convert PEM Private Key file to DER");
 		convertOperationIdToName.put(FILE_CONVERT_TO_BASE64, "Convert Any File to base64 File");
 		convertOperationIdToName.put(FILE_CONVERT_FROM_BASE64, "Convert Base64 File to Any File");
-		convertOperationIdToName.put(FILE_CONVERT_VIEW_CERTIFICATE, "View Certificate - Only PEM File");
-		convertOperationIdToName.put(FILE_CONVERT_VIEW_CRL, "View CRL Certificate - Only PEM File");
-		convertOperationIdToName.put(FILE_CONVERT_VIEW_CSR, "View CSR Certificate - Only PEM File");
+		convertOperationIdToName.put(FILE_CONVERT_VIEW_CERTIFICATE, "View Certificate - (PEM)");
+		convertOperationIdToName.put(FILE_CONVERT_VIEW_CRL, "View CRL Certificate - (PEM)");
+		convertOperationIdToName.put(FILE_CONVERT_VIEW_CSR, "View CSR Certificate - (PEM)");
 		convertOperationIdToName.put(FILE_CONVERT_PEM_TO_ASN1, "Parse PEM to ASN1");
 	}
 	

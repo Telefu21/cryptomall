@@ -5,6 +5,7 @@ import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -35,7 +36,7 @@ import io.ozgard.cryptomall.service.PostQuantumCryptoService;
 import io.ozgard.cryptomall.utility.Utility;
 
 @RestController
-public class RestApiController 
+public class RestApiController extends Controller
 {
 	@Value("${version}")
 	private String version;
@@ -63,6 +64,8 @@ public class RestApiController
 	CertificateParams certificateParams;
 	@Autowired
 	PostQuantumCryptoParams postQuantumCryptoParams;
+	@Autowired
+	FileConvertParams fileConvertParams;
 	
 	RestApiController()
 	{
@@ -100,7 +103,41 @@ public class RestApiController
 		
 		logger.info(openSslService.keyGenerate(params));
 		
-		Path filePath = Paths.get(params.getOutputFilePath());
+		return returnFile(params.getOutputFilePath());
+	}
+	
+	@PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+	@RequestMapping("/fileConvertparams")
+    public ResponseEntity<Resource> handleMixedUpload(@RequestPart("metadata") FileConvertParams params, @RequestPart("file") MultipartFile file) 
+	{
+		if (file.isEmpty()) 
+		{
+			return ResponseEntity.badRequest().build();
+        }
+		
+		fileConvertParams.setInputFilePath(workingDir + Utility.getDoublePathSeperator() + "tmp");
+		
+		try 
+		{
+			Utility.writeBytesToFile(file.getBytes(), fileConvertParams.getInputFilePath());
+		} 
+		catch (IOException e) 
+		{
+			e.printStackTrace();
+		}
+		
+		String outputFileName = workingDir + Utility.getPathSeperator() + workingDir.split(Utility.getDoublePathSeperator())[workingDir.split(Utility.getDoublePathSeperator()).length - 1].split("\\.")[0];
+		
+		int fileConvertOperationId = 0;
+
+		logger.info(fileConvertOperations(fileConvertOperationId, fileConvertParams, openSslService, outputFileName, fileConvertParams.getFileEncryptionPassword()));
+		
+		return returnFile(params.getOutputFilePath());
+    }
+	
+	private ResponseEntity<Resource> returnFile(String fileName)
+	{
+		Path filePath = Paths.get(fileName);
 		Resource resource = null;
 		
 		try 
@@ -112,13 +149,6 @@ public class RestApiController
 			e.printStackTrace();
 		}
 
-		return ResponseEntity.ok().contentType(MediaType.APPLICATION_OCTET_STREAM).header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filePath.getFileName().toString() + "\"").body(resource);
-    }
-	
-	@PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-	@RequestMapping("/fileConvertparams")
-    public String handleMixedUpload(@RequestPart("metadata") FileConvertParams metadata, @RequestPart("file") MultipartFile file) 
-	{
-        return "deneme";
-    }
+		return ResponseEntity.ok().contentType(MediaType.APPLICATION_OCTET_STREAM).header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filePath.getFileName().toString() + "\"").body(resource);	
+	}
 }

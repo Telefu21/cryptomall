@@ -55,7 +55,7 @@ import net.rgielen.fxweaver.core.FxmlView;
 
 @Component
 @FxmlView("../view/mainscene.fxml")
-public class MainSceneController implements Initializable
+public class MainSceneController extends Controller implements Initializable
 {
 	private static Stage stage = null;
 	
@@ -1237,82 +1237,7 @@ public class MainSceneController implements Initializable
 			}
 		}
          
-		switch(fileConvertOperationId)
-		{
-			case FileConvertParams.FILE_CONVERT_DER_TO_PEM:
-				fileConvertParams.setOutputFilePath("\"" + outputFileName + ".pem" + "\"");
-				
-				setLogOutput(openSslService.convertFileDerToPem(fileConvertParams) );
-				break;
-				
-			case FileConvertParams.FILE_CONVERT_PEM_TO_DER:
-				fileConvertParams.setOutputFilePath("\"" + outputFileName + ".der" + "\"");
-				
-				setLogOutput(openSslService.convertFilePemToDer(fileConvertParams));
-				break;
-				
-			case FileConvertParams.FILE_CONVERT_PRIVKEY_TO_VIEW:
-				if(passFieldKeyFileConvertPasswd.getText().length() >= 4)
-				{
-					fileConvertParams.setFileEncryptionPassword(passFieldKeyFileConvertPasswd.getText());
-					fileConvertParams.setEncryptKeyFile(true);
-				}
-				else
-				{
-					fileConvertParams.setEncryptKeyFile(false);
-				}
-				
-				setLogOutput(openSslService.privKeyView(fileConvertParams));
-				break;
-				
-			case FileConvertParams.FILE_CONVERT_PUBKEY_TO_VIEW:
-				setLogOutput(openSslService.pubKeyView(fileConvertParams));
-				break;
-				
-			case FileConvertParams.FILE_CONVERT_PUB_FROM_PRIV:
-				fileConvertParams.setOutputFilePath("\"" + outputFileName  + "_pub.pem" + "\"");
-				
-				if(passFieldKeyFileConvertPasswd.getText().length() >= 4)
-				{
-					fileConvertParams.setFileEncryptionPassword(passFieldKeyFileConvertPasswd.getText());
-					fileConvertParams.setEncryptKeyFile(true);
-				}
-				else
-				{
-					fileConvertParams.setEncryptKeyFile(false);
-				}
-				
-				setLogOutput(openSslService.pubKeyGenerate(fileConvertParams));
-				break;
-				
-			case FileConvertParams.FILE_CONVERT_FROM_BASE64:
-				fileConvertParams.setOutputFilePath("\"" + outputFileName + ".file" + "\"");
-				
-				setLogOutput(openSslService.convertFileBase64ToAny(fileConvertParams));
-				break;
-				
-			case FileConvertParams.FILE_CONVERT_TO_BASE64:
-				fileConvertParams.setOutputFilePath("\"" + outputFileName + ".b64" + "\"");
-				
-				setLogOutput(openSslService.convertFileBase64ToAny(fileConvertParams));
-				break;
-				
-			case FileConvertParams.FILE_CONVERT_VIEW_CERTIFICATE:
-				setLogOutput(openSslService.convertFileViewCertificate(fileConvertParams));
-				break;
-				
-			case FileConvertParams.FILE_CONVERT_VIEW_CRL:
-				setLogOutput(openSslService.convertFileViewCrlCertificate(fileConvertParams));
-				break;
-				
-			case FileConvertParams.FILE_CONVERT_VIEW_CSR:
-				setLogOutput(openSslService.convertFileViewCsrCertificate(fileConvertParams));
-				break;
-				
-			case FileConvertParams.FILE_CONVERT_PEM_TO_ASN1:
-				setLogOutput(openSslService.convertFilePemToAnsi(fileConvertParams));
-				break;
-		}
+		setLogOutput(fileConvertOperations(fileConvertOperationId, fileConvertParams, openSslService, outputFileName, passFieldKeyFileConvertPasswd.getText()));
 	}
 	
 	@FXML
