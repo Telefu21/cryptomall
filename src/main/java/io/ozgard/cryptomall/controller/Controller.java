@@ -4,6 +4,7 @@ import org.springframework.stereotype.Component;
 
 import io.ozgard.cryptomall.params.FileConvertParams;
 import io.ozgard.cryptomall.service.OpenSslService;
+import io.ozgard.cryptomall.utility.Utility;
 
 @Component
 public class Controller 
@@ -13,12 +14,12 @@ public class Controller
 		switch(fileConvertOperationId)
 		{
 			case FileConvertParams.FILE_CONVERT_DER_TO_PEM:
-				fileConvertParams.setOutputFilePath("\"" + outputFileName + ".pem" + "\"");
+				fileConvertParams.setOutputFilePath(outputFileName + ".pem");
 				
 				return openSslService.convertFileDerToPem(fileConvertParams);
 				
 			case FileConvertParams.FILE_CONVERT_PEM_TO_DER:
-				fileConvertParams.setOutputFilePath("\"" + outputFileName + ".der" + "\"");
+				fileConvertParams.setOutputFilePath(outputFileName + ".der");
 				
 				return openSslService.convertFilePemToDer(fileConvertParams);
 				
@@ -39,7 +40,7 @@ public class Controller
 				return openSslService.pubKeyView(fileConvertParams);
 				
 			case FileConvertParams.FILE_CONVERT_PUB_FROM_PRIV:
-				fileConvertParams.setOutputFilePath("\"" + outputFileName  + "_pub.pem" + "\"");
+				fileConvertParams.setOutputFilePath(outputFileName  + "_pub.pem");
 				
 				if(passWd.length() >= 4)
 				{
@@ -54,12 +55,12 @@ public class Controller
 				return openSslService.pubKeyGenerate(fileConvertParams);
 				
 			case FileConvertParams.FILE_CONVERT_FROM_BASE64:
-				fileConvertParams.setOutputFilePath("\"" + outputFileName + ".file" + "\"");
+				fileConvertParams.setOutputFilePath(outputFileName + ".file");
 				
 				return openSslService.convertFileBase64ToAny(fileConvertParams);
 				
 			case FileConvertParams.FILE_CONVERT_TO_BASE64:
-				fileConvertParams.setOutputFilePath("\"" + outputFileName + ".b64" + "\"");
+				fileConvertParams.setOutputFilePath(outputFileName + ".b64");
 				
 				return openSslService.convertFileAnyToBase64(fileConvertParams);
 				

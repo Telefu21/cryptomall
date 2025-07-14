@@ -106,31 +106,48 @@ public class RestApiController extends Controller
 		return returnFile(params.getOutputFilePath());
 	}
 	
-	@PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-	@RequestMapping("/fileConvertparams")
-    public ResponseEntity<Resource> handleMixedUpload(@RequestPart("metadata") FileConvertParams params, @RequestPart("file") MultipartFile file) 
+	@PostMapping(value = "/fileConvertparams", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+	public ResponseEntity<Resource> handleMixedUpload(@RequestPart("params") FileConvertParams params, @RequestPart("file") MultipartFile file) 
 	{
 		if (file.isEmpty()) 
 		{
 			return ResponseEntity.badRequest().build();
         }
 		
-		fileConvertParams.setInputFilePath(workingDir + Utility.getDoublePathSeperator() + "tmp");
+		params.setInputFilePath(workingDir + Utility.getDoublePathSeperator() + "tmp");
 		
 		try 
 		{
-			Utility.writeBytesToFile(file.getBytes(), fileConvertParams.getInputFilePath());
+			Utility.writeBytesToFile(file.getBytes(), params.getInputFilePath());
 		} 
 		catch (IOException e) 
 		{
 			e.printStackTrace();
 		}
 		
-		String outputFileName = workingDir + Utility.getPathSeperator() + workingDir.split(Utility.getDoublePathSeperator())[workingDir.split(Utility.getDoublePathSeperator()).length - 1].split("\\.")[0];
+		String outputFileName = workingDir + Utility.getDoublePathSeperator() + "temp";
 		
-		int fileConvertOperationId = 0;
-
-		logger.info(fileConvertOperations(fileConvertOperationId, fileConvertParams, openSslService, outputFileName, fileConvertParams.getFileEncryptionPassword()));
+		int fileOperationIdNo = params.getFileOperationIdNo();
+		
+		String retStr = fileConvertOperations(fileOperationIdNo, params, openSslService, outputFileName, params.getFileEncryptionPassword());
+		
+		if(fileOperationIdNo == FileConvertParams.FILE_CONVERT_PRIVKEY_TO_VIEW ||
+		   fileOperationIdNo == FileConvertParams.FILE_CONVERT_PUBKEY_TO_VIEW ||
+		   fileOperationIdNo == FileConvertParams.FILE_CONVERT_VIEW_CERTIFICATE ||
+		   fileOperationIdNo == FileConvertParams.FILE_CONVERT_VIEW_CRL ||
+		   fileOperationIdNo == FileConvertParams.FILE_CONVERT_VIEW_CSR ||
+		   fileOperationIdNo == FileConvertParams.FILE_CONVERT_PEM_TO_ASN1)
+		{
+			Utility.writeBytesToFile(retStr.getBytes(), outputFileName);
+			
+			params.setOutputFilePath(outputFileName);
+			
+			logger.info("converted file sent to client");
+		}
+		else
+		{
+			logger.info(retStr);
+		}
 		
 		return returnFile(params.getOutputFilePath());
     }
