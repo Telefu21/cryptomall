@@ -4,7 +4,6 @@ import org.springframework.stereotype.Component;
 
 import io.ozgard.cryptomall.params.FileConvertParams;
 import io.ozgard.cryptomall.service.OpenSslService;
-import io.ozgard.cryptomall.utility.Utility;
 
 @Component
 public class Controller 

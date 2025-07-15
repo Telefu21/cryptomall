@@ -1112,7 +1112,6 @@ public class MainSceneController extends Controller implements Initializable
 		keygenParams.setEncryptKeyFile(checkBoxKeyGenEncryptKeyFile.isSelected());
 		keygenParams.setFileEncryptionCipher(comboKeyGenFileEncyptCipher.getValue());
 		keygenParams.setFileEncryptionPassword(passFieldKeyGenFilePasswd.getText());
-		keygenParams.setInKeyFileFormat(comboKeyGenKeyFileFormat.getValue());
 		keygenParams.setOutKeyFileFormat(comboKeyGenKeyFileFormat.getValue());
 		keygenParams.setKeyGenAlgo(comboKeyGenAlgSelect.getValue());
 		keygenParams.setKeyLength(comboKeyGenKeyLength.getValue());

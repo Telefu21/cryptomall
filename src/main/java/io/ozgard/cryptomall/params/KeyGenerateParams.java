@@ -23,7 +23,6 @@ public class KeyGenerateParams
 	String	outputFilePath;
 	String	inputFilePath;
 	String	keyGenAlgo;
-	String	inKeyFileFormat;
 	String	outKeyFileFormat;
 	String	keyLength;
 	String	elepticCurveName;
@@ -109,16 +108,6 @@ public class KeyGenerateParams
 	public void setEncryptKeyFile(Boolean encryptKeyFile) 
 	{
 		this.encryptKeyFile = encryptKeyFile;
-	}
-	
-	public String getInKeyFileFormat() 
-	{
-		return inKeyFileFormat;
-	}
-
-	public void setInKeyFileFormat(String inKeyFileFormat) 
-	{
-		this.inKeyFileFormat = inKeyFileFormat;
 	}
 
 	public String getOutKeyFileFormat() 

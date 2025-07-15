@@ -5,6 +5,7 @@ import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalTime;
 import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
@@ -52,21 +53,6 @@ public class RestApiController extends Controller
 	@Autowired
 	private PostQuantumCryptoService postQuantumCryptoService;
 	
-	@Autowired
-	KeyGenerateParams keygenParams;
-	@Autowired
-	EncryptDecryptParams encryptDecryptParams;
-	@Autowired
-	SignVerifyPrimeParams signVerifyPrimeParams;
-	@Autowired
-	CrcParams crcParams;
-	@Autowired
-	CertificateParams certificateParams;
-	@Autowired
-	PostQuantumCryptoParams postQuantumCryptoParams;
-	@Autowired
-	FileConvertParams fileConvertParams;
-	
 	RestApiController()
 	{
 		logger = LogManager.getLogger(RestApiController.class);
@@ -88,26 +74,19 @@ public class RestApiController extends Controller
 		workingDir = folderPath.toAbsolutePath().toString().replace("\\", "\\\\");
 	}
 	
-	@PostMapping("/keygenerateparams")
+	@PostMapping("/keygenerate")
     public ResponseEntity<Resource> keyGenerate(@RequestBody KeyGenerateParams params) 
 	{
 		params.setInputFilePath(workingDir + Utility.getDoublePathSeperator() + "keyfile");
 		params.setOutputFilePath(params.getInputFilePath());
-		
-		params.setEncryptKeyFile(true);
-		
-		if(params.getFileEncryptionPassword() == "")
-		{
-			params.setEncryptKeyFile(false);
-		}
 		
 		logger.info(openSslService.keyGenerate(params));
 		
 		return returnFile(params.getOutputFilePath());
 	}
 	
-	@PostMapping(value = "/fileConvertparams", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-	public ResponseEntity<Resource> handleMixedUpload(@RequestPart("params") FileConvertParams params, @RequestPart("file") MultipartFile file) 
+	@PostMapping(value = "/fileconvert", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+	public ResponseEntity<Resource> fileConvert(@RequestPart("params") FileConvertParams params, @RequestPart("file") MultipartFile file) 
 	{
 		if (file.isEmpty()) 
 		{
@@ -148,6 +127,33 @@ public class RestApiController extends Controller
 		{
 			logger.info(retStr);
 		}
+		
+		return returnFile(params.getOutputFilePath());
+    }
+	
+	@PostMapping(value = "/signaturegenerate", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+	public ResponseEntity<Resource> signatureGenerate(@RequestPart("params") SignVerifyPrimeParams params, @RequestPart("inputfile") MultipartFile inputFile, @RequestPart("privatekeyfile") MultipartFile privateKeyFile) 
+	{
+		if (inputFile.isEmpty() || privateKeyFile.isEmpty()) 
+		{
+			return ResponseEntity.badRequest().build();
+        }
+		
+		params.setInputFilePath(workingDir + Utility.getDoublePathSeperator() + "input");
+		params.setKeyFilePath(workingDir + Utility.getDoublePathSeperator() + "key");
+		
+		try 
+		{
+			Utility.writeBytesToFile(inputFile.getBytes(), params.getInputFilePath());
+			Utility.writeBytesToFile(privateKeyFile.getBytes(), params.getKeyFilePath());
+		} 
+		catch (IOException e) 
+		{
+			e.printStackTrace();
+		}
+		
+		params.setOutputFilePath(workingDir + Utility.getDoublePathSeperator() + "out");
+		openSslService.generateSignature(params);
 		
 		return returnFile(params.getOutputFilePath());
     }
