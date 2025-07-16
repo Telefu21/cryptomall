@@ -5,8 +5,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class SignVerifyPrimeParams 
 {
-	String	HashFunction;
-	String	SaltLen;
+	String	hashFunction;
+	String	saltLen;
 	String	inputFilePath;
 	String	keyFilePath;
 	String	signatureFilePath;
@@ -14,7 +14,7 @@ public class SignVerifyPrimeParams
 	String	PrimeLength;
 	boolean	isSafePrime;
 	boolean	isHexOutPrime;
-	boolean	isRsaPssEnabled;
+	boolean	rsaPssEnabled;
 	
 	public String getOutputFilePath() 
 	{
@@ -28,22 +28,22 @@ public class SignVerifyPrimeParams
 
 	public String getHashFunction() 
 	{
-		return HashFunction;
+		return hashFunction;
 	}
 	
 	public void setHashFunction(String hashFunction) 
 	{
-		HashFunction = hashFunction;
+		this.hashFunction = hashFunction;
 	}
 	
 	public String getSaltLen() 
 	{
-		return SaltLen;
+		return saltLen;
 	}
 	
 	public void setSaltLen(String saltLen) 
 	{
-		SaltLen = saltLen;
+		this.saltLen = saltLen;
 	}
 	
 	public String getInputFilePath() 
@@ -105,15 +105,15 @@ public class SignVerifyPrimeParams
 	{
 		this.isHexOutPrime = isHexOutPrime;
 	}
-	
+
 	public boolean isRsaPssEnabled() 
 	{
-		return isRsaPssEnabled;
+		return rsaPssEnabled;
 	}
-	
-	public void setRsaPssEnabled(boolean isRsaPssEnabled) 
+
+	public void setRsaPssEnabled(boolean rsaPssEnabled) 
 	{
-		this.isRsaPssEnabled = isRsaPssEnabled;
+		this.rsaPssEnabled = rsaPssEnabled;
 	}
 	
 	
