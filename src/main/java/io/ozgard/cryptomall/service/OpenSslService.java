@@ -14,6 +14,7 @@ import io.ozgard.cryptomall.params.CertificateParams;
 import io.ozgard.cryptomall.params.EncryptDecryptParams;
 import io.ozgard.cryptomall.params.FileConvertParams;
 import io.ozgard.cryptomall.params.KeyGenerateParams;
+import io.ozgard.cryptomall.params.PrimeGenerateParams;
 import io.ozgard.cryptomall.params.SignVerifyPrimeParams;
 import io.ozgard.cryptomall.utility.Utility;
 
@@ -625,20 +626,20 @@ public class OpenSslService
 		return passwdLen;
 	}
 
-	public String generatePrime(SignVerifyPrimeParams signVerifyPrimeParams) 
+	public String generatePrime(PrimeGenerateParams primeGenerate) 
 	{
 		clProcess.addCommandLineStr("openssl"); 
 		clProcess.addCommandLineStr("prime");
 		clProcess.addCommandLineStr("-generate");
 		clProcess.addCommandLineStr("-bits");
-		clProcess.addCommandLineStr(signVerifyPrimeParams.getPrimeLength());
+		clProcess.addCommandLineStr(primeGenerate.getPrimeLength());
 		
-		if(signVerifyPrimeParams.isHexOutPrime()== true)
+		if(primeGenerate.isHexOutPrime()== true)
 		{
 			clProcess.addCommandLineStr("-hex"); 
 		}
 		
-		if(signVerifyPrimeParams.isSafePrime()== true)
+		if(primeGenerate.isSafePrime()== true)
 		{
 			clProcess.addCommandLineStr("-safe"); 
 		}

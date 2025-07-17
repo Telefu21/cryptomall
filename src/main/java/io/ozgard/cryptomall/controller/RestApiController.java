@@ -5,8 +5,6 @@ import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.LocalTime;
-import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -19,17 +17,13 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import io.ozgard.cryptomall.params.CertificateParams;
-import io.ozgard.cryptomall.params.CrcParams;
-import io.ozgard.cryptomall.params.EncryptDecryptParams;
 import io.ozgard.cryptomall.params.FileConvertParams;
 import io.ozgard.cryptomall.params.KeyGenerateParams;
-import io.ozgard.cryptomall.params.PostQuantumCryptoParams;
+import io.ozgard.cryptomall.params.PrimeGenerateParams;
 import io.ozgard.cryptomall.params.SignVerifyPrimeParams;
 import io.ozgard.cryptomall.service.CRCService;
 import io.ozgard.cryptomall.service.OpenSslService;
@@ -74,7 +68,7 @@ public class RestApiController extends Controller
 		workingDir = folderPath.toAbsolutePath().toString().replace("\\", "\\\\");
 	}
 	
-	@PostMapping("/keygenerate")
+	@PostMapping("/v1/keygenerate")
     public ResponseEntity<Resource> keyGenerate(@RequestBody KeyGenerateParams params) 
 	{
 		params.setInputFilePath(workingDir + Utility.getDoublePathSeperator() + "keyfile");
@@ -84,8 +78,18 @@ public class RestApiController extends Controller
 		
 		return returnFile(params.getOutputFilePath());
 	}
+
+	@PostMapping("/v1/primegenerate")
+    public String primeGenerate(@RequestBody PrimeGenerateParams params) 
+	{
+		String retStr = openSslService.generatePrime(params);
+
+		logger.info("Generated Prime Number: " + retStr);
+
+		return retStr;
+	}
 	
-	@PostMapping(value = "/fileconvert", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+	@PostMapping(value = "/v1/fileconvert", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	public ResponseEntity<Resource> fileConvert(@RequestPart("params") FileConvertParams params, @RequestPart("file") MultipartFile file) 
 	{
 		if (file.isEmpty()) 
@@ -93,7 +97,7 @@ public class RestApiController extends Controller
 			return ResponseEntity.badRequest().build();
         }
 		
-		params.setInputFilePath(workingDir + Utility.getDoublePathSeperator() + "tmp");
+		params.setInputFilePath(workingDir + Utility.getDoublePathSeperator() + "filconvertinput");
 		
 		try 
 		{
@@ -104,7 +108,7 @@ public class RestApiController extends Controller
 			e.printStackTrace();
 		}
 		
-		String outputFileName = workingDir + Utility.getDoublePathSeperator() + "temp";
+		String outputFileName = workingDir + Utility.getDoublePathSeperator() + "filconvertoutput";
 		
 		int fileOperationIdNo = params.getFileOperationIdNo();
 		
@@ -131,7 +135,7 @@ public class RestApiController extends Controller
 		return returnFile(params.getOutputFilePath());
     }
 	
-	@PostMapping(value = "/signaturegenerate", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+	@PostMapping(value = "/v1/signaturegenerate", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	public ResponseEntity<Resource> signatureGenerate(@RequestPart("params") SignVerifyPrimeParams params, @RequestPart("inputfile") MultipartFile inputFile, @RequestPart("privatekeyfile") MultipartFile privateKeyFile) 
 	{
 		if (inputFile.isEmpty() || privateKeyFile.isEmpty()) 
@@ -139,8 +143,8 @@ public class RestApiController extends Controller
 			return ResponseEntity.badRequest().build();
         }
 		
-		params.setInputFilePath(workingDir + Utility.getDoublePathSeperator() + "input");
-		params.setKeyFilePath(workingDir + Utility.getDoublePathSeperator() + "key");
+		params.setInputFilePath(workingDir + Utility.getDoublePathSeperator() + "signgeninput");
+		params.setKeyFilePath(workingDir + Utility.getDoublePathSeperator() + "signgenprivkey");
 		
 		try 
 		{
@@ -152,10 +156,36 @@ public class RestApiController extends Controller
 			e.printStackTrace();
 		}
 		
-		params.setOutputFilePath(workingDir + Utility.getDoublePathSeperator() + "out");
+		params.setOutputFilePath(workingDir + Utility.getDoublePathSeperator() + "signgenoutput");
 		openSslService.generateSignature(params);
 		
 		return returnFile(params.getOutputFilePath());
+    }
+
+	@PostMapping(value = "/v1/signatureverify", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+	public String signatureVerify(@RequestPart("params") SignVerifyPrimeParams params, @RequestPart("inputfile") MultipartFile inputFile, @RequestPart("publickeyfile") MultipartFile publicKeyFile, @RequestPart("signaturefile") MultipartFile signatureFile) 
+	{
+		if (inputFile.isEmpty() || publicKeyFile.isEmpty()  || signatureFile.isEmpty()) 
+		{
+			return "Error: Files are empty !!!!";
+        }
+		
+		params.setInputFilePath(workingDir + Utility.getDoublePathSeperator() + "signverinput");
+		params.setKeyFilePath(workingDir + Utility.getDoublePathSeperator() + "signverpubkey");
+		params.setSignatureFilePath(workingDir + Utility.getDoublePathSeperator() + "signveroutput");
+		
+		try 
+		{
+			Utility.writeBytesToFile(inputFile.getBytes(), params.getInputFilePath());
+			Utility.writeBytesToFile(publicKeyFile.getBytes(), params.getKeyFilePath());
+			Utility.writeBytesToFile(signatureFile.getBytes(), params.getSignatureFilePath());
+		} 
+		catch (IOException e) 
+		{
+			e.printStackTrace();
+		}
+		
+		return openSslService.verifySignature(params);
     }
 	
 	private ResponseEntity<Resource> returnFile(String fileName)

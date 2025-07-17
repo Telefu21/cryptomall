@@ -22,6 +22,7 @@ import io.ozgard.cryptomall.params.FileConvertParams;
 import io.ozgard.cryptomall.params.KeyGenerateParams;
 import io.ozgard.cryptomall.params.PostQuantumCryptoParams;
 import io.ozgard.cryptomall.params.SignVerifyPrimeParams;
+import io.ozgard.cryptomall.params.PrimeGenerateParams;
 import io.ozgard.cryptomall.service.CRCService;
 import io.ozgard.cryptomall.service.OpenSslService;
 import io.ozgard.cryptomall.service.PostQuantumCryptoService;
@@ -82,6 +83,8 @@ public class MainSceneController extends Controller implements Initializable
 	PostQuantumCryptoParams postQuantumCryptoParams;
 	@Autowired
 	FileConvertParams fileConvertParams;
+	@Autowired
+	PrimeGenerateParams primeGenerateParams;
 	
 	@FXML
 	@Autowired
@@ -1175,11 +1178,11 @@ public class MainSceneController extends Controller implements Initializable
 	@FXML
 	void buttonPrimeGenerateOnMouseClicked()
 	{
-		signVerifyPrimeParams.setPrimeLength(textFieldPrimeLength.getText());
-		signVerifyPrimeParams.setHexOutPrime(checkBoxPrimeHexOutput.isSelected());
-		signVerifyPrimeParams.setSafePrime(checkBoxGenerateSafePrime.isSelected());
+		primeGenerateParams.setPrimeLength(textFieldPrimeLength.getText());
+		primeGenerateParams.setHexOutPrime(checkBoxPrimeHexOutput.isSelected());
+		primeGenerateParams.setSafePrime(checkBoxGenerateSafePrime.isSelected());
 		
-		setLogOutput(openSslService.generatePrime(signVerifyPrimeParams));
+		setLogOutput(openSslService.generatePrime(primeGenerateParams));
 	}
 	
 	@FXML

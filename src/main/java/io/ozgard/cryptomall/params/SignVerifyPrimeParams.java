@@ -11,9 +11,6 @@ public class SignVerifyPrimeParams
 	String	keyFilePath;
 	String	signatureFilePath;
 	String	OutputFilePath;
-	String	PrimeLength;
-	boolean	isSafePrime;
-	boolean	isHexOutPrime;
 	boolean	rsaPssEnabled;
 	
 	public String getOutputFilePath() 
@@ -74,36 +71,6 @@ public class SignVerifyPrimeParams
 	public void setSignatureFilePath(String signatureFilePath) 
 	{
 		this.signatureFilePath = signatureFilePath;
-	}
-	
-	public String getPrimeLength() 
-	{
-		return PrimeLength;
-	}
-	
-	public void setPrimeLength(String primeLength) 
-	{
-		PrimeLength = primeLength;
-	}
-	
-	public boolean isSafePrime() 
-	{
-		return isSafePrime;
-	}
-	
-	public void setSafePrime(boolean isSafePrime) 
-	{
-		this.isSafePrime = isSafePrime;
-	}
-	
-	public boolean isHexOutPrime() 
-	{
-		return isHexOutPrime;
-	}
-	
-	public void setHexOutPrime(boolean isHexOutPrime) 
-	{
-		this.isHexOutPrime = isHexOutPrime;
 	}
 
 	public boolean isRsaPssEnabled() 
