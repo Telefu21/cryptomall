@@ -288,6 +288,9 @@ public class PostQuantumCryptoService
 			publicKey = keyEncalpsulationHqc.getPublicKeyBytes();
 		}
 		
+		postQuantumCryptoParams.setPrivateKey(privateKey); 
+		postQuantumCryptoParams.setPublicKey(publicKey); 
+		
 		String retStr = "";
 		String privKeyBytesfileName = postQuantumCryptoParams.getWorkingDirectoryPath() + Utility.getPathSeperator() + postQuantumCryptoParams.getParameterSet() + "_" + algorithm + "_private_key_"  + LocalTime.now().getHour() + "-" + LocalTime.now().getMinute()+ "-" + LocalTime.now().getSecond() + ".bin";
 		String pubKeyBytesfileName = postQuantumCryptoParams.getWorkingDirectoryPath() + Utility.getPathSeperator() + postQuantumCryptoParams.getParameterSet() + "_" + algorithm + "_public_key_"  + LocalTime.now().getHour() + "-" + LocalTime.now().getMinute()+ "-" + LocalTime.now().getSecond() + ".bin";

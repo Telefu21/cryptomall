@@ -5,6 +5,7 @@ import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.function.Function;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -23,6 +24,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import io.ozgard.cryptomall.params.FileConvertParams;
 import io.ozgard.cryptomall.params.KeyGenerateParams;
+import io.ozgard.cryptomall.params.PostQuantumCryptoParams;
+import io.ozgard.cryptomall.params.PostQuantumCryptoRestApiReturnEntities;
 import io.ozgard.cryptomall.params.PrimeGenerateParams;
 import io.ozgard.cryptomall.params.SignVerifyPrimeParams;
 import io.ozgard.cryptomall.service.CRCService;
@@ -77,6 +80,30 @@ public class RestApiController extends Controller
 		logger.info(openSslService.keyGenerate(params));
 		
 		return returnFile(params.getOutputFilePath());
+	}
+	
+	@PostMapping("/v1/keygeneratepqckemkyber")
+    public PostQuantumCryptoRestApiReturnEntities keyGeneratePqcKemKyber(@RequestBody PostQuantumCryptoParams params) 
+	{
+		return keyGeneratePqcKem(params, param -> postQuantumCryptoService.keyPairGenerateKyber(param));
+	}
+	
+	@PostMapping("/v1/keygeneratepqckemhqc")
+    public PostQuantumCryptoRestApiReturnEntities keyGeneratePqcKemHQC(@RequestBody PostQuantumCryptoParams params) 
+	{
+		return keyGeneratePqcKem(params, param -> postQuantumCryptoService.keyPairGenerateHQC(param));
+	}
+	
+	@PostMapping("/v1/keygeneratepqckembike")
+    public PostQuantumCryptoRestApiReturnEntities keyGeneratePqcKemBike(@RequestBody PostQuantumCryptoParams params) 
+	{
+		return keyGeneratePqcKem(params, param -> postQuantumCryptoService.keyPairGenerateBike(param));
+	}
+	
+	@PostMapping("/v1/keygeneratepqckemmceliece")
+    public PostQuantumCryptoRestApiReturnEntities keyGeneratePqcKemMceliece(@RequestBody PostQuantumCryptoParams params) 
+	{
+		return keyGeneratePqcKem(params, param -> postQuantumCryptoService.keyPairGenerateClassicMceliece(param));
 	}
 
 	@PostMapping("/v1/primegenerate")
@@ -203,5 +230,19 @@ public class RestApiController extends Controller
 		}
 
 		return ResponseEntity.ok().contentType(MediaType.APPLICATION_OCTET_STREAM).header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filePath.getFileName().toString() + "\"").body(resource);	
+	}
+	
+	private PostQuantumCryptoRestApiReturnEntities keyGeneratePqcKem(PostQuantumCryptoParams params, Function<PostQuantumCryptoParams, String> func) 
+	{
+		params.setWorkingDirectoryPath(workingDir);
+		
+		func.apply(params);
+		
+		PostQuantumCryptoRestApiReturnEntities retEntities = new PostQuantumCryptoRestApiReturnEntities();
+		
+		retEntities.setPrivateKey(params.getPrivateKey());
+		retEntities.setPublicKey(params.getPublicKey());
+		
+		return retEntities;
 	}
 }
