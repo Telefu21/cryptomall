@@ -25,7 +25,6 @@ import org.springframework.web.multipart.MultipartFile;
 import io.ozgard.cryptomall.params.FileConvertParams;
 import io.ozgard.cryptomall.params.KeyGenerateParams;
 import io.ozgard.cryptomall.params.PostQuantumCryptoParams;
-import io.ozgard.cryptomall.params.PostQuantumCryptoRestApiReturnEntities;
 import io.ozgard.cryptomall.params.PrimeGenerateParams;
 import io.ozgard.cryptomall.params.SignVerifyPrimeParams;
 import io.ozgard.cryptomall.service.CRCService;
@@ -83,27 +82,51 @@ public class RestApiController extends Controller
 	}
 	
 	@PostMapping("/v1/keygeneratepqckemkyber")
-    public PostQuantumCryptoRestApiReturnEntities keyGeneratePqcKemKyber(@RequestBody PostQuantumCryptoParams params) 
+    public PostQuantumCryptoParams keyGeneratePqcKemKyber(@RequestBody PostQuantumCryptoParams params) 
 	{
 		return keyGeneratePqcKem(params, param -> postQuantumCryptoService.keyPairGenerateKyber(param));
 	}
 	
 	@PostMapping("/v1/keygeneratepqckemhqc")
-    public PostQuantumCryptoRestApiReturnEntities keyGeneratePqcKemHQC(@RequestBody PostQuantumCryptoParams params) 
+    public PostQuantumCryptoParams keyGeneratePqcKemHQC(@RequestBody PostQuantumCryptoParams params) 
 	{
 		return keyGeneratePqcKem(params, param -> postQuantumCryptoService.keyPairGenerateHQC(param));
 	}
 	
 	@PostMapping("/v1/keygeneratepqckembike")
-    public PostQuantumCryptoRestApiReturnEntities keyGeneratePqcKemBike(@RequestBody PostQuantumCryptoParams params) 
+    public PostQuantumCryptoParams keyGeneratePqcKemBike(@RequestBody PostQuantumCryptoParams params) 
 	{
 		return keyGeneratePqcKem(params, param -> postQuantumCryptoService.keyPairGenerateBike(param));
 	}
 	
 	@PostMapping("/v1/keygeneratepqckemmceliece")
-    public PostQuantumCryptoRestApiReturnEntities keyGeneratePqcKemMceliece(@RequestBody PostQuantumCryptoParams params) 
+    public PostQuantumCryptoParams keyGeneratePqcKemMceliece(@RequestBody PostQuantumCryptoParams params) 
 	{
 		return keyGeneratePqcKem(params, param -> postQuantumCryptoService.keyPairGenerateClassicMceliece(param));
+	}
+	
+	@PostMapping(value = "/v1/keyencapsulatepqckemkyber", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public PostQuantumCryptoParams keyEncapsulatePqcKemKyber(@RequestPart("params") PostQuantumCryptoParams params, @RequestPart("file") MultipartFile file) 
+	{
+		return keyEncapsulatePqcKem(file, params, param -> postQuantumCryptoService.keyEncapsulateKyber(param));
+	}
+	
+	@PostMapping(value = "/v1/keyencapsulatepqckemhqc", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public PostQuantumCryptoParams keyEncapsulatePqcKemHQC(@RequestPart("params") PostQuantumCryptoParams params, @RequestPart("file") MultipartFile file) 
+	{
+		return keyEncapsulatePqcKem(file, params, param -> postQuantumCryptoService.keyEncapsulateHQC(param));
+	}
+	
+	@PostMapping(value = "/v1/keyencapsulatepqckembike", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public PostQuantumCryptoParams keyEncapsulatePqcKemBike(@RequestPart("params") PostQuantumCryptoParams params, @RequestPart("file") MultipartFile file) 
+	{
+		return keyEncapsulatePqcKem(file, params, param -> postQuantumCryptoService.keyEncapsulateBike(param));
+	}
+	
+	@PostMapping(value = "/v1/keyencapsulatepqckemmceliece", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public PostQuantumCryptoParams keyEncapsulatePqcKemMceliece(@RequestPart("params") PostQuantumCryptoParams params, @RequestPart("file") MultipartFile file) 
+	{
+		return keyEncapsulatePqcKem(file, params, param -> postQuantumCryptoService.keyEncapsulateClassicMcEliece(param));
 	}
 
 	@PostMapping("/v1/primegenerate")
@@ -232,17 +255,56 @@ public class RestApiController extends Controller
 		return ResponseEntity.ok().contentType(MediaType.APPLICATION_OCTET_STREAM).header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filePath.getFileName().toString() + "\"").body(resource);	
 	}
 	
-	private PostQuantumCryptoRestApiReturnEntities keyGeneratePqcKem(PostQuantumCryptoParams params, Function<PostQuantumCryptoParams, String> func) 
+	private PostQuantumCryptoParams keyGeneratePqcKem(PostQuantumCryptoParams params, Function<PostQuantumCryptoParams, String> func) 
 	{
 		params.setWorkingDirectoryPath(workingDir);
 		
 		func.apply(params);
 		
-		PostQuantumCryptoRestApiReturnEntities retEntities = new PostQuantumCryptoRestApiReturnEntities();
+		nullPostQuantumCryptoParams(params);
 		
-		retEntities.setPrivateKey(params.getPrivateKey());
-		retEntities.setPublicKey(params.getPublicKey());
+		params.setSecretKey(null);
+		params.setEncapsulatedSecretKey(null);
 		
-		return retEntities;
+		return params;
+	}
+	
+	private PostQuantumCryptoParams keyEncapsulatePqcKem(MultipartFile file, PostQuantumCryptoParams params, Function<PostQuantumCryptoParams, String> func) 
+	{
+		params.setWorkingDirectoryPath(workingDir);
+		
+		try 
+		{
+			params.setInputFileBytes(file.getBytes());
+		} 
+		catch (IOException e) 
+		{
+			e.printStackTrace();
+		}
+		
+		func.apply(params);
+		
+		nullPostQuantumCryptoParams(params);
+		
+		params.setPrivateKey(null);
+		params.setPublicKey(null);
+		
+		return params;
+	}
+	
+	private void nullPostQuantumCryptoParams(PostQuantumCryptoParams params)
+	{
+		params.setWorkingDirectoryPath(null);
+		params.setInputFileBytes(null);
+		params.setParameterSet(null);
+		params.setSignatureFileBytes(null);
+		params.setPublicKeyFileBytes(null);
+		params.setBikeStrToParams(null);
+		params.setDilithiumStrToParams(null);
+		params.setFalconStrToParams(null);
+		params.setHqcStrToParams(null);
+		params.setKyberStrToParams(null);
+		params.setMecelieceStrToParams(null);
+		params.setSphincsStrToParams(null);
 	}
 }

@@ -163,6 +163,9 @@ public class PostQuantumCryptoService
 		        encapsulatedKey = keyEncalpsulationHqc.getEncapsulation();
 			}
 			
+			postQuantumCryptoParams.setEncapsulatedSecretKey(encapsulatedKey);
+			postQuantumCryptoParams.setSecretKey(secretKey);
+			
 			Utility.writeBytesToFile(encapsulatedKey, encapKeyBytesfileName);
 			retStr = encapsulatedKey.length + " bytes of encapsulated Secret Key (Ciphertext) written to --> " + encapKeyBytesfileName + "\n";
 			

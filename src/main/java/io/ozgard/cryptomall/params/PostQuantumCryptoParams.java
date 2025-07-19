@@ -22,6 +22,8 @@ public class PostQuantumCryptoParams
 	
 	byte [] privateKey;
 	byte [] publicKey;
+	byte [] encapsulatedSecretKey;
+	byte [] secretKey;
 	
 	String parameterSet;
 	String workingDirectoryPath;
@@ -136,6 +138,26 @@ public class PostQuantumCryptoParams
 	{
 		return workingDirectoryPath;
 	}
+	
+	public byte[] getEncapsulatedSecretKey() 
+	{
+		return encapsulatedSecretKey;
+	}
+
+	public void setEncapsulatedSecretKey(byte[] encapsulatedSecretKey) 
+	{
+		this.encapsulatedSecretKey = encapsulatedSecretKey;
+	}
+
+	public byte[] getSecretKey() 
+	{
+		return secretKey;
+	}
+
+	public void setSecretKey(byte[] secretKey) 
+	{
+		this.secretKey = secretKey;
+	}
 
 	public void setWorkingDirectoryPath(String workingDirectoryPath) 
 	{
@@ -155,6 +177,42 @@ public class PostQuantumCryptoParams
 	public Map<String, DilithiumParameterSpec> getDilithiumStrToParams() 
 	{
 		return dilithiumStrToParams;
+	}
+
+	public void setDilithiumStrToParams(Map<String, DilithiumParameterSpec> dilithiumStrToParams) 
+	{
+		this.dilithiumStrToParams = dilithiumStrToParams;
+	}
+
+	public void setKyberStrToParams(Map<String, KyberParameterSpec> kyberStrToParams) 
+	
+	{
+		this.kyberStrToParams = kyberStrToParams;
+	}
+
+	public void setFalconStrToParams(Map<String, FalconParameterSpec> falconStrToParams) 
+	{
+		this.falconStrToParams = falconStrToParams;
+	}
+
+	public void setBikeStrToParams(Map<String, BIKEParameterSpec> bikeStrToParams) 
+	{
+		this.bikeStrToParams = bikeStrToParams;
+	}
+
+	public void setHqcStrToParams(Map<String, HQCParameters> hqcStrToParams) 
+	{
+		this.hqcStrToParams = hqcStrToParams;
+	}
+
+	public void setMecelieceStrToParams(Map<String, CMCEParameterSpec> mecelieceStrToParams) 
+	{
+		this.mecelieceStrToParams = mecelieceStrToParams;
+	}
+
+	public void setSphincsStrToParams(Map<String, SPHINCSPlusParameterSpec> sphincsStrToParams) 
+	{
+		this.sphincsStrToParams = sphincsStrToParams;
 	}
 
 	public Map<String, KyberParameterSpec> getKyberStrToParams() 
