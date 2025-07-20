@@ -81,6 +81,82 @@ public class RestApiController extends Controller
 		return returnFile(params.getOutputFilePath());
 	}
 	
+	@PostMapping(value = "/v1/signaturegeneratefiledilithium", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public PostQuantumCryptoParams signatureGenerateFilePqcDilithium(@RequestPart("params") PostQuantumCryptoParams params, @RequestPart("file") MultipartFile file) 
+	{
+		return signatureGeneratePqc(file, params, param -> postQuantumCryptoService.signatureGenerateDilithium(param));
+	}
+	
+	@PostMapping(value = "/v1/signaturegeneratefilefalcon", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public PostQuantumCryptoParams signatureGenerateFilePqcFalcon(@RequestPart("params") PostQuantumCryptoParams params, @RequestPart("file") MultipartFile file) 
+	{
+		return signatureGeneratePqc(file, params, param -> postQuantumCryptoService.signatureGenerateFalcon(param));
+	}
+	
+	@PostMapping(value = "/v1/signaturegeneratefilesphincs", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public PostQuantumCryptoParams signatureGenerateFilePqcSphincs(@RequestPart("params") PostQuantumCryptoParams params, @RequestPart("file") MultipartFile file) 
+	{
+		return signatureGeneratePqc(file, params, param -> postQuantumCryptoService.signatureGenerateSphincs(param));
+	}
+	
+	private PostQuantumCryptoParams signatureGeneratePqc(MultipartFile file, PostQuantumCryptoParams params, Function<PostQuantumCryptoParams, String> func) 
+	{
+		params.setWorkingDirectoryPath(workingDir);
+		params.setTextAreaBytes(null);
+		
+		try 
+		{
+			params.setInputFileBytes(file.getBytes());
+		} 
+		catch (IOException e) 
+		{
+			e.printStackTrace();
+		}
+		
+		func.apply(params);
+		
+		nullPostQuantumCryptoParams(params);
+		
+		params.setSecretKey(null);
+		params.setEncapsulatedSecretKey(null);
+		
+		return params;
+	}
+	
+	@PostMapping(value = "/v1/signatureverifyfiledilithium", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public String signatureVerifyFilePqcDilithium(@RequestPart("params") PostQuantumCryptoParams params, @RequestPart("inputfile") MultipartFile inputFile, @RequestPart("publickeyfile") MultipartFile publickeyFile, @RequestPart("signaturefile") MultipartFile signatureFile) 
+	{
+		return signatureVerifyPqc(inputFile, publickeyFile, signatureFile, params, param -> postQuantumCryptoService.signatureGenerateDilithium(param));
+	}
+	
+	@PostMapping(value = "/v1/signatureverifyfilefalcon", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public String signatureVerifyFilePqcFalcon(@RequestPart("params") PostQuantumCryptoParams params, @RequestPart("inputfile") MultipartFile inputFile, @RequestPart("publickeyfile") MultipartFile publickeyFile, @RequestPart("signaturefile") MultipartFile signatureFile) 
+	{
+		return signatureVerifyPqc(inputFile, publickeyFile, signatureFile, params, param -> postQuantumCryptoService.signatureGenerateFalcon(param));
+	}
+	
+	@PostMapping(value = "/v1/signatureverifyfilesphincs", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public String signatureVerifyFilePqcSphincs(@RequestPart("params") PostQuantumCryptoParams params, @RequestPart("inputfile") MultipartFile inputFile, @RequestPart("publickeyfile") MultipartFile publickeyFile, @RequestPart("signaturefile") MultipartFile signatureFile) 
+	{
+		return signatureVerifyPqc(inputFile, publickeyFile, signatureFile, params, param -> postQuantumCryptoService.signatureGenerateSphincs(param));
+	}
+	
+	private String signatureVerifyPqc(MultipartFile inputFile, MultipartFile publickeyFile, MultipartFile signatureFile, PostQuantumCryptoParams params, Function<PostQuantumCryptoParams, String> func) 
+	{
+		try 
+		{
+			params.setInputFileBytes(inputFile.getBytes());
+			params.setPublicKeyFileBytes(publickeyFile.getBytes());
+			params.setSignatureFileBytes(signatureFile.getBytes());
+		} 
+		catch (IOException e) 
+		{
+			e.printStackTrace();
+		}
+		
+		return func.apply(params);
+	}
+
 	@PostMapping("/v1/keygeneratepqckemkyber")
     public PostQuantumCryptoParams keyGeneratePqcKemKyber(@RequestBody PostQuantumCryptoParams params) 
 	{
@@ -129,6 +205,30 @@ public class RestApiController extends Controller
 		return keyEncapsulatePqcKem(file, params, param -> postQuantumCryptoService.keyEncapsulateClassicMcEliece(param));
 	}
 
+	@PostMapping(value = "/v1/keydecapsulatepqckemkyber", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public String keyDecapsulatePqcKemKyber(@RequestPart("params") PostQuantumCryptoParams params, @RequestPart("fileprivkey") MultipartFile filePrivKey, @RequestPart("fileencapkey") MultipartFile fileEncapKey) 
+	{
+		return keyDecapsulatePqcKem(filePrivKey, fileEncapKey, params, param -> postQuantumCryptoService.keyDecapsulateKyber(param));
+	}
+
+	@PostMapping(value = "/v1/keydecapsulatepqckemhqc", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public String keyDecapsulatePqcKemHQC(@RequestPart("params") PostQuantumCryptoParams params, @RequestPart("fileprivkey") MultipartFile filePrivKey, @RequestPart("fileencapkey") MultipartFile fileEncapKey) 
+	{
+		return keyDecapsulatePqcKem(filePrivKey, fileEncapKey, params, param -> postQuantumCryptoService.keyDecapsulateHQC(param));
+	}
+	
+	@PostMapping(value = "/v1/keydecapsulatepqckembike", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public String keyDecapsulatePqcKemBike(@RequestPart("params") PostQuantumCryptoParams params, @RequestPart("fileprivkey") MultipartFile filePrivKey, @RequestPart("fileencapkey") MultipartFile fileEncapKey) 
+	{
+		return keyDecapsulatePqcKem(filePrivKey, fileEncapKey, params, param -> postQuantumCryptoService.keyDecapsulateBike(param));
+	}
+	
+	@PostMapping(value = "/v1/keydecapsulatepqckemmceliece", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public String keyDecapsulatePqcKemMceliece(@RequestPart("params") PostQuantumCryptoParams params, @RequestPart("fileprivkey") MultipartFile filePrivKey, @RequestPart("fileencapkey") MultipartFile fileEncapKey) 
+	{
+		return keyDecapsulatePqcKem(filePrivKey, fileEncapKey, params, param -> postQuantumCryptoService.keyDecapsulateClassicMcEliece(param));
+	}
+	
 	@PostMapping("/v1/primegenerate")
     public String primeGenerate(@RequestBody PrimeGenerateParams params) 
 	{
@@ -253,6 +353,23 @@ public class RestApiController extends Controller
 		}
 
 		return ResponseEntity.ok().contentType(MediaType.APPLICATION_OCTET_STREAM).header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filePath.getFileName().toString() + "\"").body(resource);	
+	}
+	
+	private String keyDecapsulatePqcKem(MultipartFile filePrivKey, MultipartFile fileEncapKey, PostQuantumCryptoParams params, Function<PostQuantumCryptoParams, String> func) 
+	{
+		params.setWorkingDirectoryPath(workingDir);
+		
+		try 
+		{
+			params.setInputFileBytes(filePrivKey.getBytes());
+			params.setPublicKeyFileBytes(fileEncapKey.getBytes());
+		} 
+		catch (IOException e) 
+		{
+			e.printStackTrace();
+		}
+		
+		return func.apply(params);
 	}
 	
 	private PostQuantumCryptoParams keyGeneratePqcKem(PostQuantumCryptoParams params, Function<PostQuantumCryptoParams, String> func) 

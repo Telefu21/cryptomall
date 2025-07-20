@@ -24,6 +24,7 @@ public class PostQuantumCryptoParams
 	byte [] publicKey;
 	byte [] encapsulatedSecretKey;
 	byte [] secretKey;
+	byte [] signature;
 	
 	String parameterSet;
 	String workingDirectoryPath;
@@ -112,6 +113,16 @@ public class PostQuantumCryptoParams
 		sphincsStrToParams.put("shake_256f_robust", SPHINCSPlusParameterSpec.shake_256f_robust);
 		sphincsStrToParams.put("shake_256s", SPHINCSPlusParameterSpec.shake_256s);
 		sphincsStrToParams.put("shake_256s_robust", SPHINCSPlusParameterSpec.shake_256s_robust);
+	}
+
+	public byte[] getSignature() 
+	{
+		return signature;
+	}
+
+	public void setSignature(byte[] signature) 
+	{
+		this.signature = signature;
 	}
 
 	public byte[] getPrivateKey() 

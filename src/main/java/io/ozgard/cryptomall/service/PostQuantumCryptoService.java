@@ -91,6 +91,10 @@ public class PostQuantumCryptoService
 		{
 			signatureBytesTextArea = pqcSignature.generateSignature(postQuantumCryptoParams.getTextAreaBytes(), privKeyBytes);
 		}
+		
+		postQuantumCryptoParams.setPrivateKey(privKeyBytes);
+		postQuantumCryptoParams.setPublicKey(pubKeyBytes);
+		postQuantumCryptoParams.setSignature(signatureBytesFile);
 
 		return processFileOperationsSignature(postQuantumCryptoParams, privKeyBytes, pubKeyBytes, signatureBytesFile, signatureBytesTextArea, algoName);
 	}
