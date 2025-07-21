@@ -30,7 +30,7 @@ public class CertificateParams
         this.endEntitiyCertificate = endEntitiyCertificate;
     }
     
-    private CertificateParams() 
+    public CertificateParams() 
     {
     	CertificateParams[] rows = {	new CertificateParams("Days to Expire", "30", "30", "30"),
 											new CertificateParams("Common Name (CN)", "RootCert", "IntermediateCert", "EndEntityCert"),

@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import io.ozgard.cryptomall.controller.MainSceneController;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import net.rgielen.fxweaver.core.FxWeaver;
 
@@ -61,6 +62,8 @@ public class StageReadyEventListener implements ApplicationListener<StageReadyEv
 		scene.getStylesheets().add(getClass().getResource("../view/mainscene.css").toExternalForm());
 		stage.setScene(scene);
 		stage.setTitle(this.applicationTitle);
+		Image icon = new Image(getClass().getResourceAsStream("/images/cryptomall48p.png"));
+        stage.getIcons().add(icon);
 		stage.show();
     }
 }

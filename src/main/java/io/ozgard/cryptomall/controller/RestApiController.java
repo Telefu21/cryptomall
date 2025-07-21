@@ -16,12 +16,14 @@ import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import io.ozgard.cryptomall.params.CertificateParams;
 import io.ozgard.cryptomall.params.FileConvertParams;
 import io.ozgard.cryptomall.params.KeyGenerateParams;
 import io.ozgard.cryptomall.params.PostQuantumCryptoParams;
@@ -126,19 +128,19 @@ public class RestApiController extends Controller
 	@PostMapping(value = "/v1/signatureverifyfiledilithium", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public String signatureVerifyFilePqcDilithium(@RequestPart("params") PostQuantumCryptoParams params, @RequestPart("inputfile") MultipartFile inputFile, @RequestPart("publickeyfile") MultipartFile publickeyFile, @RequestPart("signaturefile") MultipartFile signatureFile) 
 	{
-		return signatureVerifyPqc(inputFile, publickeyFile, signatureFile, params, param -> postQuantumCryptoService.signatureGenerateDilithium(param));
+		return signatureVerifyPqc(inputFile, publickeyFile, signatureFile, params, param -> postQuantumCryptoService.signatureVerifyDilithium(param));
 	}
 	
 	@PostMapping(value = "/v1/signatureverifyfilefalcon", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public String signatureVerifyFilePqcFalcon(@RequestPart("params") PostQuantumCryptoParams params, @RequestPart("inputfile") MultipartFile inputFile, @RequestPart("publickeyfile") MultipartFile publickeyFile, @RequestPart("signaturefile") MultipartFile signatureFile) 
 	{
-		return signatureVerifyPqc(inputFile, publickeyFile, signatureFile, params, param -> postQuantumCryptoService.signatureGenerateFalcon(param));
+		return signatureVerifyPqc(inputFile, publickeyFile, signatureFile, params, param -> postQuantumCryptoService.signatureVerifyFalcon(param));
 	}
 	
 	@PostMapping(value = "/v1/signatureverifyfilesphincs", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public String signatureVerifyFilePqcSphincs(@RequestPart("params") PostQuantumCryptoParams params, @RequestPart("inputfile") MultipartFile inputFile, @RequestPart("publickeyfile") MultipartFile publickeyFile, @RequestPart("signaturefile") MultipartFile signatureFile) 
 	{
-		return signatureVerifyPqc(inputFile, publickeyFile, signatureFile, params, param -> postQuantumCryptoService.signatureGenerateSphincs(param));
+		return signatureVerifyPqc(inputFile, publickeyFile, signatureFile, params, param -> postQuantumCryptoService.signatureVerifySphincs(param));
 	}
 	
 	private String signatureVerifyPqc(MultipartFile inputFile, MultipartFile publickeyFile, MultipartFile signatureFile, PostQuantumCryptoParams params, Function<PostQuantumCryptoParams, String> func) 
@@ -157,6 +159,42 @@ public class RestApiController extends Controller
 		return func.apply(params);
 	}
 
+	@GetMapping("/v1/postquantumparameterset")
+    public PostQuantumCryptoParams getPostQuantumParameterSet() 
+	{
+		return new PostQuantumCryptoParams();
+	}
+	
+	@GetMapping("/v1/fileconvertoperationnamesids")
+    public FileConvertParams getFileConvertOperationNamesIds() 
+	{
+		return new FileConvertParams();
+	}
+	
+	@GetMapping("/v1/elipticcurvenameslist")
+    public String [] getListElipticCurveName() 
+	{
+		return openSslService.getListElipticCurveName();
+	}
+	
+	@GetMapping("/v1/cipherslist")
+    public String [] getListCiphers() 
+	{
+		return openSslService.getListCiphers();
+	}
+	
+	@GetMapping("/v1/hashfunctionslist")
+    public String [] getListHashFuncs() 
+	{
+		return openSslService.getListHashFuncs();
+	}
+	
+	@GetMapping("/v1/certificatessubjectattributestable")
+    public CertificateParams getCertificatesSubjectAttributesTable() 
+	{
+		return new CertificateParams();
+	}
+	
 	@PostMapping("/v1/keygeneratepqckemkyber")
     public PostQuantumCryptoParams keyGeneratePqcKemKyber(@RequestBody PostQuantumCryptoParams params) 
 	{
