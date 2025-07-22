@@ -72,6 +72,77 @@ public class RestApiController extends Controller
 		workingDir = folderPath.toAbsolutePath().toString().replace("\\", "\\\\");
 	}
 	
+	@PostMapping(value = "/v1/certificateverify", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public String certificateVerify(@RequestPart("params") CertificateParams params, @RequestPart("rootfile") MultipartFile rootFile, @RequestPart("intermediatefile") MultipartFile intermediateFile, @RequestPart("endentityfile") MultipartFile endEntityFile) 
+	{
+		if (rootFile.isEmpty() || intermediateFile.isEmpty()  || endEntityFile.isEmpty()) 
+		{
+			return "Error: Files are empty !!!!";
+        }
+
+		params.setIsTwoChainVerifySelected(false);
+
+		params.setRootKeyVerifyFilePath(workingDir + Utility.getDoublePathSeperator() + "rootcert");
+		params.setIntermediateKeyVerifyFilePath(workingDir + Utility.getDoublePathSeperator() + "intermediatecert");
+		params.setEndEntityKeyVerifyFilePath(workingDir + Utility.getDoublePathSeperator() + "endentitycert");
+		
+		try 
+		{
+			Utility.writeBytesToFile(rootFile.getBytes(), params.getRootKeyVerifyFilePath());
+			Utility.writeBytesToFile(intermediateFile.getBytes(),params.getIntermediateKeyVerifyFilePath());
+			Utility.writeBytesToFile(endEntityFile.getBytes(), params.getEndEntityKeyVerifyFilePath());
+		} 
+		catch (IOException e) 
+		{
+			e.printStackTrace();
+		}
+
+		String retStr = openSslService.verifyChainOfCertificates(params);
+
+		if(retStr.toLowerCase().contains("failed"))
+		{
+			retStr = "Verification: Failed !!!";
+		}
+		else
+		{
+			retStr = "Verification: OK :)";
+		}
+		
+		return retStr;
+	}
+	
+	@PostMapping(value = "/v1/certificategenerate", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public String certificateGenerate(@RequestPart("params") CertificateParams params, @RequestPart("rootkeyfile") MultipartFile rootKeyFile, @RequestPart("intermediatekeyfile") MultipartFile intermediateKeyFile, @RequestPart("endentitykeyfile") MultipartFile endEntityKeyFile) 
+	{
+		if (rootKeyFile.isEmpty() || intermediateKeyFile.isEmpty()  || endEntityKeyFile.isEmpty()) 
+		{
+			return "Error: Files are empty !!!!";
+        }
+
+		params.setIsTwoChainVerifySelected(false);
+
+		params.setWorkingDirectory(workingDir);
+		
+		params.setRootKeyVerifyFilePath(workingDir + Utility.getDoublePathSeperator() + "rootkey");
+		params.setIntermediateKeyVerifyFilePath(workingDir + Utility.getDoublePathSeperator() + "intermediatekey");
+		params.setEndEntityKeyVerifyFilePath(workingDir + Utility.getDoublePathSeperator() + "endentitykey");
+		
+		try 
+		{
+			Utility.writeBytesToFile(rootKeyFile.getBytes(), params.getRootKeyVerifyFilePath());
+			Utility.writeBytesToFile(intermediateKeyFile.getBytes(),params.getIntermediateKeyVerifyFilePath());
+			Utility.writeBytesToFile(endEntityKeyFile.getBytes(), params.getEndEntityKeyVerifyFilePath());
+		} 
+		catch (IOException e) 
+		{
+			e.printStackTrace();
+		}
+
+		String retStr = openSslService.generateCertificates(params);
+		
+		return retStr;
+	}
+	
 	@PostMapping("/v1/keygenerate")
     public ResponseEntity<Resource> keyGenerate(@RequestBody KeyGenerateParams params) 
 	{
@@ -163,6 +234,12 @@ public class RestApiController extends Controller
     public PostQuantumCryptoParams getPostQuantumParameterSet() 
 	{
 		return new PostQuantumCryptoParams();
+	}
+	
+	@GetMapping("/v1/certificateparams")
+    public CertificateParams getCertificateParameterSet() 
+	{
+		return new CertificateParams();
 	}
 	
 	@GetMapping("/v1/fileconvertoperationnamesids")
