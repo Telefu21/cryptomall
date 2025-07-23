@@ -29,7 +29,6 @@ import io.ozgard.cryptomall.params.KeyGenerateParams;
 import io.ozgard.cryptomall.params.PostQuantumCryptoParams;
 import io.ozgard.cryptomall.params.PrimeGenerateParams;
 import io.ozgard.cryptomall.params.SignVerifyPrimeParams;
-import io.ozgard.cryptomall.service.CRCService;
 import io.ozgard.cryptomall.service.OpenSslService;
 import io.ozgard.cryptomall.service.PostQuantumCryptoService;
 import io.ozgard.cryptomall.utility.Utility;
@@ -46,8 +45,8 @@ public class RestApiController extends Controller
 	
 	@Autowired
 	private OpenSslService openSslService;
-	@Autowired
-	private CRCService crcService;
+	//@Autowired
+	//private CRCService crcService;
 	@Autowired
 	private PostQuantumCryptoService postQuantumCryptoService;
 	
@@ -112,14 +111,12 @@ public class RestApiController extends Controller
 	}
 	
 	@PostMapping(value = "/v1/certificategenerate", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public String certificateGenerate(@RequestPart("params") CertificateParams params, @RequestPart("rootkeyfile") MultipartFile rootKeyFile, @RequestPart("intermediatekeyfile") MultipartFile intermediateKeyFile, @RequestPart("endentitykeyfile") MultipartFile endEntityKeyFile) 
+    public CertificateParams certificateGenerate(@RequestPart("params") CertificateParams params, @RequestPart("rootkeyfile") MultipartFile rootKeyFile, @RequestPart("intermediatekeyfile") MultipartFile intermediateKeyFile, @RequestPart("endentitykeyfile") MultipartFile endEntityKeyFile) 
 	{
 		if (rootKeyFile.isEmpty() || intermediateKeyFile.isEmpty()  || endEntityKeyFile.isEmpty()) 
 		{
-			return "Error: Files are empty !!!!";
+			return null;
         }
-
-		params.setIsTwoChainVerifySelected(false);
 
 		params.setWorkingDirectory(workingDir);
 		
@@ -138,9 +135,22 @@ public class RestApiController extends Controller
 			e.printStackTrace();
 		}
 
-		String retStr = openSslService.generateCertificates(params);
+		openSslService.generateCertificates(params);
 		
-		return retStr;
+		params.setSubjAttribsCertStr(null);
+		params.setCertificateParamsRows(null);
+		params.setEndEntityHashFunction(null);
+		params.setIntermediateHashFunction(null);
+		params.setRootHashFunction(null);
+		params.setRootKeyVerifyFilePath(null);
+		params.setIntermediateKeyVerifyFilePath(null);
+		params.setEndEntityKeyVerifyFilePath(null);
+		params.setIsGenerateCertificateSelected(null);
+		params.setIsTwoChainVerifySelected(null);
+		params.setIsVerifyCertificateSelected(null);
+		params.setWorkingDirectory(null);
+		
+		return params;
 	}
 	
 	@PostMapping("/v1/keygenerate")
@@ -246,6 +256,12 @@ public class RestApiController extends Controller
     public FileConvertParams getFileConvertOperationNamesIds() 
 	{
 		return new FileConvertParams();
+	}
+	
+	@GetMapping("/v1/keygeneratealgorithm")
+    public KeyGenerateParams getKeyGenerateAlgorithm() 
+	{
+		return new KeyGenerateParams();
 	}
 	
 	@GetMapping("/v1/elipticcurvenameslist")

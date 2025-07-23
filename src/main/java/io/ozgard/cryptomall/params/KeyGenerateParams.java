@@ -1,5 +1,8 @@
 package io.ozgard.cryptomall.params;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.springframework.stereotype.Component;
 
 @Component
@@ -30,6 +33,32 @@ public class KeyGenerateParams
 	String	fileEncryptionPassword;
 	Boolean encryptKeyFile;
 	
+	Set<String> algorithmNames;
+	
+	public KeyGenerateParams()
+	{
+		algorithmNames = new HashSet<String>();
+		
+		algorithmNames.add(KEYGEN_ALGO_SELECT_RSA);
+		algorithmNames.add(KEYGEN_ALGO_SELECT_ECC);
+		algorithmNames.add(KEYGEN_ALGO_SELECT_DSA);
+		algorithmNames.add(KEYGEN_ALGO_SELECT_DH);
+		algorithmNames.add(KEYGEN_ALGO_SELECT_ED25519);
+		algorithmNames.add(KEYGEN_ALGO_SELECT_X448);
+		algorithmNames.add(KEYGEN_ALGO_SELECT_X25519);
+		algorithmNames.add(KEYGEN_ALGO_SELECT_ED448);
+	}
+	
+	public Set<String> getAlgorithmNames() 
+	{
+		return algorithmNames;
+	}
+
+	public void setAlgorithmNames(Set<String> algorithmNames) 
+	{
+		this.algorithmNames = algorithmNames;
+	}
+
 	public String getOutputFilePath() 
 	{
 		return outputFilePath;

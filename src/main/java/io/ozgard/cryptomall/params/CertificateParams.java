@@ -22,6 +22,13 @@ public class CertificateParams
     private Boolean isVerifyCertificateSelected;
     private Boolean isTwoChainVerifySelected;
     
+    byte [] rootCertBytes;
+	byte [] rootCsrBytes;
+	byte [] intermediateCertBytes;
+	byte [] intermediateCsrBytes;
+	byte [] endEntityCertBytes;
+	byte [] endEntityCsrBytes;
+	
     private CertificateParams(String elementName, String rootCertificate, String intermediateCertificate, String endEntitiyCertificate) 
     {
         this.elementName = elementName;
@@ -210,7 +217,65 @@ public class CertificateParams
 	public void setWorkingDirectory(String workingDirectory) 
 	{
 		this.workingDirectory = workingDirectory;
+	}
+
+	public byte[] getRootCertBytes() 
+	{
+		return rootCertBytes;
+	}
+
+	public void setRootCertBytes(byte[] rootCertBytes) 
+	{
+		this.rootCertBytes = rootCertBytes;
+	}
+
+	public byte[] getRootCsrBytes() 
+	{
+		return rootCsrBytes;
+	}
+
+	public void setRootCsrBytes(byte[] rootCsrBytes) 
+	{
+		this.rootCsrBytes = rootCsrBytes;
+	}
+
+	public byte[] getIntermediateCertBytes() 
+	{
+		return intermediateCertBytes;
+	}
+
+	public void setIntermediateCertBytes(byte[] intermediateCertBytes) 
+	{
+		this.intermediateCertBytes = intermediateCertBytes;
+	}
+
+	public byte[] getIntermediateCsrBytes() 
+	{
+		return intermediateCsrBytes;
+	}
+
+	public void setIntermediateCsrBytes(byte[] intermediateCsrBytes) 
+	{
+		this.intermediateCsrBytes = intermediateCsrBytes;
+	}
+
+	public byte[] getEndEntityCertBytes() 
+	{
+		return endEntityCertBytes;
+	}
+
+	public void setEndEntityCertBytes(byte[] endEntityCertBytes) 
+	{
+		this.endEntityCertBytes = endEntityCertBytes;
+	}
+
+	public byte[] getEndEntityCsrBytes() 
+	{
+		return endEntityCsrBytes;
+	}
+
+	public void setEndEntityCsrBytes(byte[] endEntityCsrBytes) 
+	{
+		this.endEntityCsrBytes = endEntityCsrBytes;
 	}	
-	
-	
 }

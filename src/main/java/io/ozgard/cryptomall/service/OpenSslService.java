@@ -932,6 +932,13 @@ public class OpenSslService
 			e.printStackTrace();
 		}
 		
+		certificateParams.setRootCertBytes(Utility.readFileContentToBytes(rootCertFile.replaceAll("\"", "")));
+		certificateParams.setRootCsrBytes(Utility.readFileContentToBytes(rootCsrFile.replaceAll("\"", "")));
+		certificateParams.setIntermediateCertBytes(Utility.readFileContentToBytes(intermediateCertFile.replaceAll("\"", "")));
+		certificateParams.setIntermediateCsrBytes(Utility.readFileContentToBytes(intermediateCsrFile.replaceAll("\"", "")));
+		certificateParams.setEndEntityCertBytes(Utility.readFileContentToBytes(endEntityCertFile.replaceAll("\"", "")));
+		certificateParams.setEndEntityCsrBytes(Utility.readFileContentToBytes(endEntityCsrFile.replaceAll("\"", "")));
+		
 		return (rootCertLogStr + intermediateCertLogStr + endEntityCertLogStr);
 	}
 	
