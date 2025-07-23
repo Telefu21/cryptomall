@@ -1,0 +1,1115 @@
+{
+	"info": {
+		"_postman_id": "62122632-2e42-4750-88d8-48948f002ac2",
+		"name": "CryptoMall",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "18340427"
+	},
+	"item": [
+		{
+			"name": "fileconvert",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "params",
+							"value": "{\n  \"fileEncryptionPassword\": \"\",\n  \"fileOperationIdNo\": \"0\"\n}\n",
+							"contentType": "application/json",
+							"type": "text"
+						},
+						{
+							"key": "file",
+							"type": "file",
+							"src": "/C:/Users/zgrrd/OneDrive/Desktop/OZGUR-PROJECTS/cryptomall/web_app_wd/keyfile"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8080/v1/fileconvert",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"fileconvert"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "signaturegenerate",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "params",
+							"value": "{\n  \"hashFunction\": \"-sha256\",\n  \"rsaPssEnabled\": \"true\",\n  \"saltLen\":\"5\"\n}\n",
+							"contentType": "application/json",
+							"type": "text"
+						},
+						{
+							"key": "inputfile",
+							"contentType": "",
+							"type": "file",
+							"src": "/C:/Users/zgrrd/OneDrive/Desktop/CryptoMallFiles/test.txt"
+						},
+						{
+							"key": "privatekeyfile",
+							"contentType": "",
+							"type": "file",
+							"src": "/C:/Users/zgrrd/OneDrive/Desktop/OZGUR-PROJECTS/cryptomall/web_app_wd/keyfile"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8080/v1/signaturegenerate",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"signaturegenerate"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "keyencapsulatepqckemkyber",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "params",
+							"value": "{\n    \"parameterSet\": \"Kyber512\"\n}",
+							"contentType": "application/json",
+							"type": "text"
+						},
+						{
+							"key": "file",
+							"contentType": "",
+							"type": "file",
+							"src": "/C:/Users/zgrrd/OneDrive/Desktop/OZGUR-PROJECTS/cryptomall/web_app_wd/Kyber512_Kyber_public_key_13-34-35.bin"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8080/v1/keyencapsulatepqckemkyber",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"keyencapsulatepqckemkyber"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "signaturegeneratefiledilithium",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "params",
+							"value": "{\n    \"parameterSet\": \"Dilithium2\"\n}",
+							"contentType": "application/json",
+							"type": "text"
+						},
+						{
+							"key": "file",
+							"contentType": "",
+							"type": "file",
+							"src": "/C:/Users/zgrrd/OneDrive/Desktop/OZGUR-PROJECTS/cryptomall/web_app_wd/test.txt"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8080/v1/signaturegeneratefiledilithium",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"signaturegeneratefiledilithium"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "signatureverifyfiledilithium",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "params",
+							"value": "{\n    \"parameterSet\": \"Dilithium2\"\n}",
+							"contentType": "application/json",
+							"type": "text"
+						},
+						{
+							"key": "inputfile",
+							"contentType": "",
+							"type": "file",
+							"src": "/C:/Users/zgrrd/OneDrive/Desktop/OZGUR-PROJECTS/cryptomall/web_app_wd/test.txt"
+						},
+						{
+							"key": "publickeyfile",
+							"type": "file",
+							"src": "/C:/Users/zgrrd/OneDrive/Desktop/OZGUR-PROJECTS/cryptomall/web_app_wd/Dilithium2_Dilithium_public_key_18-40-55.bin"
+						},
+						{
+							"key": "signaturefile",
+							"type": "file",
+							"src": "/C:/Users/zgrrd/OneDrive/Desktop/OZGUR-PROJECTS/cryptomall/web_app_wd/Dilithium2_Dilithium_file_signature_18-40-55.bin"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8080/v1/signatureverifyfiledilithium",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"signatureverifyfiledilithium"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "signatureverifyfilefalcon",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "params",
+							"value": "{\n    \"parameterSet\": \"Falcon512\"\n}",
+							"contentType": "application/json",
+							"type": "text"
+						},
+						{
+							"key": "inputfile",
+							"contentType": "",
+							"type": "file",
+							"src": "/C:/Users/zgrrd/OneDrive/Desktop/OZGUR-PROJECTS/cryptomall/web_app_wd/test.txt"
+						},
+						{
+							"key": "publickeyfile",
+							"type": "file",
+							"src": "/C:/Users/zgrrd/OneDrive/Desktop/OZGUR-PROJECTS/cryptomall/web_app_wd/Falcon512_Falcon_public_key_18-43-49.bin"
+						},
+						{
+							"key": "signaturefile",
+							"type": "file",
+							"src": "/C:/Users/zgrrd/OneDrive/Desktop/OZGUR-PROJECTS/cryptomall/web_app_wd/Falcon512_Falcon_file_signature_18-43-49.bin"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8080/v1/signatureverifyfilefalcon",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"signatureverifyfilefalcon"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "signatureverifyfilesphincs",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "params",
+							"value": "{\n    \"parameterSet\": \"haraka_128f\"\n}",
+							"contentType": "application/json",
+							"type": "text"
+						},
+						{
+							"key": "inputfile",
+							"contentType": "",
+							"type": "file",
+							"src": "/C:/Users/ERDENERO.ZF-WORLD/Downloads/cryptomall-main/web_app_wd/test.txt"
+						},
+						{
+							"key": "publickeyfile",
+							"type": "file",
+							"src": "/C:/Users/ERDENERO.ZF-WORLD/Downloads/cryptomall-main/web_app_wd/haraka_128f_SPHINCSPlus_public_key_11-16-42.bin"
+						},
+						{
+							"key": "signaturefile",
+							"type": "file",
+							"src": "/C:/Users/ERDENERO.ZF-WORLD/Downloads/cryptomall-main/web_app_wd/haraka_128f_SPHINCSPlus_file_signature_11-16-42.bin"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8080/v1/signatureverifyfilesphincs",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"signatureverifyfilesphincs"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "signaturegeneratefilefalcon",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "params",
+							"value": "{\n    \"parameterSet\": \"Falcon512\"\n}",
+							"contentType": "application/json",
+							"type": "text"
+						},
+						{
+							"key": "file",
+							"contentType": "",
+							"type": "file",
+							"src": "/C:/Users/zgrrd/OneDrive/Desktop/OZGUR-PROJECTS/cryptomall/web_app_wd/test.txt"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8080/v1/signaturegeneratefilefalcon",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"signaturegeneratefilefalcon"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "signaturegeneratefilesphincs",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "params",
+							"value": "{\n    \"parameterSet\": \"haraka_128f\"\n}",
+							"contentType": "application/json",
+							"type": "text"
+						},
+						{
+							"key": "file",
+							"contentType": "",
+							"type": "file",
+							"src": "/C:/Users/ERDENERO.ZF-WORLD/Downloads/cryptomall-main/web_app_wd/test.txt"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8080/v1/signaturegeneratefilesphincs",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"signaturegeneratefilesphincs"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "keydecapsulatepqckemkyber",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "params",
+							"value": "{\n    \"parameterSet\": \"Kyber512\"\n}",
+							"contentType": "application/json",
+							"type": "text"
+						},
+						{
+							"key": "fileprivkey",
+							"contentType": "",
+							"type": "file",
+							"src": "/C:/Users/zgrrd/OneDrive/Desktop/OZGUR-PROJECTS/cryptomall/web_app_wd/Kyber512_Kyber_private_key_13-34-34.bin"
+						},
+						{
+							"key": "fileencapkey",
+							"type": "file",
+							"src": "/C:/Users/zgrrd/OneDrive/Desktop/OZGUR-PROJECTS/cryptomall/web_app_wd/Kyber512_Kyber_encapsulated_key_13-35-5.bin"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8080/v1/keydecapsulatepqckemkyber",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"keydecapsulatepqckemkyber"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "keyencapsulatepqckemhqc",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "params",
+							"value": "{\n    \"parameterSet\": \"Hqc128\"\n}",
+							"contentType": "application/json",
+							"type": "text"
+						},
+						{
+							"key": "file",
+							"contentType": "",
+							"type": "file",
+							"src": "/C:/Users/zgrrd/OneDrive/Desktop/OZGUR-PROJECTS/cryptomall/web_app_wd/Hqc128_HQC_public_key_13-40-0.bin"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8080/v1/keyencapsulatepqckemhqc",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"keyencapsulatepqckemhqc"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "keydecapsulatepqckemhqc",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "params",
+							"value": "{\n    \"parameterSet\": \"Hqc128\"\n}",
+							"contentType": "application/json",
+							"type": "text"
+						},
+						{
+							"key": "fileprivkey",
+							"contentType": "",
+							"type": "file",
+							"src": "/C:/Users/zgrrd/OneDrive/Desktop/OZGUR-PROJECTS/cryptomall/web_app_wd/Hqc128_HQC_private_key_13-40-0.bin"
+						},
+						{
+							"key": "fileencapkey",
+							"type": "file",
+							"src": "/C:/Users/zgrrd/OneDrive/Desktop/OZGUR-PROJECTS/cryptomall/web_app_wd/Hqc128_HQC_encapsulated_key_13-49-57.bin"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8080/v1/keydecapsulatepqckemhqc",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"keydecapsulatepqckemhqc"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "keyencapsulatepqckembike",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "params",
+							"value": "{\n    \"parameterSet\": \"Bike256\"\n}",
+							"contentType": "application/json",
+							"type": "text"
+						},
+						{
+							"key": "file",
+							"contentType": "",
+							"type": "file",
+							"src": "/C:/Users/zgrrd/OneDrive/Desktop/OZGUR-PROJECTS/cryptomall/web_app_wd/Bike256_Bike_public_key_13-53-29.bin"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8080/v1/keyencapsulatepqckembike",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"keyencapsulatepqckembike"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "keydecapsulatepqckembike",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "params",
+							"value": "{\n    \"parameterSet\": \"Bike256\"\n}",
+							"contentType": "application/json",
+							"type": "text"
+						},
+						{
+							"key": "fileprivkey",
+							"contentType": "",
+							"type": "file",
+							"src": "/C:/Users/zgrrd/OneDrive/Desktop/OZGUR-PROJECTS/cryptomall/web_app_wd/Bike256_Bike_private_key_13-53-29.bin"
+						},
+						{
+							"key": "fileencapkey",
+							"type": "file",
+							"src": "/C:/Users/zgrrd/OneDrive/Desktop/OZGUR-PROJECTS/cryptomall/web_app_wd/Bike256_Bike_encapsulated_key_13-54-18.bin"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8080/v1/keydecapsulatepqckembike",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"keydecapsulatepqckembike"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "keyencapsulatepqckemmceliece",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "params",
+							"value": "{\n    \"parameterSet\": \"Mceliece348864\"\n}",
+							"contentType": "application/json",
+							"type": "text"
+						},
+						{
+							"key": "file",
+							"contentType": "",
+							"type": "file",
+							"src": "/C:/Users/zgrrd/OneDrive/Desktop/OZGUR-PROJECTS/cryptomall/web_app_wd/Mceliece348864_CMCE_public_key_14-14-56.bin"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8080/v1/keyencapsulatepqckemmceliece",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"keyencapsulatepqckemmceliece"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "keydecapsulatepqckemmceliece",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "params",
+							"value": "{\n    \"parameterSet\": \"Mceliece348864\"\n}",
+							"contentType": "application/json",
+							"type": "text"
+						},
+						{
+							"key": "fileprivkey",
+							"contentType": "",
+							"type": "file",
+							"src": "/C:/Users/zgrrd/OneDrive/Desktop/OZGUR-PROJECTS/cryptomall/web_app_wd/Mceliece348864_CMCE_private_key_14-14-56.bin"
+						},
+						{
+							"key": "fileencapkey",
+							"type": "file",
+							"src": "/C:/Users/zgrrd/OneDrive/Desktop/OZGUR-PROJECTS/cryptomall/web_app_wd/Mceliece348864_CMCE_encapsulated_key_14-16-2.bin"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8080/v1/keydecapsulatepqckemmceliece",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"keydecapsulatepqckemmceliece"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "signatureverify",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "params",
+							"value": "{\n  \"hashFunction\": \"-sha256\",\n  \"rsaPssEnabled\": \"true\",\n  \"saltLen\":\"5\"\n}\n",
+							"contentType": "application/json",
+							"type": "text"
+						},
+						{
+							"key": "inputfile",
+							"contentType": "",
+							"type": "file",
+							"src": "/C:/Users/zgrrd/OneDrive/Desktop/CryptoMallFiles/test.txt"
+						},
+						{
+							"key": "publickeyfile",
+							"contentType": "",
+							"type": "file",
+							"src": "/C:/Users/zgrrd/OneDrive/Desktop/OZGUR-PROJECTS/cryptomall/web_app_wd/filconvertoutput_pub.pem"
+						},
+						{
+							"key": "signaturefile",
+							"type": "file",
+							"src": "/C:/Users/zgrrd/OneDrive/Desktop/OZGUR-PROJECTS/cryptomall/web_app_wd/signgenoutput"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8080/v1/signatureverify",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"signatureverify"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "certificateverify",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "params",
+							"value": "{\n\n}\n",
+							"contentType": "application/json",
+							"type": "text"
+						},
+						{
+							"key": "rootfile",
+							"contentType": "",
+							"type": "file",
+							"src": "/C:/Users/zgrrd/OneDrive/Desktop/CryptoMallFiles/root_cert_21-56-56.pem"
+						},
+						{
+							"key": "intermediatefile",
+							"contentType": "",
+							"type": "file",
+							"src": "/C:/Users/zgrrd/OneDrive/Desktop/CryptoMallFiles/intermediate_cert_21-56-56.pem"
+						},
+						{
+							"key": "endentityfile",
+							"type": "file",
+							"src": "/C:/Users/zgrrd/OneDrive/Desktop/CryptoMallFiles/endEntity_cert_21-56-56.pem"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8080/v1/certificateverify",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"certificateverify"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "certificategenerate",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "params",
+							"value": "{\n    \"certificateParamsRows\": [\n        {\n            \"elementName\": \"Days to Expire\",\n            \"rootCertificate\": \"30\",\n            \"intermediateCertificate\": \"30\",\n            \"endEntitiyCertificate\": \"30\"\n        },\n        {\n            \"elementName\": \"Common Name (CN)\",\n            \"rootCertificate\": \"RootCert\",\n            \"intermediateCertificate\": \"IntermediateCert\",\n            \"endEntitiyCertificate\": \"EndEntityCert\"\n        },\n        {\n            \"elementName\": \"Organisational Unit (OU)\",\n            \"rootCertificate\": \"\",\n            \"intermediateCertificate\": \"\",\n            \"endEntitiyCertificate\": \"\"\n        },\n        {\n            \"elementName\": \"Organisation (O)\",\n            \"rootCertificate\": \"OrgRoot\",\n            \"intermediateCertificate\": \"OrgIntermediate\",\n            \"endEntitiyCertificate\": \"OrgEndEntity\"\n        },\n        {\n            \"elementName\": \"Locality Name (L)\",\n            \"rootCertificate\": \"UK\",\n            \"intermediateCertificate\": \"UK\",\n            \"endEntitiyCertificate\": \"UK\"\n        },\n        {\n            \"elementName\": \"State or Province Name (ST)\",\n            \"rootCertificate\": \"\",\n            \"intermediateCertificate\": \"\",\n            \"endEntitiyCertificate\": \"\"\n        },\n        {\n            \"elementName\": \"Country Name (C)\",\n            \"rootCertificate\": \"\",\n            \"intermediateCertificate\": \"\",\n            \"endEntitiyCertificate\": \"\"\n        },\n        {\n             \"elementName\": \"Title (T)\",\n            \"rootCertificate\": \"\",\n            \"intermediateCertificate\": \"\",\n            \"endEntitiyCertificate\": \"\"\n        },\n        {\n            \"elementName\": \"SERIALNUMBER\",\n            \"rootCertificate\": \"\",\n            \"intermediateCertificate\": \"\",\n            \"endEntitiyCertificate\": \"\"\n        },\n        {\n            \"elementName\": \"Given Name (GN)\",\n            \"rootCertificate\": \"\",\n            \"intermediateCertificate\": \"\",\n            \"endEntitiyCertificate\": \"\"\n        },\n        {\n            \"elementName\": \"Surname (SN)\",\n            \"rootCertificate\": \"\",\n            \"intermediateCertificate\": \"\",\n            \"endEntitiyCertificate\": \"\"\n        },\n        {\n            \"elementName\": \"initials \",\n            \"rootCertificate\": \"\",\n            \"intermediateCertificate\": \"\",\n            \"endEntitiyCertificate\": \"\"\n        },\n        {\n            \"elementName\": \"pseudonym\",\n            \"rootCertificate\": \"\",\n            \"intermediateCertificate\": \"\",\n            \"endEntitiyCertificate\": \"\"\n        },\n        {\n            \"elementName\": \"Domain Component (DC)\",\n            \"rootCertificate\": \"\",\n            \"intermediateCertificate\": \"\",\n            \"endEntitiyCertificate\": \"\"\n        },\n        {\n            \"elementName\": \"STREET\",\n            \"rootCertificate\": \"\",\n            \"intermediateCertificate\": \"\",\n            \"endEntitiyCertificate\": \"\"\n        },\n        {\n            \"elementName\": \"User ID (UID)\",\n            \"rootCertificate\": \"\",\n            \"intermediateCertificate\": \"\",\n            \"endEntitiyCertificate\": \"\"\n        },\n        {\n             \"elementName\": \"dnQualifier\",\n            \"rootCertificate\": \"\",\n            \"intermediateCertificate\": \"\",\n            \"endEntitiyCertificate\": \"\"\n        },\n        {\n            \"elementName\": \"generationQualifier\",\n            \"rootCertificate\": \"\",\n            \"intermediateCertificate\": \"\",\n            \"endEntitiyCertificate\": \"\"\n        }\n    ],\n    \"rootHashFunction\": \"-sha256\",\n    \"intermediateHashFunction\": \"-sha256\",\n    \"endEntityHashFunction\": \"-sha256\",\n    \"isTwoChainVerifySelected\": \"false\"\n}",
+							"contentType": "application/json",
+							"type": "text"
+						},
+						{
+							"key": "rootkeyfile",
+							"contentType": "",
+							"type": "file",
+							"src": "/C:/Users/zgrrd/OneDrive/Desktop/CryptoMallFiles/rsa_privkey_21-56-19.pem"
+						},
+						{
+							"key": "intermediatekeyfile",
+							"contentType": "",
+							"type": "file",
+							"src": "/C:/Users/zgrrd/OneDrive/Desktop/CryptoMallFiles/rsa_privkey_21-56-20.pem"
+						},
+						{
+							"key": "endentitykeyfile",
+							"type": "file",
+							"src": "/C:/Users/zgrrd/OneDrive/Desktop/CryptoMallFiles/rsa_privkey_21-56-21.pem"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8080/v1/certificategenerate",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"certificategenerate"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "keygenerate",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"keyGenAlgo\": \"RSA\",\r\n    \"keyLength\": \"1024\",\r\n    \"outKeyFileFormat\": \"PEM\",\r\n    \"elepticCurveName\": \"secp112r1\",\r\n    \"encryptKeyFile\":\"false\",\r\n    \"fileEncryptionCipher\": \"-aes-128-cbc\",\r\n    \"fileEncryptionPassword\": \"12345\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/v1/keygenerate",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"keygenerate"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "keygeneratepqckemkyber",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"parameterSet\": \"Kyber512\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/v1/keygeneratepqckemkyber",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"keygeneratepqckemkyber"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "keygeneratepqckemhqc",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"parameterSet\": \"Hqc128\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/v1/keygeneratepqckemhqc",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"keygeneratepqckemhqc"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "keygeneratepqckembike",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"parameterSet\": \"Bike256\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/v1/keygeneratepqckembike",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"keygeneratepqckembike"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "keygeneratepqckemmceliece",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"parameterSet\": \"Mceliece348864\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/v1/keygeneratepqckemmceliece",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"keygeneratepqckemmceliece"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "primegenerate",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"primeLength\": \"128\",\r\n    \"safePrime\": \"true\",\r\n    \"hexOutPrime\": \"true\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/v1/primegenerate",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"primegenerate"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "postquantumparameterset",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/v1/postquantumparameterset",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"postquantumparameterset"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "certificateparams",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/v1/certificateparams",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"certificateparams"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "keygeneratealgorithm",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/v1/keygeneratealgorithm",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"keygeneratealgorithm"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "elipticcurvenameslist",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/v1/elipticcurvenameslist",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"elipticcurvenameslist"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "cipherslist",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/v1/cipherslist",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"cipherslist"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "hashfunctionslist",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/v1/hashfunctionslist",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"hashfunctionslist"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "fileconvertoperationnamesids",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/v1/fileconvertoperationnamesids",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"fileconvertoperationnamesids"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
