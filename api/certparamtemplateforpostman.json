@@ -1,0 +1,116 @@
+{
+    "certificateParamsRows": [
+        {
+            "elementName": "Days to Expire",
+            "rootCertificate": "30",
+            "intermediateCertificate": "30",
+            "endEntitiyCertificate": "30"
+        },
+        {
+            "elementName": "Common Name (CN)",
+            "rootCertificate": "RootCert",
+            "intermediateCertificate": "IntermediateCert",
+            "endEntitiyCertificate": "EndEntityCert"
+        },
+        {
+            "elementName": "Organisational Unit (OU)",
+            "rootCertificate": "",
+            "intermediateCertificate": "",
+            "endEntitiyCertificate": ""
+        },
+        {
+            "elementName": "Organisation (O)",
+            "rootCertificate": "OrgRoot",
+            "intermediateCertificate": "OrgIntermediate",
+            "endEntitiyCertificate": "OrgEndEntity"
+        },
+        {
+            "elementName": "Locality Name (L)",
+            "rootCertificate": "UK",
+            "intermediateCertificate": "UK",
+            "endEntitiyCertificate": "UK"
+        },
+        {
+            "elementName": "State or Province Name (ST)",
+            "rootCertificate": "",
+            "intermediateCertificate": "",
+            "endEntitiyCertificate": ""
+        },
+        {
+            "elementName": "Country Name (C)",
+            "rootCertificate": "",
+            "intermediateCertificate": "",
+            "endEntitiyCertificate": ""
+        },
+        {
+             "elementName": "Title (T)",
+            "rootCertificate": "",
+            "intermediateCertificate": "",
+            "endEntitiyCertificate": ""
+        },
+        {
+            "elementName": "SERIALNUMBER",
+            "rootCertificate": "",
+            "intermediateCertificate": "",
+            "endEntitiyCertificate": ""
+        },
+        {
+            "elementName": "Given Name (GN)",
+            "rootCertificate": "",
+            "intermediateCertificate": "",
+            "endEntitiyCertificate": ""
+        },
+        {
+            "elementName": "Surname (SN)",
+            "rootCertificate": "",
+            "intermediateCertificate": "",
+            "endEntitiyCertificate": ""
+        },
+        {
+            "elementName": "initials ",
+            "rootCertificate": "",
+            "intermediateCertificate": "",
+            "endEntitiyCertificate": ""
+        },
+        {
+            "elementName": "pseudonym",
+            "rootCertificate": "",
+            "intermediateCertificate": "",
+            "endEntitiyCertificate": ""
+        },
+        {
+            "elementName": "Domain Component (DC)",
+            "rootCertificate": "",
+            "intermediateCertificate": "",
+            "endEntitiyCertificate": ""
+        },
+        {
+            "elementName": "STREET",
+            "rootCertificate": "",
+            "intermediateCertificate": "",
+            "endEntitiyCertificate": ""
+        },
+        {
+            "elementName": "User ID (UID)",
+            "rootCertificate": "",
+            "intermediateCertificate": "",
+            "endEntitiyCertificate": ""
+        },
+        {
+             "elementName": "dnQualifier",
+            "rootCertificate": "",
+            "intermediateCertificate": "",
+            "endEntitiyCertificate": ""
+        },
+        {
+            "elementName": "generationQualifier",
+            "rootCertificate": "",
+            "intermediateCertificate": "",
+            "endEntitiyCertificate": ""
+        }
+    ],
+    "rootHashFunction": "-sha256",
+    "intermediateHashFunction": "-sha256",
+    "endEntityHashFunction": "-sha256",
+    "isTwoChainVerifySelected": "false"
+}
