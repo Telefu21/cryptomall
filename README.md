@@ -57,15 +57,13 @@
 
 [![Product Name Screen Shot][product-screenshot]](https://example.com)
 
-CryptoMall is a general-purpose cryptographic calculator built as a Java-based UI and REST application. It streamlines core crypto operations through a user-friendly interface and API endpoints.
-
-CryptoMall is a comprehensive cryptographic calculator built as a Java-based UI and RESTful application. It simplifies a wide array of cryptographic tasks via intuitive interfaces and robust API endpoints.
+CryptoMall is a comprehensive cryptographic calculator built as a Java-based UI and RESTful application. It streamlines core crypto operations through a user-friendly interface and API endpoints.
 
 ## Features
 
-🔑 Generate public/private key pairs (RSA, ECDSA, etc.)
+🔑 Generate public/private key pairs (RSA, EC, DSA, DH etc.)
 
-📜 Create and verify digital signatures
+📜 Generate and verify digital signatures
 
 🛡️ Encrypt and decrypt data (symmetric & asymmetric)
 
@@ -75,22 +73,32 @@ CryptoMall is a comprehensive cryptographic calculator built as a Java-based UI 
 
 📊 Generate CRC checksums for integrity verification
 
-🔄 Support file format conversion (e.g., PEM ↔ DER)
-
-🧠 Explore Post-Quantum Cryptography (e.g., Dilithium, Kyber)
+🔄 Support file format conversion (e.g., PEM ↔ DER, View Certificates, View Key Files etc.)
 
 📁 Manage and validate X.509 certificates
 
+🧠 Explore Post-Quantum Cryptography
+
+Selected Algorithms: Public-key Encryption and Key-establishment
+* CRYSTALS-KYBER (3 parameter sets)
+* HQC (3 parameter sets)
+
+Selected Algorithms: Digital Signature
+* CRYSTALS-DILITHIUM (3 parameter sets)
+* FALCON (2 parameter sets)
+* SPHINCS+ (24 parameter sets)
+
+Round 4 Submissions: Public-key Encryption and Key-establishment
+* BIKE (3 parameter sets)
+* Classic McEliece (6 parameter sets)
+
 🧪 Includes Postman-ready templates for easy API testing
 
-Powered by Spring Boot, the project is ideal for developers and testers integrating security into their applications. It also includes Postman-ready templates to simplify endpoint testing.
+Built with Spring Boot, CryptoMall is ideal for developers, researchers, and security enthusiasts seeking a modular and extensible cryptographic toolkit. It also includes Postman-ready templates to simplify endpoint testing.
 
 Whether you're prototyping secure APIs, exploring post-quantum algorithms, or building your own crypto toolkit, CryptoMall offers a clean and extensible starting point.
 
-Built with Spring Boot, CryptoMall is ideal for developers, researchers, and security enthusiasts seeking a modular and extensible cryptographic toolkit.
-
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
 
 
 ### Built With
