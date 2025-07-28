@@ -79,6 +79,8 @@
   </a>
 </div>
 
+</p>
+
 CryptoMall is a comprehensive cryptographic calculator built as a Java-based UI and RESTful application. It streamlines core crypto operations through a user-friendly interface and API endpoints.
 
 ## Features
@@ -101,22 +103,22 @@ CryptoMall is a comprehensive cryptographic calculator built as a Java-based UI 
 
 🧠 Explore Post-Quantum Cryptography
 
-Selected Algorithms: Public-key Encryption and Key-establishment
+&nbsp; &nbsp;&nbsp;&nbsp;Selected Algorithms: Public-key Encryption and Key-establishment
 * CRYSTALS-KYBER (3 parameter sets)
 * HQC (3 parameter sets)
 
-Selected Algorithms: Digital Signature
+&nbsp; &nbsp;&nbsp;&nbsp;Selected Algorithms: Digital Signature
 * CRYSTALS-DILITHIUM (3 parameter sets)
 * FALCON (2 parameter sets)
 * SPHINCS+ (24 parameter sets)
 
-Round 4 Submissions: Public-key Encryption and Key-establishment
+&nbsp; &nbsp;&nbsp;&nbsp;Round 4 Submissions: Public-key Encryption and Key-establishment
 * BIKE (3 parameter sets)
 * Classic McEliece (6 parameter sets)
 
 🧪 Includes Postman-ready templates for easy API testing
 
-Built with Spring Boot, CryptoMall is ideal for developers, researchers, and security enthusiasts seeking a modular and extensible cryptographic toolkit. It also includes Postman-ready templates to simplify endpoint testing.
+Built with Spring Boot and JavaFx, CryptoMall is ideal for developers, researchers, and security enthusiasts seeking a modular and extensible cryptographic toolkit. It also includes Postman-ready templates to simplify endpoint testing.
 
 Whether you're prototyping secure APIs, exploring post-quantum algorithms, or building your own crypto toolkit, CryptoMall offers a clean and extensible starting point.
 
