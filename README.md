@@ -56,26 +56,26 @@
 ## About The Project
 <div align="center">
   <a href="https://github.com/Telefu21/cryptomall/blob/main/GUIScreenShots/KeygenFileConvertScreenShot.png">
-    <img src="GUIScreenShots/KeygenFileConvertScreenShot.png" alt="Logo" width="300" height="300">
+    <img src="GUIScreenShots/KeygenFileConvertScreenShot.png" alt="Logo" width="200" height="200">
   </a>
   <a href="https://github.com/Telefu21/cryptomall/blob/main/GUIScreenShots/EncryptDecryptScreenshot.png">
-    <img src="GUIScreenShots/EncryptDecryptScreenshot.png" alt="Logo" width="300" height="300">
+    <img src="GUIScreenShots/EncryptDecryptScreenshot.png" alt="Logo" width="200" height="200">
   </a>
   
   <a href="https://github.com/Telefu21/cryptomall/blob/main/GUIScreenShots/SignVerifyScreenShot.png">
-    <img src="GUIScreenShots/SignVerifyScreenShot.png" alt="Logo" width="300" height="300">
+    <img src="GUIScreenShots/SignVerifyScreenShot.png" alt="Logo" width="200" height="200">
   </a>
 </div> 
 
 <div align="center">
   <a href="https://github.com/Telefu21/cryptomall/blob/main/GUIScreenShots/CertificateScreenShot.png">
-    <img src="GUIScreenShots/CertificateScreenShot.png" alt="Logo" width="300" height="300">
+    <img src="GUIScreenShots/CertificateScreenShot.png" alt="Logo" width="200" height="200">
   </a>
   <a href="https://github.com/Telefu21/cryptomall/blob/main/GUIScreenShots/PostQuantumScreenShot.png">
-    <img src="GUIScreenShots/PostQuantumScreenShot.png" alt="Logo" width="300" height="300">
+    <img src="GUIScreenShots/PostQuantumScreenShot.png" alt="Logo" width="200" height="200">
   </a>
   <a href="https://github.com/Telefu21/cryptomall/blob/main/GUIScreenShots/CRCHexViewScreenShot.png">
-    <img src="GUIScreenShots/CRCHexViewScreenShot.png" alt="Logo" width="300" height="300">
+    <img src="GUIScreenShots/CRCHexViewScreenShot.png" alt="Logo" width="200" height="200">
   </a>
 </div>
 
