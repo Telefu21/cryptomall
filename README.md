@@ -54,8 +54,14 @@
 
 <!-- ABOUT THE PROJECT -->
 ## About The Project
-
-[![Product Name Screen Shot][product-screenshot]](https://example.com)
+<div align="center">
+  <a href="https://github.com/Telefu21/cryptomall">
+    <img src="GUIScreenShots/CRCHexViewScreenShot.png" alt="Logo" width="300" height="300">
+  </a>
+  <a href="https://github.com/Telefu21/cryptomall">
+    <img src="GUIScreenShots/CRCHexViewScreenShot.png" alt="Logo" width="300" height="300">
+  </a>
+</div> 
 
 CryptoMall is a comprehensive cryptographic calculator built as a Java-based UI and RESTful application. It streamlines core crypto operations through a user-friendly interface and API endpoints.
 
