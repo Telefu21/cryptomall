@@ -151,7 +151,7 @@ _Below is an example of how you can instruct your audience on installing and set
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-Cryptomall has an user friendly GUI which makes its usage straight forward. For the API usage please see the [Postman-ready templates](https://github.com/Telefu21/cryptomall/blob/main/api/CryptoMall.postman_collection.json).
+Cryptomall features a user-friendly GUI that makes it easy to use, as demonstrated in the screenshots below. For API integration, please refer to the [Postman-ready templates](https://github.com/Telefu21/cryptomall/blob/main/api/CryptoMall.postman_collection.json).
 
 <div align="center">
   <a href="https://github.com/Telefu21/cryptomall/blob/main/GUIScreenShots/KeygenFileConvertScreenShot.png">
