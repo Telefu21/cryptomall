@@ -49,31 +49,6 @@
 
 <!-- ABOUT THE PROJECT -->
 ## About The Project
-<div align="center">
-  <a href="https://github.com/Telefu21/cryptomall/blob/main/GUIScreenShots/KeygenFileConvertScreenShot.png">
-    <img src="GUIScreenShots/KeygenFileConvertScreenShot.png" alt="Logo" width="200" height="200">
-  </a>
-  <a href="https://github.com/Telefu21/cryptomall/blob/main/GUIScreenShots/EncryptDecryptScreenshot.png">
-    <img src="GUIScreenShots/EncryptDecryptScreenshot.png" alt="Logo" width="200" height="200">
-  </a>
-  
-  <a href="https://github.com/Telefu21/cryptomall/blob/main/GUIScreenShots/SignVerifyScreenShot.png">
-    <img src="GUIScreenShots/SignVerifyScreenShot.png" alt="Logo" width="200" height="200">
-  </a>
-</div> 
-
-<div align="center">
-  <a href="https://github.com/Telefu21/cryptomall/blob/main/GUIScreenShots/CertificateScreenShot.png">
-    <img src="GUIScreenShots/CertificateScreenShot.png" alt="Logo" width="200" height="200">
-  </a>
-  <a href="https://github.com/Telefu21/cryptomall/blob/main/GUIScreenShots/PostQuantumScreenShot.png">
-    <img src="GUIScreenShots/PostQuantumScreenShot.png" alt="Logo" width="200" height="200">
-  </a>
-  <a href="https://github.com/Telefu21/cryptomall/blob/main/GUIScreenShots/CRCHexViewScreenShot.png">
-    <img src="GUIScreenShots/CRCHexViewScreenShot.png" alt="Logo" width="200" height="200">
-  </a>
-</div>
-
 </p>
 
 CryptoMall is a comprehensive cryptographic calculator built as a Java-based UI and RESTful application. It streamlines core crypto operations through a user-friendly interface and API endpoints.
@@ -176,9 +151,32 @@ _Below is an example of how you can instruct your audience on installing and set
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
+Cryptomall has an user friendly GUI which makes its usage straight forward. For the API usage please see the [Postman-ready templates](https://github.com/Telefu21/cryptomall/blob/main/api/CryptoMall.postman_collection.json).
 
-_For more examples, please refer to the [Documentation](https://example.com)_
+<div align="center">
+  <a href="https://github.com/Telefu21/cryptomall/blob/main/GUIScreenShots/KeygenFileConvertScreenShot.png">
+    <img src="GUIScreenShots/KeygenFileConvertScreenShot.png" alt="Logo" width="200" height="200">
+  </a>
+  <a href="https://github.com/Telefu21/cryptomall/blob/main/GUIScreenShots/EncryptDecryptScreenshot.png">
+    <img src="GUIScreenShots/EncryptDecryptScreenshot.png" alt="Logo" width="200" height="200">
+  </a>
+  
+  <a href="https://github.com/Telefu21/cryptomall/blob/main/GUIScreenShots/SignVerifyScreenShot.png">
+    <img src="GUIScreenShots/SignVerifyScreenShot.png" alt="Logo" width="200" height="200">
+  </a>
+</div> 
+
+<div align="center">
+  <a href="https://github.com/Telefu21/cryptomall/blob/main/GUIScreenShots/CertificateScreenShot.png">
+    <img src="GUIScreenShots/CertificateScreenShot.png" alt="Logo" width="200" height="200">
+  </a>
+  <a href="https://github.com/Telefu21/cryptomall/blob/main/GUIScreenShots/PostQuantumScreenShot.png">
+    <img src="GUIScreenShots/PostQuantumScreenShot.png" alt="Logo" width="200" height="200">
+  </a>
+  <a href="https://github.com/Telefu21/cryptomall/blob/main/GUIScreenShots/CRCHexViewScreenShot.png">
+    <img src="GUIScreenShots/CRCHexViewScreenShot.png" alt="Logo" width="200" height="200">
+  </a>
+</div>
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
