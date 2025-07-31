@@ -110,38 +110,42 @@ Cryptomall is built as a Maven project, with all dependencies listed in the  [po
 <!-- GETTING STARTED -->
 ## Getting Started
 
-This is an example of how you may give instructions on setting up your project locally.
-To get a local copy up and running follow these simple example steps.
+Cryptomall is a Maven project.
 
 ### Prerequisites
+<a id="Prerequisites"></a>
+🖥️ Windows Installation Requirements for Cryptomall
 
-This is an example of how to list things you need to use the software and how to install them.
-* npm
-  ```sh
-  npm install npm@latest -g
-  ```
+To run and update the Cryptomall application on Windows platforms, the following packages must be installed on your system.
 
-### Installation
+* [Install Java](https://www.oracle.com/java/technologies/downloads/)
+* [Install Maven](https://maven.apache.org/install.html) 
+* [Install OpenSSL](https://slproweb.com/products/Win32OpenSSL.html) 
 
-_Below is an example of how you can instruct your audience on installing and setting up your app. This template doesn't rely on any external dependencies or services._
+🐧 Linux Users: No installation is necessary—most Linux distributions already include these packages by default.
 
-1. Get a free API Key at [https://example.com](https://example.com)
-2. Clone the repo
+### Running the Application
+
+The application can be executed by applying the below steps if the given  <a href="#readme-top">Prerequisites</a> are fulfilled. 
+
+1. This step is optional. Skip this step If Cryptomall is used with GUI and RestAPI functionality.
+    * Remove the comment symbol (e.g. "#") at below line from [application.properties](https://github.com/Telefu21/cryptomall/blob/main/src/main/resources/application.properties) file to disable the RestAPI functionality:
+
+      * #spring.main.web-application-type=none
+
+    * Assign "false" to property given below from [application.properties](https://github.com/Telefu21/cryptomall/blob/main/src/main/resources/application.properties) file to disable the GUI functionality:
+
+      * javafxenabled=false
+
+2. * Clone the repo if you have git installed:
    ```sh
-   git clone https://github.com/github_username/repo_name.git
+   git clone https://github.com/Telefu21/cryptomall.git
    ```
-3. Install NPM packages
+   * Or [Dowload](https://github.com/Telefu21/cryptomall/archive/refs/heads/main.zip) and unzip the project folder if you are only a user.
+
+3. Run the application from command line under the project folder.
    ```sh
-   npm install
-   ```
-4. Enter your API in `config.js`
-   ```js
-   const API_KEY = 'ENTER YOUR API';
-   ```
-5. Change git remote url to avoid accidental pushes to base project
-   ```sh
-   git remote set-url origin github_username/repo_name
-   git remote -v # confirm the changes
+   mvn spring-boot:run
    ```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
