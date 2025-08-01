@@ -33,7 +33,7 @@
       <a href="#getting-started">Getting Started</a>
       <ul>
         <li><a href="#prerequisites">Prerequisites</a></li>
-        <li><a href="#installation">Installation</a></li>
+        <li><a href="#installation">Running the Application</a></li>
       </ul>
     </li>
     <li><a href="#usage">Usage</a></li>
@@ -126,7 +126,7 @@ To run and update the Cryptomall application on Windows platforms, the following
 
 ### Running the Application
 
-The application can be executed by applying the below steps if the given  <a href="#readme-top">Prerequisites</a> are fulfilled. 
+The application can be executed by applying the below steps if the given  <a href="#Prerequisites">Prerequisites</a> are fulfilled. 
 
 1. This step is optional. Skip this step If Cryptomall is used with GUI and RestAPI functionality.
     * Remove the comment symbol (e.g. "#") at below line from [application.properties](https://github.com/Telefu21/cryptomall/blob/main/src/main/resources/application.properties) file to disable the RestAPI functionality:
