@@ -113,7 +113,7 @@ Cryptomall is built as a Maven project, with all dependencies listed in the  [po
 Cryptomall is a Maven project.
 
 ### Prerequisites
-<a id="Prerequisites"></a>
+
 🖥️ Windows Installation Requirements for Cryptomall
 
 To run and update the Cryptomall application on Windows platforms, the following packages must be installed on your system.
@@ -126,7 +126,7 @@ To run and update the Cryptomall application on Windows platforms, the following
 
 ### Running the Application
 
-The application can be executed by applying the below steps if the given  <a href="#Prerequisites">Prerequisites</a> are fulfilled. 
+The application can be executed by applying the below steps if the given  <a href="#prerequisites">Prerequisites</a> are fulfilled. 
 
 1. This step is optional. Skip this step If Cryptomall is used with GUI and RestAPI functionality.
     * Remove the comment symbol (e.g. "#") at below line from [application.properties](https://github.com/Telefu21/cryptomall/blob/main/src/main/resources/application.properties) file to disable the RestAPI functionality:
